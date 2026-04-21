@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Byrna Footer — Drop-in Bundle Demo</title>
+    <style>
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          sans-serif;
+      }
+      .content {
+        max-width: 720px;
+        margin: 64px auto;
+        padding: 0 24px;
+        color: #374151;
+        line-height: 1.6;
+      }
+      .content h1 {
+        margin: 0 0 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="content">
+      <h1>Drop-in Footer Demo</h1>
+      <p>
+        This host page only includes
+        <code>dist/byrna/footer.bundle.js</code>. The bundle auto-mounts into
+        the <code>#byrna-footer-root</code> div below.
+      </p>
+      <p>Programmatic mount:</p>
+      <pre><code>window.ByrnaFooter.mount("#my-footer-slot");
+window.ByrnaFooter.unmount();</code></pre>
+    </main>
+
+    <div id="byrna-footer-root"></div>
+
+    <script src="../../../dist/byrna/footer.bundle.js"></script>
+  </body>
+</html>
