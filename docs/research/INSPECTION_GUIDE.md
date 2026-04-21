@@ -1,80 +1,117 @@
-# Website Inspection Guide
+# Header + Footer Inspection Guide
 
-## How to Reverse-Engineer Any Website
+Use this alongside the `/clone-header-footer` Cursor command. It covers *what* to extract from a live site so the resulting drop-in bundle is functionally equivalent, not just visually similar.
 
-This guide outlines what to capture when inspecting a target website via Chrome MCP or browser DevTools.
+## Before you start
 
-## Phase 1: Visual Audit
+Open the target site in the browser MCP at 1440px viewport. You will toggle to 390px later for the mobile drawer.
 
-### Screenshots to Capture
-- [ ] Every distinct page — desktop, tablet, mobile
-- [ ] Dark mode variants (if applicable)
-- [ ] Light mode variants (if applicable)
-- [ ] Key interaction states (hover, active, open menus, modals)
-- [ ] Loading/skeleton states
-- [ ] Empty states
-- [ ] Error states
+## Header — desktop (1440px)
 
-### Design Tokens to Extract
-- [ ] **Colors** — background, text (primary/secondary/muted), accent, border, hover, error, success, warning
-- [ ] **Typography** — font family, sizes (h1-h6, body, caption, label), weights, line heights, letter spacing
-- [ ] **Spacing** — padding/margin patterns (look for a scale: 4px, 8px, 12px, 16px, 24px, 32px, etc.)
-- [ ] **Border radius** — buttons, cards, avatars, inputs
-- [ ] **Shadows/elevation** — card shadows, dropdown shadows, modal overlay
-- [ ] **Breakpoints** — when does the layout shift? (inspect with DevTools responsive mode)
-- [ ] **Icons** — which icon library? custom SVGs? sizes?
-- [ ] **Avatars** — sizes, shapes, fallback behavior
-- [ ] **Buttons** — all variants (primary, secondary, ghost, icon-only, danger)
-- [ ] **Inputs** — text fields, textareas, selects, checkboxes, toggles
+### Logo
+- Absolute URL of the `<img src>`, alt text, rendered width/height.
+- What URL does the logo link to? (Usually the site home.)
 
-## Phase 2: Component Inventory
+### Top-level nav items
+For each top-level nav entry, record:
+- Label
+- Its own `href` (used as the "View all <Label>" link in the cloned dropdown)
+- Whether it has a dropdown
 
-For each distinct UI component, document:
-1. **Name** — what would you call this component?
-2. **Structure** — what HTML elements / child components does it contain?
-3. **Variants** — does it have different sizes, colors, or states?
-4. **States** — default, hover, active, disabled, loading, error, empty
-5. **Responsive behavior** — how does it change at different breakpoints?
-6. **Interactions** — click, hover, focus, keyboard navigation
-7. **Animations** — transitions, entrance/exit animations, micro-interactions
+### Dropdowns
+For each dropdown, hover or click the trigger and record every item:
 
-### Common Components to Look For
-- Navigation (top bar, sidebar, bottom bar)
-- Cards / list items
-- Buttons and links
-- Forms and inputs
-- Modals and dialogs
-- Dropdowns and menus
-- Tabs and segmented controls
-- Avatars and user badges
-- Loading skeletons
-- Toast notifications
-- Tooltips and popovers
+| Label | href | external? | description (if shown) |
 
-## Phase 3: Layout Architecture
+Rules:
+- Resolve relative `href`s against the site origin.
+- If `href` hostname differs from the site, mark `external: true`. Those get `target="_blank" rel="noopener noreferrer"` in the bundle.
+- If an item has a sub-description line (e.g. "AI Workflow Automation"), capture it too.
 
-- [ ] **Grid system** — CSS Grid? Flexbox? Fixed widths?
-- [ ] **Column layout** — how many columns at each breakpoint?
-- [ ] **Max-width** — main content area max-width
-- [ ] **Sticky elements** — header, sidebar, floating buttons
-- [ ] **Z-index layers** — navigation, modals, tooltips, overlays
-- [ ] **Scroll behavior** — infinite scroll, pagination, virtual scrolling
+### Trailing controls
+- Search icon? CTA button? Language switcher? Record the element but implement only the hit-target — full search UI is out of scope unless the user explicitly asks for it.
 
-## Phase 4: Technical Stack Analysis
+### Computed styles to capture (via `getComputedStyle`)
+- Header container: `height`, `background`, `border-bottom`, `position`, `z-index`.
+- Inner max-width + horizontal padding.
+- Nav item font-size, font-weight, color, hover color.
+- Dropdown: width, border-radius, shadow, padding, item font-size.
 
-- [ ] **Framework** — React? Vue? Angular? Check `__NEXT_DATA__`, `__NUXT__`, `ng-version`
-- [ ] **CSS approach** — Tailwind (utility classes), CSS Modules, Styled Components, Emotion, vanilla CSS
-- [ ] **State management** — Redux (check DevTools), React Query, Zustand, Pinia
-- [ ] **API patterns** — REST, GraphQL (check network tab for `/graphql` requests)
-- [ ] **Font loading** — Google Fonts, self-hosted, system fonts
-- [ ] **Image strategy** — CDN, lazy loading, srcset, WebP/AVIF
-- [ ] **Animation library** — Framer Motion, GSAP, CSS transitions only
+## Header — mobile (390px)
 
-## Phase 5: Documentation Output
+Resize the viewport to 390px and re-inspect.
 
-After inspection, create these files in `docs/research/`:
-1. `DESIGN_TOKENS.md` — All extracted colors, typography, spacing
-2. `COMPONENT_INVENTORY.md` — Every component with structure notes
-3. `LAYOUT_ARCHITECTURE.md` — Page layouts, grid system, responsive behavior
-4. `INTERACTION_PATTERNS.md` — Animations, transitions, hover states
-5. `TECH_STACK_ANALYSIS.md` — What the site uses and our chosen equivalents
+- Where does the hamburger appear? What is its icon (Menu → X toggle)?
+- At what breakpoint does the desktop nav disappear? (Usually `lg` = 1024px.)
+- Open the drawer. Is the data identical to the desktop nav, or flatter?
+- Does the drawer slide, fade, or instantly appear? Is it full-screen or a panel?
+- Where does the close control live? (Tap hamburger again, tap X, tap outside, Escape.)
+
+Functional parity expectations regardless of the live site's exact behavior:
+- Body scroll is locked while drawer open.
+- Tapping a link closes the drawer.
+- Escape closes the drawer.
+- Focus returns to the hamburger on close.
+
+## Footer
+
+### Columns
+For each column:
+- Heading
+- Each link: label, `href`, external flag
+
+### Bottom bar
+- Logo (often the same CDN URL as the header)
+- Copyright line (verbatim)
+- Legal links (privacy, terms, cookies, accessibility)
+- Social icons: record icon type + `href` for each
+
+### Widgets to flag but not implement
+If the footer has any of these, record them under "Known omissions" in the footer spec:
+- Newsletter signup form
+- Language / region switcher
+- Live chat launcher
+- Cookie consent banner (those are site-wide concerns, not a footer feature)
+
+## Things to get right
+
+- **Every href is real.** No `#` placeholders. If you can't extract a link, the spec is incomplete.
+- **Hover AND click both open dropdowns.** The live site may be hover-only, but our bundle must support both so it works on touch and keyboard.
+- **Style isolation.** The bundle must not style the host page's `<h1>` / `<p>` / `<ul>`. This is solved in `styles.css` by skipping preflight, but it's worth verifying with the host-isolation smoke test.
+
+## Handy extraction snippets
+
+Run these in the browser MCP console.
+
+```javascript
+// All header links as [{label, href}]
+[...document.querySelector("header").querySelectorAll("a")].map(a => ({
+  label: a.textContent.trim(),
+  href: a.href,
+}));
+```
+
+```javascript
+// Dropdown items after hovering a nav item — capture the entire menu
+const menu = document.querySelector("SELECTOR_FOR_OPEN_DROPDOWN");
+[...menu.querySelectorAll("a")].map(a => ({
+  label: a.querySelector("[data-label]")?.textContent.trim() ?? a.textContent.trim(),
+  description: a.querySelector("[data-description]")?.textContent.trim(),
+  href: a.href,
+  external: new URL(a.href).hostname !== location.hostname,
+}));
+```
+
+```javascript
+// Footer columns
+[...document.querySelector("footer").querySelectorAll("[class*=column], [class*=col], nav")].map(col => ({
+  heading: col.querySelector("h4,h3,h5,.heading")?.textContent.trim(),
+  links: [...col.querySelectorAll("a")].map(a => ({
+    label: a.textContent.trim(),
+    href: a.href,
+    external: new URL(a.href).hostname !== location.hostname,
+  })),
+}));
+```
+
+Adapt selectors to the target site.
