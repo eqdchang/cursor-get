@@ -8,11 +8,12 @@ Findings from the mandatory interaction sweep (scroll, click, hover, responsive)
 - **No parallax, no scroll-snap, no sticky panels** outside the fixed header.
 - **No smooth-scroll library** (Lenis/Locomotive absent).
 
-## Click-driven behaviors
-- **Nav dropdowns:** Desktop nav has 5 "Platform / Solutions / Industries / Resources / About" items that open dropdown menus on click. We won't wire these dropdowns (stub as plain links for the clone — the home page doesn't depend on them).
-- **Mobile menu button (hamburger):** Opens a mobile drawer. We'll stub as non-interactive.
-- **Primary "Contact us" buttons** link to `/contact-us` (we'll set `href="#contact"` in the clone).
-- **"Learn More" links** go to `/UnityCentral`, `/Velocity`, `/Solutions` etc. Stub as `href="#"` in the clone.
+## Click-driven / hover-driven behaviors
+- **Nav dropdowns:** Desktop nav has 5 groups (Platform / Solutions / Industries / Resources / About). Each is an `<a>` pointing to a real route AND reveals a **hover-triggered** dropdown panel with title + optional description rows. Implemented in v2 via Tailwind `group`/`group-hover:` on `opacity`, `visibility`, `translate-y-1` with `transition-all duration-150`.
+- **Search icon** in the desktop nav is visual-only on the live site (clicking triggers an empty sonner/radix toaster container). Rendered as a plain `<button>` with no action.
+- **Mobile menu button (hamburger):** Toggles an inline drawer below the header containing all 5 nav groups as a stacked accordion (always-expanded). Icon flips between `lucide-menu` and `lucide-x`. Implemented in v2 via React `useState` in a `"use client"` component; tapping a link closes the drawer.
+- **Primary "Contact us" buttons** link to `/contact-us` (we'll set `href="#contact"` in the clone for the body sections only — header/footer/drawer use real URLs).
+- **"Learn More" links** go to `/UnityCentral`, `/Velocity`, `/Solutions` etc. Stub as `href="#"` in the clone's body sections.
 - **"Read Article on Bloomberg"** links to an external Bloomberg URL — keep the real link.
 
 ## Hover states (explicit — matters for polish)
@@ -56,9 +57,8 @@ Findings from the mandatory interaction sweep (scroll, click, hover, responsive)
 - Info-mgmt H2 drops from 36px (`lg:text-4xl`) to 30px (`text-3xl`)
 
 ## Known simplifications in our clone
-- We omit nav dropdown menus (stub Platform / Solutions / Industries / Resources / About as plain buttons).
-- We omit mobile drawer (hamburger is non-functional).
-- Learn More / Contact links route to `#` anchors rather than real routes.
+- **Header + footer are fully functional** as of v2: nav dropdowns hover-reveal, mobile drawer toggles, and every header/footer/drawer anchor points to its real boardwalktech.com route (Investors → `https://ir.boardwalktech.com/` in a new tab).
+- Body-section "Learn More" / "Contact us" CTAs still route to `#` anchors rather than real routes (not re-extracted in v2).
 - Bloomberg external link preserved.
 - No analytics (GTM, gtag) loaded.
 - Server-rendered via Next.js (the original is a client-only SPA).

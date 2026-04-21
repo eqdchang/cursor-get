@@ -1,57 +1,96 @@
 import type { FooterColumn } from "@/types/content";
 
+const SITE_BASE = "https://boardwalktech.com";
+
 const COLUMNS: FooterColumn[] = [
   {
     heading: "Platform",
     links: [
-      { label: "Velocity", href: "#velocity" },
-      { label: "Unity Central", href: "#unity-central" },
-      { label: "Verity", href: "#verity" },
+      { label: "Velocity", href: `${SITE_BASE}/velocity` },
+      { label: "Unity Central", href: `${SITE_BASE}/unity-central` },
+      { label: "Verity", href: `${SITE_BASE}/verity` },
     ],
   },
   {
     heading: "Solutions",
     links: [
-      { label: "AI-Powered Order Management", href: "#solutions" },
-      { label: "Deal Pricing", href: "#solutions" },
-      { label: "Supply Chain Excel Automation", href: "#solutions" },
-      { label: "Financial Services Excel & EUC Transformation", href: "#solutions" },
-      { label: "Supply Chain Information Intelligence", href: "#solutions" },
-      { label: "BPO Digital Transformation & Agent AI", href: "#solutions" },
-      { label: "Automate & Streamline Excel Processes Around Your ERP", href: "#solutions" },
-      { label: "Automated Control Testing", href: "#solutions" },
+      {
+        label: "AI-Powered Order Management",
+        href: `${SITE_BASE}/solutions-ai-powered-order-management`,
+      },
+      {
+        label: "Deal Pricing",
+        href: `${SITE_BASE}/solutions-deal-pricing`,
+      },
+      {
+        label: "Supply Chain Excel Automation",
+        href: `${SITE_BASE}/solutions-supply-chain-excel-automation`,
+      },
+      {
+        label: "Financial Services Excel & EUC Transformation",
+        href: `${SITE_BASE}/solutions-financial-services-excel-euc-transformation`,
+      },
+      {
+        label: "Supply Chain Information Intelligence",
+        href: `${SITE_BASE}/solutions-supply-chain-information-intelligence`,
+      },
+      {
+        label: "BPO Digital Transformation & Agent AI",
+        href: `${SITE_BASE}/solutions-bpo-digital-transformation-agent-ai`,
+      },
+      {
+        label: "Automate & Streamline Excel Processes Around Your ERP",
+        href: `${SITE_BASE}/solutions-automating-excel-workflow-around-erp-systems`,
+      },
+      {
+        label: "Automated Control Testing",
+        href: `${SITE_BASE}/solutions-automated-control-testing`,
+      },
     ],
   },
   {
     heading: "Industries",
     links: [
-      { label: "CPG", href: "#industries" },
-      { label: "Apparel", href: "#industries" },
-      { label: "Technology", href: "#industries" },
-      { label: "Manufacturing", href: "#industries" },
-      { label: "Financial Services", href: "#industries" },
-      { label: "Insurance", href: "#industries" },
-      { label: "Tax", href: "#industries" },
-      { label: "Government", href: "#industries" },
+      { label: "CPG", href: `${SITE_BASE}/industries-cpg` },
+      { label: "Apparel", href: `${SITE_BASE}/industries-apparel` },
+      { label: "Technology", href: `${SITE_BASE}/industries-technology` },
+      { label: "Manufacturing", href: `${SITE_BASE}/industries-manufacturing` },
+      {
+        label: "Financial Services",
+        href: `${SITE_BASE}/industries-financial-services`,
+      },
+      { label: "Insurance", href: `${SITE_BASE}/industries-insurance` },
+      { label: "Tax", href: `${SITE_BASE}/industries-tax` },
+      { label: "Government", href: `${SITE_BASE}/industries-government` },
     ],
   },
   {
     heading: "Resources",
     links: [
-      { label: "Insights Library", href: "#insights" },
-      { label: "Blog", href: "#blog" },
-      { label: "Client Resources", href: "#client-resources" },
+      {
+        label: "Insights Library",
+        href: `${SITE_BASE}/resources-insights-library`,
+      },
+      { label: "Blog", href: `${SITE_BASE}/resources-blog` },
+      {
+        label: "Client Resources",
+        href: `${SITE_BASE}/resources-client-resources`,
+      },
     ],
   },
   {
     heading: "About Us",
     links: [
-      { label: "Newsroom", href: "#newsroom" },
-      { label: "Partners", href: "#partners" },
-      { label: "Leadership", href: "#leadership" },
-      { label: "Investors", href: "#investors" },
-      { label: "Careers", href: "#careers" },
-      { label: "Contact Us", href: "#contact" },
+      { label: "Newsroom", href: `${SITE_BASE}/about-us-newsroom` },
+      { label: "Partners", href: `${SITE_BASE}/about-us-partners` },
+      { label: "Leadership", href: `${SITE_BASE}/about-us-leadership` },
+      {
+        label: "Investors",
+        href: "https://ir.boardwalktech.com/",
+        external: true,
+      },
+      { label: "Careers", href: `${SITE_BASE}/about-us-careers` },
+      { label: "Contact Us", href: `${SITE_BASE}/contact-us` },
     ],
   },
 ];
@@ -71,6 +110,8 @@ export function SiteFooter() {
                   <li key={link.label}>
                     <a
                       href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
                       className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                     >
                       {link.label}
@@ -92,7 +133,7 @@ export function SiteFooter() {
             Copyright 2006-2025 Boardwalktech, Inc
           </p>
           <a
-            href="#privacy"
+            href={`${SITE_BASE}/privacy-policy`}
             className="text-sm text-gray-500 hover:text-blue-600 transition-colors"
           >
             Privacy Policy
