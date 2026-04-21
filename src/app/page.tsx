@@ -1,9 +1,27 @@
+import { AboutSection } from "@/components/sections/AboutSection";
+import { ArticleSection } from "@/components/sections/ArticleSection";
+import { FeaturesSection } from "@/components/sections/FeaturesSection";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { ProductsSection } from "@/components/sections/ProductsSection";
+import { SiteFooter } from "@/components/sections/SiteFooter";
+import { SiteHeader } from "@/components/sections/SiteHeader";
+import { SolutionsSection } from "@/components/sections/SolutionsSection";
+import { TrustSection } from "@/components/sections/TrustSection";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground">
-        Clone target not yet built. Run <code className="font-mono text-foreground">/clone-website</code> to start.
-      </p>
-    </main>
+    <div className="min-h-screen bg-white">
+      <SiteHeader />
+      <main>
+        <HeroSection />
+        <TrustSection />
+        <ProductsSection />
+        <FeaturesSection />
+        <SolutionsSection />
+        <ArticleSection />
+        <AboutSection />
+      </main>
+      <SiteFooter />
+    </div>
   );
 }
