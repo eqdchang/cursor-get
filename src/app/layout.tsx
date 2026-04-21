@@ -6,26 +6,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Boardwalk Technologies",
+  title: "Header + Footer Preview",
   description:
-    "A comprehensive platform for managing business operations, client relations, and project workflows",
+    "Local preview harness for the header and footer drop-in bundles.",
   icons: {
     icon: "/seo/favicon.png",
-    apple: "/seo/favicon.png",
-  },
-  openGraph: {
-    title: "Boardwalk Technologies",
-    description:
-      "A comprehensive platform for managing business operations, client relations, and project workflows",
-    url: "https://boardwalktech.com",
-    siteName: "Boardwalk Technologies",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Boardwalk Technologies",
-    description:
-      "A comprehensive platform for managing business operations, client relations, and project workflows",
   },
 };
 

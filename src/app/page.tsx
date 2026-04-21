@@ -1,27 +1,48 @@
-import { AboutSection } from "@/components/sections/AboutSection";
-import { ArticleSection } from "@/components/sections/ArticleSection";
-import { FeaturesSection } from "@/components/sections/FeaturesSection";
-import { HeroSection } from "@/components/sections/HeroSection";
-import { ProductsSection } from "@/components/sections/ProductsSection";
-import { SiteFooter } from "@/components/sections/SiteFooter";
-import { SiteHeader } from "@/components/sections/SiteHeader";
-import { SolutionsSection } from "@/components/sections/SolutionsSection";
-import { TrustSection } from "@/components/sections/TrustSection";
+"use client";
 
-export default function Home() {
+import { SiteFooter } from "../../bundles/sites/boardwalktech/src/footer/SiteFooter";
+import { SiteHeader } from "../../bundles/sites/boardwalktech/src/header/SiteHeader";
+
+export default function Page() {
   return (
-    <div className="min-h-screen bg-white">
+    <>
       <SiteHeader />
-      <main>
-        <HeroSection />
-        <TrustSection />
-        <ProductsSection />
-        <FeaturesSection />
-        <SolutionsSection />
-        <ArticleSection />
-        <AboutSection />
+      <main className="pt-28 pb-24">
+        <div className="max-w-3xl mx-auto px-6 text-gray-700 leading-relaxed">
+          <h1 className="text-3xl font-semibold text-gray-900 mb-6">
+            Header + footer preview harness
+          </h1>
+          <p className="mb-4">
+            This page renders the{" "}
+            <code className="px-1.5 py-0.5 bg-gray-100 rounded text-sm">
+              SiteHeader
+            </code>{" "}
+            and{" "}
+            <code className="px-1.5 py-0.5 bg-gray-100 rounded text-sm">
+              SiteFooter
+            </code>{" "}
+            directly from{" "}
+            <code className="px-1.5 py-0.5 bg-gray-100 rounded text-sm">
+              bundles/sites/boardwalktech/src/
+            </code>{" "}
+            so the preview uses the exact same source as the built drop-in
+            bundles. No duplication, no drift.
+          </p>
+          <p className="mb-4">
+            Use this to sanity-check hover-reveal dropdowns, the click toggle,
+            keyboard navigation (Tab / Enter / Escape), and the mobile drawer at
+            narrow viewport widths.
+          </p>
+          <p>
+            To ship: <code>cd bundles &amp;&amp; npm run build:boardwalktech</code>{" "}
+            &rarr; drop{" "}
+            <code>dist/boardwalktech/header.bundle.js</code> and{" "}
+            <code>dist/boardwalktech/footer.bundle.js</code> into any host site
+            with a <code>&lt;script&gt;</code> tag and a matching mount div.
+          </p>
+        </div>
       </main>
       <SiteFooter />
-    </div>
+    </>
   );
 }
