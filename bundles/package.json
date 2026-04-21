@@ -1,0 +1,31 @@
+{
+  "name": "boardwalktech-bundles",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Per-site drop-in bundles that package a cloned site's header and footer into a single <script> tag.",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:boardwalktech",
+    "build:all": "node scripts/build-all.mjs",
+    "build:site": "BUNDLE=header vite build && BUNDLE=footer vite build",
+    "build:boardwalktech": "SITE=boardwalktech npm run build:site",
+    "dev": "npm run dev:boardwalktech",
+    "dev:boardwalktech": "SITE=boardwalktech BUNDLE=header vite",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "lucide-react": "1.8.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5",
+    "vite": "^7.0.0",
+    "vite-plugin-css-injected-by-js": "^3.5.2"
+  }
+}

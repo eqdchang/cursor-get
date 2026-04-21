@@ -1,0 +1,65 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source "./**/*.{ts,tsx}";
+
+.bw-scope,
+.bw-scope *,
+.bw-scope *::before,
+.bw-scope *::after {
+  box-sizing: border-box;
+  border: 0 solid;
+}
+
+.bw-scope {
+  font-family:
+    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  line-height: 1.5;
+  color: #111827;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bw-scope a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.bw-scope button {
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  appearance: button;
+}
+
+.bw-scope img,
+.bw-scope svg {
+  display: block;
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+}
+
+.bw-scope ul,
+.bw-scope ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bw-scope h1,
+.bw-scope h2,
+.bw-scope h3,
+.bw-scope h4,
+.bw-scope h5,
+.bw-scope h6,
+.bw-scope p {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
