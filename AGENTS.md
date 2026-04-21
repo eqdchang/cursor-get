@@ -93,6 +93,12 @@ Every extracted header + footer must pass this checklist before being considered
 - Every `href` is real. External links get `target="_blank" rel="noopener noreferrer"`.
 - ARIA: `aria-haspopup="menu"`, `aria-expanded`, `role="menu"`, `role="menuitem"`.
 
+### Dropdown panel anatomy
+- Panel width, layout type (single-column / grid / flyout / accordion), and row types recorded in `research/header.spec.md` BEFORE any JSX is written.
+- Nested interactions probed: for every row with a chevron/arrow, hover AND click it and mirror the resulting behavior (inline accordion vs. side flyout).
+- Side-by-side screenshot diff against the live site in all expanded states passes before shipping.
+- No invented UI. Every visible row traces to the live site. No "View all X", no fabricated CTAs, no decorative headers.
+
 ### Header (mobile)
 - Hamburger toggles drawer. Close on link tap, Escape, or toggle again.
 - Body scroll locked while drawer open. Focus returns to hamburger on close.
@@ -111,3 +117,12 @@ Every extracted header + footer must pass this checklist before being considered
 - Never build full-page sections. Hero, cards, testimonials, etc. are explicitly out of scope.
 - The bundle source is the source of truth. The Next.js preview imports from it — never duplicate components between `bundles/sites/<slug>/src/` and `src/`.
 - After any component edit, rebuild the affected bundle (`npm run bundles:build:<slug>`) and run the functional-parity smoke test against `bundles/sites/<slug>/demo/`.
+
+## Cold-start vs diff mode
+
+Every `/clone-header-footer <url>` run begins by checking whether `bundles/sites/<slug>/` exists.
+
+- **Cold-start** (folder does not exist): create a site-agnostic skeleton (`styles.css` with the project-wide `bw-scope` class, `types.ts`, `mount.tsx`, demo HTML). Do NOT copy `SiteHeader.tsx` or `SiteFooter.tsx` from any other site — components are written from scratch, shaped by this site's own extracted spec. Starting a new site from another site's JSX is the root cause of shape-transfer bugs (e.g. the mega-menu that leaked from boardwalktech into byrna).
+- **Diff mode** (folder exists): re-extract the spec into a temp location, diff against the existing spec, and classify each change as *data-only* (auto-apply by updating the data arrays in `SiteHeader.tsx` / `SiteFooter.tsx`) or *structural* (stop and report to the user for manual review). Component logic is never rewritten silently on a re-clone.
+
+Full rubric for both modes lives in `.cursor/commands/clone-header-footer.md`.

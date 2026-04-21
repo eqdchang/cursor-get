@@ -224,19 +224,15 @@ function hasDropdown(group: NavGroup): boolean {
   );
 }
 
-function productColumnCount(group: NavGroup): number {
-  const subgroups = group.subgroups?.length ?? 0;
-  if (subgroups >= 3) return 2;
-  if (subgroups >= 1) return 2;
-  return 1;
-}
-
 type OpenMode = "hover" | "click";
 
 export function SiteHeader() {
   const reactId = useId();
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [openMode, setOpenMode] = useState<OpenMode | null>(null);
+  const [expandedSubgroups, setExpandedSubgroups] = useState<Set<string>>(
+    new Set(),
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<Set<string>>(new Set());
   const rootRef = useRef<HTMLDivElement>(null);
@@ -308,7 +304,17 @@ export function SiteHeader() {
   function closeEverything() {
     setOpenGroup(null);
     setOpenMode(null);
+    setExpandedSubgroups(new Set());
     setMobileOpen(false);
+  }
+
+  function toggleSubgroup(key: string) {
+    setExpandedSubgroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
   }
 
   function toggleMobileGroup(label: string) {
@@ -363,13 +369,6 @@ export function SiteHeader() {
                     </a>
                   );
                 }
-                const cols = productColumnCount(group);
-                const panelWidth =
-                  group.label === "Products"
-                    ? "w-[720px]"
-                    : cols === 2
-                      ? "w-[540px]"
-                      : "w-72";
                 return (
                   <div
                     key={group.label}
@@ -397,43 +396,64 @@ export function SiteHeader() {
                         id={menuId}
                         role="menu"
                         aria-label={group.label}
-                        className={`absolute top-full left-0 ${panelWidth} mt-0 bg-white shadow-xl border border-gray-200 z-50 p-6`}
+                        className="absolute top-full left-0 w-[268px] mt-0 bg-white shadow-xl z-50 py-2"
                       >
-                        <a
-                          href={group.href}
-                          role="menuitem"
-                          target={group.external ? "_blank" : undefined}
-                          rel={
-                            group.external ? "noopener noreferrer" : undefined
-                          }
-                          onClick={closeEverything}
-                          className="block text-xs font-bold uppercase tracking-widest text-[#ff671d] hover:underline mb-4"
-                        >
-                          View all {group.label} &rarr;
-                        </a>
-                        {group.subgroups && group.subgroups.length > 0 ? (
-                          <div
-                            className={`grid ${
-                              cols === 2 ? "grid-cols-2" : "grid-cols-1"
-                            } gap-x-8 gap-y-6`}
-                          >
-                            {group.subgroups.map((sg) => (
-                              <div key={sg.heading}>
+                        {group.subgroups?.map((sg) => {
+                          const sgKey = `${group.label}::${sg.heading}`;
+                          const sgOpen = expandedSubgroups.has(sgKey);
+                          const sgPanelId = `${menuId}-sg-${sg.heading}`;
+                          return (
+                            <div key={sg.heading}>
+                              <div className="flex items-center justify-between gap-2 pl-5 pr-3">
                                 {sg.href ? (
                                   <a
                                     href={sg.href}
                                     role="menuitem"
+                                    target={
+                                      sg.href.startsWith("http") &&
+                                      !sg.href.startsWith(SITE_BASE)
+                                        ? "_blank"
+                                        : undefined
+                                    }
+                                    rel={
+                                      sg.href.startsWith("http") &&
+                                      !sg.href.startsWith(SITE_BASE)
+                                        ? "noopener noreferrer"
+                                        : undefined
+                                    }
                                     onClick={closeEverything}
-                                    className="block text-xs font-bold uppercase tracking-widest text-[#020122] hover:text-[#ff671d] mb-2"
+                                    className="flex-1 py-2.5 text-xs font-bold uppercase tracking-wider text-[#020122] hover:text-[#ff671d] transition-colors"
                                   >
                                     {sg.heading}
                                   </a>
                                 ) : (
-                                  <div className="text-xs font-bold uppercase tracking-widest text-[#020122] mb-2">
+                                  <div className="flex-1 py-2.5 text-xs font-bold uppercase tracking-wider text-[#020122]">
                                     {sg.heading}
                                   </div>
                                 )}
-                                <ul className="space-y-1.5">
+                                <button
+                                  type="button"
+                                  aria-expanded={sgOpen}
+                                  aria-controls={sgPanelId}
+                                  aria-label={`${sgOpen ? "Collapse" : "Expand"} ${sg.heading}`}
+                                  onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    toggleSubgroup(sgKey);
+                                  }}
+                                  className="p-1 text-[#020122] hover:text-[#ff671d]"
+                                >
+                                  <ChevronDown
+                                    className={`w-4 h-4 transition-transform ${
+                                      sgOpen ? "rotate-180" : ""
+                                    }`}
+                                  />
+                                </button>
+                              </div>
+                              {sgOpen ? (
+                                <ul
+                                  id={sgPanelId}
+                                  className="pl-8 pr-3 pb-2 border-l border-gray-300 ml-5"
+                                >
                                   {sg.items.map((item) => (
                                     <li key={item.label}>
                                       <a
@@ -448,49 +468,32 @@ export function SiteHeader() {
                                             : undefined
                                         }
                                         onClick={closeEverything}
-                                        className="block text-sm text-gray-700 hover:text-[#ff671d] transition-colors"
+                                        className="block py-1.5 text-xs font-bold uppercase tracking-wider text-[#020122] hover:text-[#ff671d] transition-colors"
                                       >
                                         {item.label}
                                       </a>
                                     </li>
                                   ))}
                                 </ul>
-                              </div>
-                            ))}
-                          </div>
-                        ) : null}
-                        {group.items && group.items.length > 0 ? (
-                          <div
-                            className={
-                              group.subgroups && group.subgroups.length > 0
-                                ? "mt-6 pt-6 border-t border-gray-200"
-                                : ""
+                              ) : null}
+                            </div>
+                          );
+                        })}
+                        {group.items?.map((item) => (
+                          <a
+                            key={item.label}
+                            href={item.href}
+                            role="menuitem"
+                            target={item.external ? "_blank" : undefined}
+                            rel={
+                              item.external ? "noopener noreferrer" : undefined
                             }
+                            onClick={closeEverything}
+                            className="block pl-5 pr-3 py-2.5 text-xs font-bold uppercase tracking-wider text-[#020122] hover:text-[#ff671d] transition-colors"
                           >
-                            <ul className="space-y-1.5">
-                              {group.items.map((item) => (
-                                <li key={item.label}>
-                                  <a
-                                    href={item.href}
-                                    role="menuitem"
-                                    target={
-                                      item.external ? "_blank" : undefined
-                                    }
-                                    rel={
-                                      item.external
-                                        ? "noopener noreferrer"
-                                        : undefined
-                                    }
-                                    onClick={closeEverything}
-                                    className="block text-sm font-semibold text-[#020122] hover:text-[#ff671d] transition-colors"
-                                  >
-                                    {item.label}
-                                  </a>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : null}
+                            {item.label}
+                          </a>
+                        ))}
                       </div>
                     ) : null}
                   </div>
