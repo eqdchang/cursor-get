@@ -12,28 +12,26 @@ Functional parity is non-negotiable: hover AND click open dropdowns, mobile draw
 git clone <this-repo> my-clones
 cd my-clones
 
-# Install the Next.js preview harness
+# Install the Next.js preview harness and the bundles package
 npm install
+cd bundles && npm install && cd ..
 
-# Install and build the reference bundles (boardwalktech.com)
-cd bundles
-npm install
-npm run build:boardwalktech
-cd ..
-
-# Preview the extracted components locally
+# Preview whatever sites are already under bundles/sites/
 npm run dev   # http://localhost:3000
 ```
 
-The reference build produces:
+The preview index lists every folder in `bundles/sites/` and links to its route (`/<slug>`). To build the shippable bundles for a given site:
 
-```
-bundles/dist/boardwalktech/
-  header.bundle.js   ~210 KB (65 KB gzipped)
-  footer.bundle.js   ~208 KB (65 KB gzipped)
+```bash
+cd bundles
+npm run build:<slug>
+# produces bundles/dist/<slug>/{header,footer}.bundle.js
+#   each typically ~210 KB (~65 KB gzipped)
 ```
 
-## Cloning a new site
+`npm run bundles:build:all` from the repo root builds every site at once.
+
+## Cloning a site
 
 Start a Cursor CLI session in this repo and run:
 
@@ -44,45 +42,46 @@ Start a Cursor CLI session in this repo and run:
 The agent will:
 
 1. Derive a site slug from the hostname (e.g. `example-com`).
-2. Scaffold `bundles/sites/<slug>/{src,demo,research}/`.
-3. Extract the header (logo, nav items, dropdowns, mobile drawer, every `href`) and the footer (columns, links, copyright, legal).
+2. Detect whether `bundles/sites/<slug>/` already exists and pick a mode:
+   - **Cold-start** (new site): scaffold `bundles/sites/<slug>/{src,demo,research}/` from a site-agnostic skeleton and write `SiteHeader.tsx` / `SiteFooter.tsx` from scratch, shaped entirely by this site's own extracted spec. No other site is used as a template.
+   - **Diff mode** (existing site): re-extract into a temp spec, diff it against the current one, auto-apply *data-only* changes (logo URL, added / removed links, updated copyright), and stop and report *structural* changes (a dropdown's panel shape changed, a new widget appeared) for manual review.
+3. Extract the header (logo, nav items, dropdown panel anatomy, every `href`, mobile drawer) and footer (columns, links, copyright, legal, form stubs).
 4. Write `research/header.spec.md` + `research/footer.spec.md`.
-5. Generate TypeScript using the `boardwalktech` site as a template.
-6. Build `bundles/dist/<slug>/{header,footer}.bundle.js`.
-7. Run a functional-parity smoke test in the browser MCP against the site's `demo/` folder.
+5. Build `bundles/dist/<slug>/{header,footer}.bundle.js`.
+6. Run a functional-parity smoke test in the browser MCP against the site's `demo/` folder, including a side-by-side visual diff against the live site.
 
 One site per commit.
 
 ## Using a built bundle on a host site
 
-Drop into any HTML page:
+Each bundle auto-mounts into a `<div>` whose id matches `<slug>-header-root` or `<slug>-footer-root`. Drop into any HTML page:
 
 ```html
 <!-- Where the header should render -->
-<div id="boardwalk-header-root"></div>
+<div id="<slug>-header-root"></div>
 
 <!-- Everything else on the page -->
 <main>...</main>
 
 <!-- Where the footer should render -->
-<div id="boardwalk-footer-root"></div>
+<div id="<slug>-footer-root"></div>
 
 <!-- One script tag each, anywhere -->
 <script src="/path/to/header.bundle.js"></script>
 <script src="/path/to/footer.bundle.js"></script>
 ```
 
-The bundles auto-mount on load. Programmatic control too:
+For programmatic control, each bundle exposes a global `window.<PascalSlug>Header` / `window.<PascalSlug>Footer` (e.g. for a site with slug `acme`, the globals are `window.AcmeHeader` and `window.AcmeFooter`):
 
 ```js
-window.BoardwalkHeader.mount("#some-other-slot");
-window.BoardwalkHeader.unmount();
+window.<PascalSlug>Header.mount("#some-other-slot");
+window.<PascalSlug>Header.unmount();
 
-window.BoardwalkFooter.mount(document.getElementById("footer-slot"));
-window.BoardwalkFooter.unmount();
+window.<PascalSlug>Footer.mount(document.getElementById("footer-slot"));
+window.<PascalSlug>Footer.unmount();
 ```
 
-The global name follows the pattern `<SlugPascalCase>Header` / `<SlugPascalCase>Footer` for any new site.
+Host page requirements: none. React, styles, and icons are all bundled inside. Tailwind's preflight is stripped so the host's `<h1>`, `<p>`, `<ul>`, etc. render with their existing styles.
 
 ## Prerequisites
 
@@ -111,7 +110,7 @@ Add to `~/.cursor/mcp.json`, restart Cursor, then run `/clone-header-footer <url
 bundles/                      shippable drop-in bundles
   vite.config.ts              lib-mode Vite, reads SITE + BUNDLE env vars
   sites/
-    boardwalktech/            example reference site
+    <slug>/                   one folder per cloned site
       src/                    SiteHeader + SiteFooter + mount scripts + styles
       demo/                   host-page smoke tests
       research/               header.spec.md + footer.spec.md
@@ -122,7 +121,8 @@ bundles/                      shippable drop-in bundles
 
 src/                          Next.js preview harness
   app/
-    page.tsx                  renders SiteHeader + SiteFooter from bundles/sites/boardwalktech
+    page.tsx                  auto-discovers bundles/sites/* and lists each one
+    <slug>/page.tsx           renders SiteHeader + SiteFooter for that site
     globals.css               Tailwind v4 that scans bundles/ too
 
 docs/research/
@@ -147,10 +147,12 @@ npm run bundles:build:all    # build every site under bundles/sites/
 Inside `bundles/`:
 
 ```bash
-npm run build:boardwalktech  # or build:<slug> for any site
-npm run build:all            # iterate sites/
-npm run dev:boardwalktech    # Vite dev server rooted in sites/<slug>/demo/
+npm run build:<slug>         # build one site's header + footer bundles
+npm run build:all            # iterate every folder under sites/
+npm run dev:<slug>           # Vite dev server rooted in sites/<slug>/demo/
 ```
+
+Each site's `package.json` script is added the first time you clone that site.
 
 ## Use cases
 
