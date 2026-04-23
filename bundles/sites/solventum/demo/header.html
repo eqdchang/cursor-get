@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solventum Header — Drop-in Bundle Demo</title>
+    <style>
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          sans-serif;
+      }
+      .content {
+        max-width: 720px;
+        margin: 120px auto;
+        padding: 0 24px;
+        color: #374151;
+        line-height: 1.6;
+      }
+      .content h1 {
+        margin: 0 0 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="solventum-header-root"></div>
+
+    <main class="content">
+      <h1>Drop-in Header Demo</h1>
+      <p>
+        This host page only includes
+        <code>dist/solventum/header.bundle.js</code>. The bundle auto-mounts
+        into the <code>#solventum-header-root</code> div above. Tailwind styles
+        are injected into the document head by the bundle itself — no CSS file
+        required on the host.
+      </p>
+      <p>You can also mount programmatically:</p>
+      <pre><code>window.SolventumHeader.mount("#my-header-slot");
+window.SolventumHeader.unmount();</code></pre>
+      <ul>
+        <li>Host list item 1</li>
+        <li>Host list item 2</li>
+      </ul>
+    </main>
+
+    <script src="../../../dist/solventum/header.bundle.js"></script>
+  </body>
+</html>

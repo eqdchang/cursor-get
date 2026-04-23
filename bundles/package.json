@@ -10,9 +10,11 @@
     "build:site": "BUNDLE=header vite build && BUNDLE=footer vite build",
     "build:boardwalktech": "SITE=boardwalktech npm run build:site",
     "build:byrna": "SITE=byrna npm run build:site",
+    "build:solventum": "SITE=solventum npm run build:site",
     "dev": "npm run dev:boardwalktech",
     "dev:boardwalktech": "SITE=boardwalktech BUNDLE=header vite",
     "dev:byrna": "SITE=byrna BUNDLE=header vite",
+    "dev:solventum": "SITE=solventum BUNDLE=header vite",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

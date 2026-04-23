@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solventum Footer — Drop-in Bundle Demo</title>
+    <style>
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          sans-serif;
+      }
+      .content {
+        max-width: 720px;
+        margin: 80px auto;
+        padding: 0 24px;
+        color: #374151;
+        line-height: 1.6;
+      }
+      .content h1 {
+        margin: 0 0 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="content">
+      <h1>Drop-in Footer Demo</h1>
+      <p>
+        This host page only includes
+        <code>dist/solventum/footer.bundle.js</code>. The bundle auto-mounts
+        into the <code>#solventum-footer-root</code> div below.
+      </p>
+      <ul>
+        <li>Host list item 1</li>
+        <li>Host list item 2</li>
+      </ul>
+    </main>
+
+    <div id="solventum-footer-root"></div>
+
+    <script src="../../../dist/solventum/footer.bundle.js"></script>
+  </body>
+</html>
