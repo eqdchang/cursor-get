@@ -430,7 +430,7 @@ function DropdownPanel({ group }: { group: NavGroup }) {
   return (
     <div
       role="menu"
-      className="w-full bg-[#005145] text-white shadow-xl"
+      className="w-full bg-[#01332B] text-white shadow-xl"
     >
       <div className="max-w-[1280px] mx-auto px-5 pt-8 pb-6">
         {/* Section header link */}
@@ -438,16 +438,16 @@ function DropdownPanel({ group }: { group: NavGroup }) {
           href={group.href}
           role="menuitem"
           {...(ext(group.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          className="inline-flex items-center gap-2 text-[#00D44B] text-2xl font-semibold mb-6 hover:underline"
+          className="inline-flex items-center gap-2 text-[#05DD4D] text-[32px] font-normal mb-6 hover:text-[#BFFDE3] transition-colors"
         >
           {group.label}
           <span aria-hidden="true">→</span>
         </a>
 
-        {/* Columns row */}
-        <div className="flex flex-row gap-10 flex-wrap">
+        {/* Columns grid — 3 equal columns, 32px gap, wrapping */}
+        <div className="grid grid-cols-3 gap-x-8 gap-y-6">
           {columns.map((col, ci) => (
-            <div key={ci} className="flex flex-col gap-[6px] min-w-[160px]">
+            <div key={ci} className="flex flex-col gap-[6px]">
               {col.rows.map((row, ri) => {
                 if (row.kind === "secondary-title") {
                   return (
@@ -456,23 +456,23 @@ function DropdownPanel({ group }: { group: NavGroup }) {
                       href={row.href}
                       role="menuitem"
                       {...(row.external || ext(row.href ?? "") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                      className="flex items-center gap-1 text-[#00D44B] text-sm font-semibold hover:underline"
+                      className="flex items-center gap-1 text-[#05DD4D] text-[20px] font-normal hover:text-[#BFFDE3] transition-colors"
                     >
                       {row.text}
-                      <span aria-hidden="true" className="text-xs">→</span>
+                      <span aria-hidden="true" className="text-base">→</span>
                     </a>
                   );
                 }
                 if (row.kind === "heading-static") {
                   return (
-                    <span key={ri} className="text-[#00D44B] text-sm font-semibold">
+                    <span key={ri} className="text-white text-[20px] font-normal">
                       {row.text}
                     </span>
                   );
                 }
                 if (row.kind === "description") {
                   return (
-                    <p key={ri} className="text-white/70 text-xs leading-relaxed max-w-[240px]">
+                    <p key={ri} className="text-white text-base leading-relaxed max-w-[240px]">
                       {row.text}
                     </p>
                   );
@@ -484,7 +484,7 @@ function DropdownPanel({ group }: { group: NavGroup }) {
                     href={row.href}
                     role="menuitem"
                     {...(row.external || ext(row.href ?? "") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="text-white text-sm hover:text-[#00D44B] hover:underline"
+                    className="text-[#DBFFF0] text-base hover:text-[#19A591] transition-colors"
                   >
                     {row.text}
                   </a>
@@ -497,7 +497,7 @@ function DropdownPanel({ group }: { group: NavGroup }) {
 
       {/* Bottom callout row */}
       {callout.length > 0 && (
-        <div className="bg-[#003D31] py-4">
+        <div className="bg-[#005145] py-4">
           <div className="max-w-[1280px] mx-auto px-5 flex flex-row gap-6 flex-wrap">
             {callout.map((item, i) => (
               <a
@@ -505,7 +505,7 @@ function DropdownPanel({ group }: { group: NavGroup }) {
                 href={item.href}
                 role="menuitem"
                 {...(item.external || ext(item.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="flex items-center gap-2 text-[#00D44B] text-sm font-semibold hover:underline"
+                className="flex items-center gap-2 text-[#DBFFF0] text-base font-bold hover:text-[#BFFDE3] transition-colors"
               >
                 <span className="opacity-80">
                   <CalloutIcon name={item.iconName} />
@@ -565,7 +565,7 @@ function MobileDrawer({
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-[#005145] text-white overflow-y-auto"
+      className="fixed inset-0 z-[100] bg-[#01332B] text-white overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-label="Main navigation"
@@ -734,7 +734,7 @@ export function SiteHeader() {
       {/* Mobile drawer */}
       <MobileDrawer open={mobileOpen} onClose={handleMobileClose} />
 
-      <header className="bg-white border-b border-[#6E6E6E] relative">
+      <header className="bg-white relative">
         {/* ── Utility + Logo row ───────────────────────────────── */}
         <div className="max-w-[1280px] mx-auto px-5">
           <div className="flex items-center justify-between h-[82px]">
@@ -757,7 +757,7 @@ export function SiteHeader() {
                   key={u.label}
                   href={u.href}
                   {...(u.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="text-[#303030] text-sm hover:underline"
+                  className="text-[#19191A] text-sm font-medium underline hover:text-[#005145] transition-colors"
                 >
                   {u.label}
                 </a>
@@ -765,7 +765,7 @@ export function SiteHeader() {
               {/* Contact us pill button */}
               <a
                 href="/en-us/home/our-company/contact-us/"
-                className="text-[#00A053] border border-[#00A053] rounded-full px-4 py-1.5 text-sm font-medium hover:bg-[#00A053] hover:text-white transition-colors"
+                className="text-[#0A7B6B] border-2 border-[#0A7B6B] rounded-full px-4 py-[9px] text-sm font-bold hover:bg-[#0A7B6B] hover:text-white transition-colors"
               >
                 Contact us
               </a>
@@ -774,7 +774,7 @@ export function SiteHeader() {
                 <input
                   type="search"
                   placeholder="Search"
-                  className="border border-[#6E6E6E] rounded-full pl-3 pr-8 py-1.5 text-sm w-44 outline-none focus:border-[#00A053]"
+                  className="border border-[#6E6E6E] rounded-full pl-3 pr-8 py-1.5 text-sm w-44 outline-none focus:border-[#0A7B6B]"
                   readOnly
                   aria-label="Search (not functional)"
                 />
@@ -783,7 +783,7 @@ export function SiteHeader() {
               {/* Language switcher stub */}
               <button
                 aria-label="Language: English United States (not functional)"
-                className="flex items-center gap-1 text-sm text-[#303030]"
+                className="flex items-center gap-1 text-sm text-[#01332B]"
                 onClick={() => {/* stubbed */}}
               >
                 <Globe size={16} />
@@ -809,7 +809,7 @@ export function SiteHeader() {
         <nav
           ref={navRef}
           aria-label="Main navigation"
-          className="hidden lg:block border-t border-[#E0E0E0] relative"
+          className="hidden lg:block border-t border-[#888B8B] relative"
         >
           <div className="max-w-[1280px] mx-auto px-5">
             <ul className="flex items-center gap-0 h-12" role="menubar">
@@ -829,8 +829,8 @@ export function SiteHeader() {
                         aria-expanded={isOpen}
                         aria-controls={`dropdown-${group.label.replace(/\s+/g, "-")}`}
                         onClick={() => handleTriggerClick(group.label)}
-                        className={`flex items-center gap-1 px-3 py-3 text-sm font-medium whitespace-nowrap hover:text-[#00A053] transition-colors ${
-                          isOpen ? "text-[#00A053] border-b-2 border-[#00A053]" : "text-[#303030]"
+                        className={`flex items-center gap-1 px-3 py-3 text-sm font-bold whitespace-nowrap transition-colors ${
+                          isOpen ? "text-[#005145] border-b-4 border-[#005145]" : "text-[#01332B] hover:text-[#0A7B6B]"
                         }`}
                       >
                         {group.label}
@@ -844,26 +844,33 @@ export function SiteHeader() {
                         href={group.href}
                         role="menuitem"
                         {...(group.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                        className="flex items-center px-3 py-3 text-sm font-medium whitespace-nowrap text-[#303030] hover:text-[#00A053] transition-colors"
+                        className="flex items-center px-3 py-3 text-sm font-bold whitespace-nowrap text-[#01332B] hover:text-[#0A7B6B] transition-colors"
                       >
                         {group.label}
                       </a>
                     )}
 
-                    {isOpen && hasDropdown && (
-                      <div
-                        id={`dropdown-${group.label.replace(/\s+/g, "-")}`}
-                        className="fixed left-0 right-0 z-50"
-                        style={{ top: navRef.current ? navRef.current.getBoundingClientRect().bottom + "px" : "130px" }}
-                      >
-                        <DropdownPanel group={group} />
-                      </div>
-                    )}
                   </li>
                 );
               })}
             </ul>
           </div>
+
+          {/* Dropdown panel — absolute, below nav bar, scrolls with header */}
+          {NAV_GROUPS.map((group) => {
+            const isOpen = openGroup === group.label;
+            const hasDropdown = (group.columns?.length ?? 0) > 0;
+            if (!isOpen || !hasDropdown) return null;
+            return (
+              <div
+                key={group.label}
+                id={`dropdown-${group.label.replace(/\s+/g, "-")}`}
+                className="absolute left-0 right-0 z-50 top-full"
+              >
+                <DropdownPanel group={group} />
+              </div>
+            );
+          })}
         </nav>
 
         {/* Mobile search stub row */}

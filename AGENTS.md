@@ -87,7 +87,7 @@ docs/
 Every extracted header + footer must pass this checklist before being considered done. Full rubric lives in `.cursor/commands/clone-header-footer.md`.
 
 ### Header (desktop)
-- Hover opens dropdown. Click also opens/closes dropdown (touch + keyboard users).
+- Dropdown trigger behavior matches the live site: hover+click, click-only, or hover-only. Test BOTH hover and click on the first trigger during extraction (Step 2b) and record the result. Do not default to hover+click without testing.
 - Only one dropdown open at a time; outside click closes.
 - Escape closes the open dropdown.
 - Every `href` is real. External links get `target="_blank" rel="noopener noreferrer"`.
@@ -95,7 +95,12 @@ Every extracted header + footer must pass this checklist before being considered
 
 ### Dropdown panel anatomy
 - Panel width, layout type (single-column / grid / flyout / accordion), and row types recorded in `research/header.spec.md` BEFORE any JSX is written.
+- **Dropdown positioning measured and matched.** Measure the dropdown panel's `position`, its positioned ancestor, and whether it scrolls with the header or stays pinned. The clone must replicate the same behavior. Verify by scrolling while a dropdown is open.
+- **Dropdown background color measured by walking inward from the panel root**, not just reading the root's `background-color`. Inner containers may override the root's color. The callout/bottom row may have its own distinct background. Record every non-transparent layer.
+- **Dropdown column layout measured and matched.** Measure the live site's column container display mode, column-gap, child count, and child widths. Replicate the same layout so columns are distributed the same way as the live site.
 - Nested interactions probed: for every row with a chevron/arrow, hover AND click it and mirror the resulting behavior (inline accordion vs. side flyout).
+- **Computed styles measured for every distinct element type inside the dropdown** (section header, subgroup headings, heading-static labels, item links, descriptions, callout buttons, icons) — each has its own font-size, font-weight, and color. Measure every one independently; do not reuse values from other element types.
+- **CTA button border-width measured explicitly.** Measure `border-width` for every styled button — do not assume 1px.
 - Side-by-side screenshot diff against the live site in all expanded states passes before shipping.
 - No invented UI. Every visible row traces to the live site. No "View all X", no fabricated CTAs, no decorative headers.
 
@@ -106,6 +111,8 @@ Every extracted header + footer must pass this checklist before being considered
 ### Footer
 - Every `href` is real.
 - Site-specific widgets (newsletter, social, language) are implemented or explicitly noted as omitted.
+- Grid column count matches the live site. Sections sharing an x-coordinate on the live site share a grid column in the bundle — measure heading positions before deciding the grid template.
+- All computed styles measured independently from header: column heading `font-size`/`font-weight`, link `font-weight`, link `text-decoration`, social icon `color`/`border-color`/size. Footer values and header values are measured separately — do not copy between them.
 
 ### Style isolation
 - `styles.css` imports `tailwindcss/theme.css` + `tailwindcss/utilities.css` only. Preflight is NOT included.

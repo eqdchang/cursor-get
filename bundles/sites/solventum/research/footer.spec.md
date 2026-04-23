@@ -7,7 +7,11 @@
 
 ## Layout
 Full-width dark green footer with internal 1280px max-width container. Three regions stacked vertically:
-1. **Top row** — Logo (left, ~192 × 48) + mission tagline + "Learn more" CTA link (left side), four link columns (right side)
+1. **Top row** — Logo (left, ~192 × 48) + 4-column grid below:
+   - Column 1 (240px): Mission tagline + "Learn more" CTA
+   - Column 2 (1fr): Our company links
+   - Column 3 (1fr): Resources & education links
+   - Column 4 (1fr): **Info links + Follow Us** (stacked vertically in same column)
 2. **Divider** — thin horizontal rule (1px `rgba(255,255,255,0.2)`)
 3. **Bottom bar** — legal links row (left) + copyright (right)
 
@@ -21,6 +25,15 @@ Full-width dark green footer with internal 1280px max-width container. Three reg
 - Heading: **Our mission**
 - Body: "Enabling better, smarter, safer healthcare to improve lives"
 - CTA: "Learn more" → `/en-us/home/our-company/` (pill button, outlined green)
+
+## Measured computed styles (extracted 2026-04-23)
+
+| Element | color | font-weight | font-size | text-decoration |
+|---|---|---|---|---|
+| Column heading (h5) | `#FFFFFF` | **400 (normal)** | **24px** | none |
+| Column link (a) | `#05DD4D` | **400 (normal)** | **16px** | **underline by default; none on hover** |
+| Legal bar links | `#05DD4D` | 400 | 12px | **underline by default; none on hover** |
+| Social icon link | `#05DD4D` | — | — | border: 2px solid `#05DD4D` |
 
 ## Columns
 
@@ -51,7 +64,7 @@ Full-width dark green footer with internal 1280px max-width container. Three reg
 | Partner Portal login | https://order.solventum.com/ | true |
 | Site map | /en-us/home/our-company/sitemap/ | false |
 
-### Follow Us
+### Follow Us (stacked below Info in the same grid column)
 Five social icon circles (Facebook, YouTube, LinkedIn, X/Twitter, Instagram). All open in a new tab. No label text rendered alongside each icon — icons only.
 
 | Platform | href |
@@ -62,7 +75,14 @@ Five social icon circles (Facebook, YouTube, LinkedIn, X/Twitter, Instagram). Al
 | X (Twitter) | https://twitter.com/solventum |
 | Instagram | https://www.instagram.com/solventumhealth |
 
-All five are external. Icon style: circular white-border outline, ~40 × 40px, on dark-green background.
+All five are external.
+
+Icon style (measured 2026-04-23):
+- border: **2px solid `#05DD4D`** (bright green)
+- color (SVG fill): **`#05DD4D`** (bright green) — NOT white
+- icon box: 18 × 18px with 5px padding → ~32px rendered total
+- border-radius: 80px (fully round)
+- background: transparent (dark-green footer shows through)
 
 ## Bottom bar
 Two rows:

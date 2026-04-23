@@ -24,21 +24,45 @@ Order, left to right:
 7. Search input (STUBBED — icon + placeholder render for layout only, no submit handler)
 8. Language switcher — `EN-US` with globe icon (STUBBED — renders the label only, no dropdown)
 
+## Measured computed styles (extracted 2026-04-23)
+
+### Utility links (Login, Investors, Careers, Partner Portal login)
+- color: `#303030` (dark grey-black)
+- font-size: 14px
+- text-decoration: **underline** by default; no underline on hover
+
+### Main nav trigger buttons (Medical, Oral care, …)
+- color: `#005145` (dark green) — NOT `#303030`
+- font-weight: **700 (bold)**
+- font-size: 14px
+- active/open state: color `#00A053` (bright green) + 2px bottom border
+
+### Dropdown panel (extracted while Medical panel open)
+| Element | color | font-weight | font-size |
+|---|---|---|---|
+| Section header link ("Medical →") | `#05DD4D` | 400 (normal) | **32px** |
+| secondary-title row | `#05DD4D` | 400 (normal) | **20px** |
+| subtitle row | `#DBFFF0` (light mint) | 400 | 16px |
+| description paragraph | `#FFFFFF` | 400 | 16px |
+| callout row button | `#DBFFF0` (light mint) | **700 (bold)** | 16px |
+
+All dropdown links: `text-decoration: none` (no underline in any state).
+
 ## Main nav (desktop, below utility bar)
-8 top-level items in order. All dropdowns open via both hover and click. Only one dropdown open at a time. Panel is full-width of the 1280px container, dark green (`#005145`), absolutely positioned below the nav bar.
+8 top-level items in order. Dropdowns open **on click only** (not hover). Only one dropdown open at a time. Closes on second click, Escape key, or outside click. Panel is full-width of the 1280px container, dark green (`#005145`), fixed-positioned below the nav bar.
 
 ### Panel anatomy (universal)
 - Width: **1280px** (= inner container width), aligned with the nav bar
 - Layout: flex row with 40px gap between subgroup columns
 - Panel background: `#005145` (dark green)
-- Header region: dropdown's title link in green (matches `header` key below) rendered as a large H2 with an arrow `→` suffix
+- Header region: dropdown's title link at **32px font-size, weight 400, color `#05DD4D`** with an arrow `→` suffix
 - Body: N subgroup columns, each column is its own vertical stack
-- Bottom callout row (ocean-green band, darker than panel, full-width): 0–5 icon-button links, evenly distributed
+- Bottom callout row (ocean-green band `#003D31`, full-width): 0–5 icon-button links, evenly distributed
 - Row types used across the site (enumerated up front so the renderer is stable):
-  - **secondary-title** — linked subgroup heading (green color, arrow `→` suffix)
+  - **secondary-title** — linked subgroup heading (**20px, weight 400, color `#05DD4D`**, arrow `→` suffix)
   - **heading-static** — non-clickable subgroup heading (same style but no link/arrow; used by HIT)
-  - **subtitle** — regular link under a heading (white text)
-  - **description** — paragraph of body text, used in place of a list (Resources / Education / Our company)
+  - **subtitle** — regular link under a heading (**16px, color `#DBFFF0` light mint**, no underline)
+  - **description** — paragraph of body text (**16px, color `#FFFFFF`**, used in Resources / Education / Our company)
 - No row types exist on the live site beyond these four.
 
 ### 1. Medical — href: `/en-us/home/medical/`

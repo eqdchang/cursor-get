@@ -19,13 +19,23 @@ These are real mistakes made on prior sites. Do not repeat them:
 
 1. **Mega-menu hallucination.** Seeing a nav item has a dropdown and assuming it's a wide multi-column mega-menu grid. Many sites use a narrow single-column panel with inline accordion subgroups. Always measure the panel width and enumerate row types before writing JSX.
 2. **Skipping second-level probes.** Capturing top-level hover/click but never hovering or clicking *inside* an open dropdown. That's where accordion chevrons, side-flyouts, and tooltip descriptions live.
-3. **Hover omission.** Building click-only dropdowns on a site where the real behavior is hover-reveal. Always test `mouseenter` on the trigger and confirm the menu appears without a click.
+3. **Hover omission / click-only omission.** Building click-only dropdowns on a site where the real behavior is hover-reveal, or building hover-reveal on a click-only site. Always test BOTH `mouseenter` AND `click` on the first trigger and record which mechanism(s) actually open the dropdown. Do not assume any mechanism without testing.
 4. **Placeholder hrefs.** Shipping `href="#"` because you didn't extract the real link. The spec file must list a real URL for every clickable item.
 5. **Invented headers / links.** Adding "View all X →" sections, promo banners, or CTAs that are not in the live site. If you can't screenshot it on the real site, it doesn't exist.
+6. **Wrong font-weight on links.** Applying the header's font-weight to footer links or vice versa. Header and footer link weights are independent — measure each with `getComputedStyle` separately.
+7. **Wrong text-decoration on links.** Each link type may have different text-decoration behavior. Extract `text-decoration-line` for every distinct link type (utility, dropdown, footer column, legal bar) and match it exactly. Do not assume any default.
+8. **Footer column merging missed.** Two footer sections that share the same x-coordinate are stacked in one grid column, not separate columns. Always measure heading x-positions before deciding the grid template. Splitting stacked sections into separate columns pushes the layout wider and mispositions icons.
+9. **Icon color/size assumed.** Icon colors and sizes vary across sites. Measure `color`, `border-color`, and rendered `width`/`height` on the actual icon link elements — do not copy colors from adjacent text or headings.
+10. **Dropdown interior styles not measured.** Section headers, subgroup headings, item links, descriptions, and callout buttons inside dropdown panels each have their own font-size, font-weight, and color. Measure each distinct element type inside an open dropdown before writing JSX.
+11. **Dropdown positioning not measured.** The dropdown panel's `position`, its positioned ancestor, and its scroll behavior must be measured on the live site and replicated exactly. If the live site's dropdown scrolls with the header, the clone must too. If it stays pinned, the clone must too.
+12. **Dropdown background color measured only on the outermost element.** The outermost panel element's background may be overridden by an inner container with a different color. Walk inward from the panel root checking `backgroundColor` on every container. Record every non-transparent layer. The callout/bottom row may also have its own distinct background.
+13. **Dropdown column layout not measured.** The column container's layout mode, column count, gap, and child widths must be measured. Without this, columns end up bunched on one side instead of distributed to match the live site. Measure and replicate the exact layout.
+14. **Button border-width assumed.** CTA buttons may use different border widths. Always measure `border-width` explicitly for every styled button.
 
 ## Pre-flight
 
 1. Browser MCP is required (Playwright MCP, Chrome MCP, etc.). If none is available, ask the user which they have.
+1a. **Screenshots directory.** Ensure the `screenshots/` folder exists at the repo root (`mkdir -p screenshots`). All screenshots taken during extraction and comparison go here. This folder is gitignored.
 2. Parse the user's message as a single URL. Validate it resolves via the browser MCP.
 3. Derive the site slug from the hostname: drop `www.`, replace `.` with `-`, lowercase. E.g. `https://boardwalktech.com/` → `boardwalktech-com` (or just `boardwalktech` if the user prefers a shorter name — confirm if ambiguous).
 4. **Mode detection.** Check whether `bundles/sites/<slug>/` already exists.
@@ -46,8 +56,9 @@ The slug folder already exists. Assume the component files and manual tuning the
 Do NOT consider the site done until every item below is verified on the built bundle served from `bundles/sites/<slug>/demo/`:
 
 ### Header — desktop (viewport >= 1024px)
-- [ ] Hovering each top-level nav item opens its dropdown.
-- [ ] Clicking each top-level nav item toggles its dropdown open/closed (for touch and keyboard).
+- [ ] Dropdown trigger behavior matches the live site (hover+click, click-only, or hover-only — as recorded in Step 2b). If hover+click: hovering opens, clicking also toggles. If click-only: only click toggles, no hover handlers.
+- [ ] Dropdown panel positioning matches the live site (measured `position`, positioned ancestor, and scroll behavior).
+- [ ] Dropdown column layout matches the live site (measured column count, gap, and child widths).
 - [ ] Only one dropdown is open at a time; opening one closes the previous.
 - [ ] Tab reaches each nav item; Enter/Space toggles its dropdown.
 - [ ] Escape closes the open dropdown.
@@ -64,6 +75,8 @@ Must be recorded in `header.spec.md` AND visually confirmed against the real sit
 - [ ] **Row-type inventory**: every kind of row in the panel is enumerated (link, heading, subgroup-toggle with chevron, divider, CTA button, image card, description row). If a row type exists in the real site, it must exist in the clone. If a row type exists in the clone but not the real site, delete it.
 - [ ] **Nested interactions probed**: if any row has a chevron, arrow, or "+" icon, trigger hover AND click on that row and record the resulting behavior (inline accordion, side flyout, no-op link). Build a matching interaction.
 - [ ] **Subgroup heading dual-behavior**: on many sites the subgroup heading is itself a link to a collection page AND has a separate chevron toggle. Verify which clicks navigate vs. which clicks expand, and mirror that exactly.
+- [ ] **Background color layered check**: the panel's visible background is measured by walking inward from the root, not just reading the root element's `background-color`. Inner containers may override the root's color.
+- [ ] **Column layout measured**: column container's display mode, column count, gap, and child widths are extracted and matched with `grid grid-cols-N`, not flex with min-width.
 - [ ] **Side-by-side screenshot**: a screenshot of the real site's dropdown in its closed AND most-expanded state placed next to a screenshot of the built bundle's dropdown. Structural match, not just "both have links".
 
 ### Header — mobile (viewport ~390px)
@@ -78,6 +91,12 @@ Must be recorded in `header.spec.md` AND visually confirmed against the real sit
 - [ ] Every link `href` matches the spec file.
 - [ ] External links flagged and opened in a new tab.
 - [ ] Any widget (newsletter, social icons, language switcher) is either implemented or explicitly listed under "Known omissions" in `footer.spec.md`.
+- [ ] Grid column count matches the live site. Sections that share a column on the live site share a column in the bundle.
+- [ ] Column heading `font-size` and `font-weight` match the spec's measured values.
+- [ ] Column link `font-weight` matches the measured spec.
+- [ ] Column link `text-decoration` matches the spec (underlined by default? on hover only? never?).
+- [ ] Social icon `color` and `border-color` match the spec (green? white? branded?).
+- [ ] Social icon rendered size (width × height) matches the spec (±2px).
 
 ### Style isolation
 - [ ] `styles.css` imports `tailwindcss/theme.css` and `tailwindcss/utilities.css` only — NOT `tailwindcss/preflight.css` and NOT the umbrella `@import "tailwindcss";`.
@@ -110,7 +129,7 @@ bundles/sites/<slug>/
 **Do NOT copy component files from any other site.** The only files this step creates are the site-agnostic skeleton below. Write them with the exact content shown, substituting `<slug>` and `<PascalSlug>` (e.g. `byrna` / `Byrna`).
 
 ### `src/styles.css`
-Tailwind v4 without preflight, with a scope class. Default to `bw-scope` — it's the project-wide scope convention that every existing site uses. Only use a site-specific class (e.g. `<slug>-scope`) if the client plans to load multiple different bundles on the same host page, which is rare.
+Tailwind v4 without preflight, with a scope class. Use `bw-scope` — it's the project-wide scope convention that every existing site uses. Only use a site-specific class (e.g. `<slug>-scope`) if the client plans to load multiple different bundles on the same host page.
 
 ```css
 @layer theme, base, components, utilities;
@@ -312,17 +331,27 @@ Using the browser MCP at a 1440px viewport. Treat this as three distinct passes:
 4. Capture trailing icons (search, account, cart, language switcher, CTA button). Only implement hit-targets; full search/cart UI is out of scope.
 5. Note any forms in the header (search input, email signup, etc.). Record the visible markup — placeholder text, button label, layout — but mark the form as *stubbed* in the spec under "Known omissions". The clone renders the input and button for layout fidelity but does not wire up submission.
 
-### 2b. Dropdown anatomy pass (the one you keep skipping)
+### 2b. Dropdown trigger behavior (test before building)
+Before extracting dropdown contents, determine how they open. Test the FIRST dropdown trigger:
+1. Hover the trigger — does the dropdown appear?
+2. Click the trigger — does the dropdown toggle open/close?
+3. Record the result in the spec as one of:
+   - **hover + click** (hover opens, click also toggles)
+   - **click-only** (hover does nothing; only click toggles)
+   - **hover-only** (click navigates the href)
+The component state machine differs for each. This determines whether `openMode`, `hoverTimeout`, and `onMouseEnter`/`onMouseLeave` are needed.
+
+### 2c. Dropdown anatomy pass (the one you keep skipping)
 For **every** top-level item that has a dropdown, do all of the following before moving on:
 
-1. Hover the trigger. Take a screenshot of the open panel in its default state.
+1. Open the dropdown (using the trigger mechanism identified in 2b). Take a screenshot of the open panel in its default state and save it to `screenshots/` (create the directory if it doesn't exist).
 2. `getBoundingClientRect()` on the panel root — record its width in px and whether it renders as single column, multi-column grid, or side flyout.
 3. Enumerate every direct child row of the panel. For each, classify as one of:
    - **link** — a simple anchor that navigates
    - **subgroup-toggle** — a row with a chevron/arrow that expands more items (accordion or side flyout)
    - **heading** — a non-interactive label above a group of links
    - **divider** — visual separator only
-   - **CTA** — styled button, often at the top or bottom
+   - **CTA** — styled button (position varies by site)
    - **image-card** — image + label tile
    - **description-row** — label + secondary descriptive text line
 4. For any `subgroup-toggle` row, hover AND click it. Record:
@@ -330,7 +359,7 @@ For **every** top-level item that has a dropdown, do all of the following before
    - Does the heading text itself navigate when clicked, with the chevron as a separate expand target? If so, build it the same way.
    - What appears when expanded? Enumerate those items too.
 5. For any row whose href differs from its visible text target (e.g. a heading that links to a collection while a chevron toggles the accordion), mirror that dual-behavior exactly.
-6. After probing, close the dropdown and repeat for the next top-level item. Do not assume siblings share the same anatomy — they often differ.
+6. After probing, close the dropdown and repeat for the next top-level item. Do not assume siblings share the same anatomy — they may differ.
 
 Useful probes (run via the browser MCP's evaluate):
 
@@ -352,26 +381,87 @@ const r = panel.getBoundingClientRect();
 }));
 ```
 
-### 2c. Link audit pass
+### 2d. Link audit pass
 - Resolve every relative `href` against the site origin.
 - Mark `external: true` when the resolved hostname differs from the site's hostname.
 - If a link you need is behind a hover-delay or modal, trigger the interaction before extracting. No `#` placeholders in the spec.
 
-### 2d. Mobile pass (resize to 390px)
+### 2e. Computed style measurement pass (mandatory before writing JSX)
+Open a dropdown and extract `getComputedStyle` for EVERY distinct element type. Record all values in a "Measured computed styles" table in the spec. Do not skip any row:
+
+| Element | Properties to extract |
+|---|---|
+| Header element | `position` (sticky/fixed/relative — determines dropdown positioning strategy) |
+| Nav bar separator | `border-top` or `border-bottom` color between utility bar and nav bar |
+| Nav trigger buttons | `color`, `font-weight`, `font-size` |
+| Nav trigger active state | `color`, `border-bottom` (width, style, color) |
+| Utility links (top bar) | `color`, `font-weight`, `font-size`, `text-decoration-line` |
+| Contact/CTA button | `color`, `font-weight`, `font-size`, `border` (including **width**), `border-radius`, `padding` |
+| Dropdown panel bg | `background-color` — check **inner containers** too, not just the root (see failure mode #12) |
+| Dropdown callout row bg | `background-color` (measure separately from the main panel) |
+| Dropdown column layout | `display`, `column-gap`, child count, each child `width` (see failure mode #13) |
+| Dropdown section header | `color`, `font-weight`, `font-size` |
+| Dropdown heading-static (non-link headings) | `color`, `font-weight`, `font-size` |
+| Dropdown subgroup headings | `color`, `font-weight`, `font-size` |
+| Dropdown item links | `color`, `font-weight`, `font-size`, `text-decoration-line` |
+| Dropdown description text | `color`, `font-weight`, `font-size` |
+| Dropdown callout buttons | `color`, `font-weight`, `font-size` |
+| Callout/bottom-bar icons | `color` (may differ from text) |
+
+Use this snippet to batch-extract everything from an open dropdown in one call:
+
+```javascript
+const pick = (el, ...props) => Object.fromEntries(props.map(p => [p, getComputedStyle(el).getPropertyValue(p)]));
+// Run after opening the first dropdown
+```
+
+If any value in the table is missing, the spec is incomplete. Do not write JSX until this table is filled in.
+
+### 2f. Mobile pass (resize to 390px)
 1. Locate the hamburger button and its icon. Record the breakpoint where the desktop nav disappears.
 2. Open the drawer. Is the data identical to the desktop nav, or flattened / different ordering?
-3. For any row in the drawer that has a chevron, tap it and record whether it expands inline. Mobile drawers often use accordion even when desktop uses flyout.
+3. For any row in the drawer that has a chevron, tap it and record whether it expands inline. The mobile interaction model may differ from the desktop one — measure both independently.
 4. Close behaviors: tap hamburger again, tap X, tap outside, Escape. Record which are supported; the clone must implement tap-hamburger-again + Escape + link-tap-closes at minimum.
 
 Write all of this into `bundles/sites/<slug>/research/header.spec.md` using the template at the bottom of this file.
 
 ## Step 3 — Extract the footer
 
+### 3a. Grid layout pass
+Before listing columns, measure the footer's actual layout structure:
+1. Find all column headings inside the footer.
+2. Extract each heading's `getBoundingClientRect()` x-coordinate.
+3. Headings with the **same x-coordinate** are stacked in one grid column — do not split them into separate columns. Record how many true columns the grid has and which sections share a column.
+
+```javascript
+const footer = document.querySelector('footer');
+const headings = [...footer.querySelectorAll('h3, h4, h5, [class*="heading"], [class*="title"]')];
+headings.map(h => {
+  const r = h.getBoundingClientRect();
+  return { text: h.textContent.trim().slice(0, 30), x: Math.round(r.x), y: Math.round(r.y) };
+});
+```
+
+### 3b. Content pass
 1. Identify the `<footer>` root.
 2. Enumerate column headings and links. Record label + `href` for each.
 3. Bottom bar: logo, copyright line, privacy / terms links, any social icons.
 4. For any forms (newsletter signup, email subscribe, contact form, zip-code lookup, etc.) record the visible markup — heading/label, input placeholder, button text, layout — and mark it as *stubbed* under "Known omissions". The clone renders the form for layout fidelity only; no submission handler.
 5. Flag any other widgets that are out of scope (language switcher, live chat launcher, cookie banner) under "Known omissions" too.
+
+### 3c. Computed style measurement pass (mandatory)
+Extract `getComputedStyle` for EVERY distinct footer element type. Record in a "Measured computed styles" table in the spec:
+
+| Element | Properties to extract |
+|---|---|
+| Column headings | `color`, `font-weight`, `font-size`, `text-transform` |
+| Column links | `color`, `font-weight`, `font-size`, `text-decoration-line` |
+| Social icon links | `color`, `border`, `border-color`, `width`, `height`, `padding`, `border-radius` |
+| Legal / bottom-bar links | `color`, `font-weight`, `font-size`, `text-decoration-line` |
+| Mission/tagline text | `color`, `font-weight`, `font-size` |
+| CTA buttons | `color`, `border-color`, `background-color`, `font-size` |
+
+**Critical:** Footer link `font-weight` and `text-decoration` are independent of header values. Many sites have bold header triggers with normal-weight footer links, or underlined footer links with non-underlined header links. Measure them separately — do not copy values from the header.
 
 Write `bundles/sites/<slug>/research/footer.spec.md`.
 
@@ -381,20 +471,27 @@ Write `SiteHeader.tsx` and `SiteFooter.tsx` **from scratch**, shaped entirely by
 
 ### Required behaviors (implement these regardless of the site)
 
-A correct `SiteHeader.tsx` exposes this state machine:
+A correct `SiteHeader.tsx` exposes this state machine (adapted based on the trigger behavior recorded in Step 2b):
 
 | State | Purpose |
 |-------|---------|
 | `openGroup: string \| null` | which top-level nav item's dropdown is currently open |
-| `openMode: "hover" \| "click" \| null` | why it's open, so a click doesn't immediately close a hover-opened menu |
+| `openMode: "hover" \| "click" \| null` | **(hover+click sites only)** why it's open, so a click doesn't immediately close a hover-opened menu |
 | `expandedSubgroups: Set<string>` | which nested accordion subgroups are currently expanded within the open dropdown |
 | `mobileOpen: boolean` | hamburger drawer open state |
 | `mobileExpanded: Set<string>` | which top-level groups are expanded within the mobile drawer |
 
-And these effects:
+Effects depend on the trigger behavior recorded in Step 2b:
 
+**If hover+click:**
 - Mouseenter on a top-level trigger → `openMode: "hover"`. Mouseleave → close, unless `openMode === "click"`.
 - Click on a top-level trigger → toggle with `openMode: "click"`.
+
+**If click-only:**
+- No `openMode` state, no `hoverTimeout` ref, no `onMouseEnter`/`onMouseLeave` handlers.
+- Click on a top-level trigger → toggle `openGroup`.
+
+**All sites, regardless of trigger behavior:**
 - Outside click (`mousedown` outside `navRef`) → close.
 - Escape key → close both dropdown and mobile drawer.
 - Mobile drawer open → set `document.body.style.overflow = "hidden"`, focus first focusable element in drawer, and on close restore body overflow and focus the hamburger button.
@@ -548,13 +645,11 @@ Before calling the header done, open TWO browser tabs via the MCP:
 
 For each top-level nav item:
 1. Open the dropdown in both tabs.
-2. Take a viewport screenshot of each.
+2. Take a viewport screenshot of each and save to `screenshots/` (create the directory if it doesn't exist). The `screenshots/` folder is gitignored, so these won't be committed.
 3. Compare structurally. Ask: "Is the panel the same width? Same number of columns? Same row types in the same order? Are there any rows in one that aren't in the other?"
 4. If there are any invented rows in the clone (see "No invented UI" rule), delete them.
 5. If the clone is missing a row type that exists in the real site (subgroup toggle, description line, CTA), add it.
 6. Repeat for any nested/expanded state (e.g. expand an accordion subgroup and compare again).
-
-Delete those screenshots after comparison — they should not be committed.
 
 Only when the structural match is tight do you move on. Not "close enough" — if the user can tell at a glance that the shapes are different, the clone is not done.
 
