@@ -138,7 +138,7 @@ export function SiteFooter() {
               </p>
               <a
                 href="/en-us/home/our-company/"
-                className="inline-block text-white border border-white rounded-full px-4 py-1.5 text-sm font-medium hover:bg-white hover:text-[#01332B] transition-colors"
+                className="inline-block text-[#00D44B] border border-[#00D44B] rounded-full px-4 py-1.5 text-sm font-medium hover:bg-[#00D44B] hover:text-[#01332B] transition-colors"
               >
                 Learn more
               </a>
@@ -167,7 +167,7 @@ export function SiteFooter() {
             {/* Follow Us */}
             <div>
               <h5 className="text-white font-semibold mb-3 text-sm">Follow Us</h5>
-              <div className="flex gap-3 flex-wrap">
+              <div className="flex gap-2">
                 {SOCIAL_LINKS.map((s) => (
                   <a
                     key={s.label}
@@ -175,7 +175,7 @@ export function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="flex items-center justify-center w-10 h-10 rounded-full border border-white/60 text-white hover:border-[#00D44B] hover:text-[#00D44B] transition-colors"
+                    className="flex items-center justify-center w-9 h-9 rounded-full border border-white/60 text-white hover:border-[#00D44B] hover:text-[#00D44B] transition-colors shrink-0"
                   >
                     {s.icon}
                   </a>
@@ -188,10 +188,10 @@ export function SiteFooter() {
           <hr className="border-white/20 mb-5" />
 
           {/* Bottom bar */}
-          <div className="flex flex-col gap-3">
-            {/* Legal links */}
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {LEGAL_LINKS.map((link) => (
+          <div className="flex flex-col gap-2">
+            {/* Main legal links row */}
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              {LEGAL_LINKS.slice(0, -1).map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
@@ -202,8 +202,18 @@ export function SiteFooter() {
                 </a>
               ))}
             </div>
-            {/* Copyright */}
-            <p className="text-white/60 text-xs">© Solventum 2026. All Rights Reserved.</p>
+            {/* "Transparency..." on its own row with copyright right-aligned */}
+            <div className="flex items-center justify-between gap-4">
+              <a
+                href={LEGAL_LINKS[LEGAL_LINKS.length - 1].href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#00D44B] text-xs hover:underline"
+              >
+                {LEGAL_LINKS[LEGAL_LINKS.length - 1].label}
+              </a>
+              <p className="text-white/60 text-xs whitespace-nowrap">© Solventum 2026. All Rights Reserved.</p>
+            </div>
           </div>
         </div>
       </footer>
