@@ -693,18 +693,15 @@ function MobileDrawer({
 
 export function SiteHeader() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
-  const [openMode, setOpenMode] = useState<"hover" | "click" | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
-  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Escape key handler
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpenGroup(null);
-        setOpenMode(null);
         setMobileOpen(false);
       }
     };
@@ -717,48 +714,14 @@ export function SiteHeader() {
     const handleMousedown = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setOpenGroup(null);
-        setOpenMode(null);
       }
     };
     document.addEventListener("mousedown", handleMousedown);
     return () => document.removeEventListener("mousedown", handleMousedown);
   }, []);
 
-  const handleTriggerMouseenter = (label: string) => {
-    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-    setOpenGroup(label);
-    setOpenMode("hover");
-  };
-
-  const handleTriggerMouseleave = () => {
-    if (openMode === "click") return;
-    hoverTimeout.current = setTimeout(() => {
-      setOpenGroup(null);
-      setOpenMode(null);
-    }, 120);
-  };
-
-  const handleDropdownMouseenter = () => {
-    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-  };
-
-  const handleDropdownMouseleave = () => {
-    if (openMode === "click") return;
-    hoverTimeout.current = setTimeout(() => {
-      setOpenGroup(null);
-      setOpenMode(null);
-    }, 120);
-  };
-
-  const handleTriggerClick = (label: string, hasDropdown: boolean) => {
-    if (!hasDropdown) return;
-    if (openGroup === label && openMode === "click") {
-      setOpenGroup(null);
-      setOpenMode(null);
-    } else {
-      setOpenGroup(label);
-      setOpenMode("click");
-    }
+  const handleTriggerClick = (label: string) => {
+    setOpenGroup((prev) => (prev === label ? null : label));
   };
 
   const handleMobileClose = () => {
@@ -858,8 +821,6 @@ export function SiteHeader() {
                   <li
                     key={group.label}
                     className="relative"
-                    onMouseEnter={() => hasDropdown && handleTriggerMouseenter(group.label)}
-                    onMouseLeave={() => hasDropdown && handleTriggerMouseleave()}
                   >
                     {hasDropdown ? (
                       <button
@@ -867,7 +828,7 @@ export function SiteHeader() {
                         aria-haspopup="menu"
                         aria-expanded={isOpen}
                         aria-controls={`dropdown-${group.label.replace(/\s+/g, "-")}`}
-                        onClick={() => handleTriggerClick(group.label, true)}
+                        onClick={() => handleTriggerClick(group.label)}
                         className={`flex items-center gap-1 px-3 py-3 text-sm font-medium whitespace-nowrap hover:text-[#00A053] transition-colors ${
                           isOpen ? "text-[#00A053] border-b-2 border-[#00A053]" : "text-[#303030]"
                         }`}
@@ -894,8 +855,6 @@ export function SiteHeader() {
                         id={`dropdown-${group.label.replace(/\s+/g, "-")}`}
                         className="fixed left-0 right-0 z-50"
                         style={{ top: navRef.current ? navRef.current.getBoundingClientRect().bottom + "px" : "130px" }}
-                        onMouseEnter={handleDropdownMouseenter}
-                        onMouseLeave={handleDropdownMouseleave}
                       >
                         <DropdownPanel group={group} />
                       </div>

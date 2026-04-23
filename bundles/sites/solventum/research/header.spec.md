@@ -163,9 +163,9 @@ Columns: Biopharmaceutical purification, Manufacturing, Commercial water, Membra
 - Callout: 2 icons (Newsroom external, Investors external)
 
 ## Desktop behaviors (must match live)
-- Hover top-level trigger → dropdown opens with `openMode: "hover"`.
-- Click top-level trigger → toggles dropdown with `openMode: "click"`.
-- Only one dropdown open at a time; opening a new one closes the previous.
+- **Click-only** — dropdowns open on click, NOT on hover. Hover alone does nothing.
+- Click top-level trigger → opens dropdown. Second click on same trigger → closes it.
+- Only one dropdown open at a time; clicking a different trigger closes the previous and opens the new one.
 - Escape → closes any open dropdown.
 - Outside click (mousedown outside nav root) → closes the dropdown.
 - `aria-haspopup="menu"`, `aria-expanded`, `aria-controls`, `role="menu"`, `role="menuitem"` on the right nodes.
