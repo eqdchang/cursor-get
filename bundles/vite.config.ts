@@ -2,7 +2,6 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import { defineConfig } from "vite";
 
 type BundleKey = "header" | "footer";
@@ -51,7 +50,7 @@ export default defineConfig(({ command }) => {
   const isDev = command === "serve";
 
   return {
-    plugins: [react(), tailwindcss(), cssInjectedByJsPlugin()],
+    plugins: [react(), tailwindcss()],
     root: isDev ? resolve(siteRoot, "demo") : undefined,
     define: {
       "process.env.NODE_ENV": JSON.stringify("production"),

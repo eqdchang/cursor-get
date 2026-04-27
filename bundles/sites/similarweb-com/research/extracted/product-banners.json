@@ -1,0 +1,52 @@
+{
+  "AI Search Intelligence": {
+    "img": "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/66d5815b0ddc44b42b96.png",
+    "href": "/corp/search/gen-ai-intelligence/",
+    "title": "Similarweb AI Search Intelligence",
+    "subtitle": "Turn AI search from a blind spot into a growth channel, with the competitive intelligence to see where you stand and how to win",
+    "variant": "#4D80FF"
+  },
+  "Web Intelligence": {
+    "img": "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/894e53c403a1a27a9184.png",
+    "href": "/corp/web/",
+    "title": "Similarweb Web Intelligence",
+    "subtitle": "Gain a powerful competitive edge with in-depth insights into your digital landscape",
+    "variant": "#195AFE"
+  },
+  "App Intelligence": {
+    "img": "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/83a55227d85d9acd1703.png",
+    "href": "/corp/apps/",
+    "title": "Similarweb App Intelligence",
+    "subtitle": "Analyze app performance, market trends, and user behavior to drive smarter business growth",
+    "variant": "#FF326F"
+  },
+  "Sales Intelligence": {
+    "img": "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/4938deb032a6f10eda0d.png",
+    "href": "/corp/sales/",
+    "title": "Similarweb Sales Intelligence",
+    "subtitle": "Empower your sales strategy with data to uncover pitching opportunities and engage buyers to drive pipeline",
+    "variant": "#FFA800"
+  },
+  "Retail Intelligence": {
+    "img": "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/95a1d1ccb5fe11f81714.png",
+    "href": "/corp/retail/",
+    "title": "Similarweb Retail Intelligence",
+    "subtitle": "Discover shopping trends and drive your ecommerce growth with consumer behavior insights",
+    "variant": "#C343FF"
+  },
+  "Stock Intelligence": {
+    "img": "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/558a256681d090ff55ba.png",
+    "href": "/corp/stocks/",
+    "title": "Similarweb Stock Intelligence",
+    "subtitle": "Monitor market trends, track stock performance, and use analytics to make data-backed investments",
+    "variant": "#00CA9A"
+  },
+  "Resources": {
+    "img": "https://static-us-east-1.similarcdn.com/static_assets/lite/images/retail-planning.png",
+    "href": "/corp/reports/retail-planning/",
+    "kicker": "Plan earlier and better for the 2026 holiday season",
+    "title": "Top Holiday 2026 Shopper Trends",
+    "body": "Understand how shoppers are researching, comparing and deciding earlier, and what's shaping demand across the full season",
+    "cta": "Download Now"
+  }
+}

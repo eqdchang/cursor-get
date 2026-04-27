@@ -712,9 +712,14 @@ export function SiteHeader() {
   // Outside click
   useEffect(() => {
     const handleMousedown = (e: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setOpenGroup(null);
-      }
+      const nav = navRef.current;
+      if (!nav) return;
+      const path =
+        typeof e.composedPath === "function" ? e.composedPath() : [];
+      const insideNav = path.length
+        ? path.includes(nav)
+        : nav.contains(e.target as Node);
+      if (!insideNav) setOpenGroup(null);
     };
     document.addEventListener("mousedown", handleMousedown);
     return () => document.removeEventListener("mousedown", handleMousedown);

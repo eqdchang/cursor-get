@@ -12,7 +12,8 @@ Run `/clone-header-footer <url>` in a Cursor session with a browser MCP attached
 - Vite 7 library mode (IIFE output)
 - React 19 + react-dom (bundled into the artifact)
 - Tailwind CSS v4, **preflight disabled** for style isolation
-- `vite-plugin-css-injected-by-js` to inject CSS into the host page head at runtime
+- **Shadow DOM mount** — each `mount()` call attaches a shadow root to the target element and renders the header/footer inside it. CSS is imported as a string via `import styles from "../styles.css?inline"` and injected as a `<style>` tag inside the shadow root. Host CSS cannot reach inside; bundle CSS cannot leak out.
+- `postcss-prefix-selector` (`bundles/postcss.config.mjs`) prefixes every selector with `.bw-scope` as defense-in-depth — if `attachShadow` is ever unavailable for a mount target, the prefix still keeps utilities scoped.
 - `lucide-react` icons (tree-shaken)
 - TypeScript strict mode
 
@@ -115,8 +116,11 @@ Every extracted header + footer must pass this checklist before being considered
 - All computed styles measured independently from header: column heading `font-size`/`font-weight`, link `font-weight`, link `text-decoration`, social icon `color`/`border-color`/size. Footer values and header values are measured separately — do not copy between them.
 
 ### Style isolation
+- **Shadow DOM is the primary isolation mechanism.** Each `mount.tsx` calls `target.attachShadow({ mode: "open" })`, injects a `<style>` tag with the bundled CSS (imported via `?inline`), and renders React inside a container element within the shadow root. Host CSS cannot cross the shadow boundary in either direction.
 - `styles.css` imports `tailwindcss/theme.css` + `tailwindcss/utilities.css` only. Preflight is NOT included.
-- Everything is wrapped in a `<div className="bw-scope">` so any future base rules are scoped.
+- Everything is still wrapped in a `<div className="bw-scope">` and the PostCSS pass (`bundles/postcss.config.mjs`, using `postcss-prefix-selector`) still prefixes every emitted selector with `.bw-scope` — defense-in-depth in case a mount target is ever an element that can't host a shadow root.
+- Click-outside detection inside shadow DOM uses `event.composedPath()` (not `e.target`) so clicks inside the shadow are correctly identified as "inside the nav". `e.target` from a `document` listener gets re-targeted to the shadow host and would otherwise produce false outside-click closes.
+- Net effect: the bundle's styles override host styles inside the header/footer (because they live in a separate DOM tree), and zero rules apply outside the shadow root.
 
 ## Working style
 

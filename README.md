@@ -4,7 +4,7 @@ Extract any site's header and footer as self-contained JavaScript bundles you ca
 
 Point it at a URL, run `/clone-header-footer` inside Cursor with a browser MCP attached, and the agent will extract the header and footer (DOM, computed styles, every link, dropdown contents, mobile drawer) and produce two built bundles in `bundles/dist/<slug>/`.
 
-Functional parity is non-negotiable: hover AND click open dropdowns, mobile drawer locks body scroll and restores focus on close, ARIA is correct, every link points at the real live URL, and Tailwind's preflight is stripped so the bundle does not restyle the host page.
+Functional parity is non-negotiable: hover AND click open dropdowns, mobile drawer locks body scroll and restores focus on close, ARIA is correct, every link points at the real live URL, and the bundle mounts inside a Shadow DOM so its styles never collide with the host page (and the host's CSS can never reach inside the bundle).
 
 ## Quick start
 
@@ -81,7 +81,7 @@ window.<PascalSlug>Footer.mount(document.getElementById("footer-slot"));
 window.<PascalSlug>Footer.unmount();
 ```
 
-Host page requirements: none. React, styles, and icons are all bundled inside. Tailwind's preflight is stripped so the host's `<h1>`, `<p>`, `<ul>`, etc. render with their existing styles.
+Host page requirements: none. React, styles, and icons are all bundled inside. The bundle attaches a Shadow DOM to its mount target on `mount()`, so its CSS is fully isolated — the host's `<h1>`, `<p>`, `<ul>`, etc. render with their existing styles, and the host's stylesheets cannot bleed into the header/footer either.
 
 ## Prerequisites
 

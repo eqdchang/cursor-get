@@ -249,7 +249,7 @@ If the footer has any of these, record them under "Known omissions" in the foote
 - **Dropdown column layout is measured and matched.** Measure the column container's display mode, column count, gap, and each child's width. Replicate the same distribution in the component so columns are spaced the same as the live site.
 - **Button border widths are measured.** CTA buttons may have different `border-width` values. Measure `border-width` explicitly for every styled button.
 - **Side-by-side before shipping.** Open the real site and the built demo in two tabs, open each dropdown in both (including expanded/nested states), and confirm the shapes match. Not just "both have links" — same width, same column count, same row types in the same order.
-- **Style isolation.** The bundle must not style the host page's `<h1>` / `<p>` / `<ul>`. This is solved in `styles.css` by skipping preflight, but it's worth verifying with the host-isolation smoke test.
+- **Style isolation.** The bundle mounts inside a Shadow DOM (`mount.tsx` calls `attachShadow` and injects the bundled CSS as a `<style>` tag inside the shadow root), so the bundle's styles cannot touch the host page's `<h1>` / `<p>` / `<ul>`, and the host's stylesheets cannot reach inside the bundle. `styles.css` also skips Tailwind's preflight and a PostCSS pass prefixes every selector with `.bw-scope` as defense-in-depth. Verify with the host-isolation smoke test against a host page that has aggressive resets (e.g. `* { margin: 0 } a { color: red }`) — the bundle should render correctly and the host's content should render unchanged.
 
 ## Handy extraction snippets
 

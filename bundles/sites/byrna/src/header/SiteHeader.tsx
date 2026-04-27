@@ -243,7 +243,14 @@ export function SiteHeader() {
   useEffect(() => {
     if (openGroup === null) return;
     function handlePointer(event: MouseEvent) {
-      if (!navRef.current?.contains(event.target as Node)) {
+      const nav = navRef.current;
+      if (!nav) return;
+      const path =
+        typeof event.composedPath === "function" ? event.composedPath() : [];
+      const insideNav = path.length
+        ? path.includes(nav)
+        : nav.contains(event.target as Node);
+      if (!insideNav) {
         setOpenGroup(null);
         setOpenMode(null);
       }

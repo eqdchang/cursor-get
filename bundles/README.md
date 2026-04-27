@@ -25,7 +25,7 @@ bundles/
         footer.spec.md
   dist/
     <slug>/
-      header.bundle.js     self-contained IIFE, CSS injected at runtime
+      header.bundle.js     self-contained IIFE; mounts via Shadow DOM
       footer.bundle.js
 ```
 
@@ -78,14 +78,14 @@ Every bundle must match these behaviors, not just the look:
 - **Desktop nav:** hover opens dropdown; click also toggles (for touch + keyboard). Outside click and Escape close. ARIA attributes set.
 - **Mobile drawer:** hamburger toggles; body scroll locked while open; focus returns to hamburger on close; link tap and Escape close.
 - **Links:** every `href` is the real live URL; external links open in a new tab with `rel="noopener noreferrer"`.
-- **Style isolation:** `styles.css` imports `tailwindcss/theme.css` + `tailwindcss/utilities.css` only. Preflight is NOT included, so the host page's base styles are untouched. All rendering is wrapped in `<div className="bw-scope">`.
+- **Style isolation (Shadow DOM):** every `mount()` attaches a shadow root to the target element and renders the header/footer inside it. The bundled CSS is imported as a string (`?inline`) and injected as a `<style>` tag inside the shadow root. Host CSS cannot reach inside the bundle, and the bundle's CSS cannot leak onto the host page. `styles.css` imports `tailwindcss/theme.css` + `tailwindcss/utilities.css` only — preflight is NOT included. All rendering is still wrapped in `<div className="bw-scope">` and a PostCSS pass prefixes every selector with `.bw-scope` as defense-in-depth in case `attachShadow` is ever unavailable on a target.
 
 ## What's inside each bundle
 
 - React 19 + react-dom/client (bundled)
-- Tailwind v4 utilities used by the component (injected into `<head>` by `vite-plugin-css-injected-by-js`)
+- Tailwind v4 utilities used by the component, embedded as a string and injected into the per-mount shadow root
 - `lucide-react` icons (tree-shaken to the ones actually used)
-- The component + mount script
+- The component + Shadow-DOM mount script
 
 Typical size: ~210 KB raw, ~65 KB gzipped.
 

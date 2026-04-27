@@ -8,7 +8,7 @@ Scope is only two components per site. No page body, no section loop, no full-pa
 
 - **Fidelity level:** Pixel-perfect visuals AND functional parity with the live site. Hover-reveal dropdowns, click-to-toggle, keyboard navigation, mobile drawer, body scroll lock, focus restore, ARIA — all must match. **Dropdown panel shape and nested interactions must match too** — see the anatomy rules below.
 - **Links:** Every `href` points to the real live URL. External links (different hostname than the target) get `target="_blank" rel="noopener noreferrer"`.
-- **Style isolation:** The bundle must not leak CSS onto the host site. Preflight is disabled, everything is wrapped in a scope class.
+- **Style isolation:** The bundle must not leak CSS onto the host site, and the host's CSS must not bleed into the bundle. The mount script uses **Shadow DOM** as the primary isolation mechanism (the bundled CSS is imported as a string via `?inline` and injected into the shadow root). Preflight is disabled, every selector is prefixed with `.bw-scope` by PostCSS, and everything is rendered inside `<div className="bw-scope">` as defense-in-depth.
 - **Out of scope:** Page body, hero, sections, CMS content. Backend. Authentication.
 - **Forms are visual stubs only.** Any form in the header or footer — newsletter signup, email subscribe, search bar, contact form, "find a dealer by zip" input, quote request, etc. — is cloned for layout and styling only. The `<input>` and `<button>` render so the header/footer looks complete, but no submission handler is wired up. Mark the form as *stubbed* in the relevant spec file under "Known omissions". The same goes for search icons that open a search panel: render the icon hit-target, do not build the panel.
 - **No invented UI.** Every visible element in the cloned output must exist in the extracted source. Do not add "View all X", "Featured", CTA blocks, promo banners, tag lines, or any other embellishment that isn't on the real site. If it isn't in `research/header.spec.md` or `research/footer.spec.md`, it does not ship.
@@ -35,7 +35,7 @@ These are real mistakes made on prior sites. Do not repeat them:
 ## Pre-flight
 
 1. Browser MCP is required (Playwright MCP, Chrome MCP, etc.). If none is available, ask the user which they have.
-1a. **Screenshots directory.** Ensure the `screenshots/` folder exists at the repo root (`mkdir -p screenshots`). All screenshots taken during extraction and comparison go here. This folder is gitignored.
+1a. **Images directory.** Ensure the `images/` folder exists at the repo root (`mkdir -p images`). All screenshots and images taken during extraction and comparison go here. This folder is gitignored.
 2. Parse the user's message as a single URL. Validate it resolves via the browser MCP.
 3. Derive the site slug from the hostname: drop `www.`, replace `.` with `-`, lowercase. E.g. `https://boardwalktech.com/` → `boardwalktech-com` (or just `boardwalktech` if the user prefers a shorter name — confirm if ambiguous).
 4. **Mode detection.** Check whether `bundles/sites/<slug>/` already exists.
@@ -99,9 +99,12 @@ Must be recorded in `header.spec.md` AND visually confirmed against the real sit
 - [ ] Social icon rendered size (width × height) matches the spec (±2px).
 
 ### Style isolation
+- [ ] Bundle uses Shadow DOM mount: `mount.tsx` calls `target.attachShadow({ mode: "open" })`, injects bundled CSS via `<style>` inside the shadow root, and renders React into a container inside the shadow.
+- [ ] `mount.tsx` imports CSS as a string via `import styles from "../styles.css?inline"` (NOT `import "../styles.css"`).
 - [ ] `styles.css` imports `tailwindcss/theme.css` and `tailwindcss/utilities.css` only — NOT `tailwindcss/preflight.css` and NOT the umbrella `@import "tailwindcss";`.
-- [ ] Top-level render is wrapped in `<div className="bw-scope">…</div>` (or the site's scope class).
-- [ ] Host-page smoke test: drop the bundle into a blank HTML page with pre-existing `<h1>`, `<ul>`, `<p>` styles and confirm they render unchanged.
+- [ ] Top-level render is still wrapped in `<div className="bw-scope">…</div>` (defense-in-depth scope class).
+- [ ] Click-outside detection in `SiteHeader.tsx` uses `event.composedPath()` to detect clicks inside the shadow DOM; falls back to `nav.contains(target)` only if `composedPath` is missing.
+- [ ] Host-page smoke test: drop the bundle into the actual host page (or a blank HTML page with pre-existing `<h1>`, `<ul>`, `<p>` styles AND aggressive resets like `* { margin: 0 } a { color: red }`) and confirm the bundle renders correctly AND the host's content renders unchanged.
 
 ## Step 1 — Scaffold the per-site folder (cold-start only)
 
@@ -239,34 +242,88 @@ If the site's extracted spec reveals row types this schema cannot express (image
 
 ### `src/header/mount.tsx`
 
+The mount uses **Shadow DOM** for full style isolation. The bundled CSS is imported as a string via `?inline` and injected inside the shadow root. Host CSS cannot reach inside; bundle CSS cannot leak out.
+
 ```tsx
-import { createRoot, type Root } from "react-dom/client";
 import { StrictMode } from "react";
+import { createRoot, type Root } from "react-dom/client";
 import { SiteHeader } from "./SiteHeader";
-import "../styles.css";
+import styles from "../styles.css?inline";
 
 const DEFAULT_MOUNT_ID = "<slug>-header-root";
-const roots = new WeakMap<Element, Root>();
+const STYLE_MARKER = "data-bw-styles";
+const CONTAINER_MARKER = "data-bw-container";
 
-function mount(target: Element) {
-  if (roots.has(target)) return;
-  const root = createRoot(target);
-  root.render(
+type MountTarget = Element | string;
+
+let activeRoot: Root | null = null;
+
+function resolveTarget(target?: MountTarget): Element | null {
+  if (target instanceof Element) return target;
+  if (typeof target === "string") {
+    const el = document.querySelector(target);
+    if (el) return el;
+  }
+  return document.getElementById(DEFAULT_MOUNT_ID);
+}
+
+function getOrCreateShadowContainer(target: Element): Element {
+  if (!("attachShadow" in target)) return target;
+
+  let shadow: ShadowRoot | null =
+    (target as HTMLElement).shadowRoot ?? null;
+  if (!shadow) {
+    try {
+      shadow = (target as HTMLElement).attachShadow({ mode: "open" });
+    } catch {
+      return target;
+    }
+  }
+
+  if (!shadow.querySelector(`style[${STYLE_MARKER}]`)) {
+    const styleEl = document.createElement("style");
+    styleEl.setAttribute(STYLE_MARKER, "");
+    styleEl.textContent = styles;
+    shadow.appendChild(styleEl);
+  }
+
+  let container = shadow.querySelector(
+    `[${CONTAINER_MARKER}]`,
+  ) as HTMLElement | null;
+  if (!container) {
+    container = document.createElement("div");
+    container.setAttribute(CONTAINER_MARKER, "");
+    shadow.appendChild(container);
+  }
+  return container;
+}
+
+function mount(target?: MountTarget): void {
+  const el = resolveTarget(target);
+  if (!el) {
+    console.warn(
+      `[<PascalSlug>Header] mount target not found. Pass a selector or Element, or add <div id="${DEFAULT_MOUNT_ID}">.`,
+    );
+    return;
+  }
+  if (activeRoot) {
+    activeRoot.unmount();
+    activeRoot = null;
+  }
+  activeRoot = createRoot(getOrCreateShadowContainer(el));
+  activeRoot.render(
     <StrictMode>
       <SiteHeader />
     </StrictMode>,
   );
-  roots.set(target, root);
 }
 
-function unmount(target: Element) {
-  const root = roots.get(target);
-  if (!root) return;
-  root.unmount();
-  roots.delete(target);
+function unmount(): void {
+  activeRoot?.unmount();
+  activeRoot = null;
 }
 
-const api = { mount, unmount };
+const api = { mount, unmount, DEFAULT_MOUNT_ID };
 
 if (typeof window !== "undefined") {
   (window as unknown as { <PascalSlug>Header: typeof api }).<PascalSlug>Header = api;
@@ -275,10 +332,27 @@ if (typeof window !== "undefined") {
 }
 
 export default api;
+export { mount, unmount };
 ```
 
 ### `src/footer/mount.tsx`
 Same shape as the header mount, swap `Header` for `Footer` and use mount id `<slug>-footer-root` and global `window.<PascalSlug>Footer`.
+
+### Click-outside detection inside shadow DOM
+`SiteHeader.tsx` must use `event.composedPath()` (not `e.target` + `nav.contains(...)`) for outside-click detection. When the shadow root re-targets the event for `document`-level listeners, `e.target` becomes the shadow host element, which makes every click look "outside" the nav. `composedPath()` returns the actual click path including elements inside the shadow.
+
+```tsx
+const onDown = (e: MouseEvent) => {
+  const nav = navRef.current;
+  if (!nav) return;
+  const path =
+    typeof e.composedPath === "function" ? e.composedPath() : [];
+  const insideNav = path.length
+    ? path.includes(nav)
+    : nav.contains(e.target as Node);
+  if (!insideNav) closeAll();
+};
+```
 
 ### `demo/header.html`
 
@@ -344,7 +418,7 @@ The component state machine differs for each. This determines whether `openMode`
 ### 2c. Dropdown anatomy pass (the one you keep skipping)
 For **every** top-level item that has a dropdown, do all of the following before moving on:
 
-1. Open the dropdown (using the trigger mechanism identified in 2b). Take a screenshot of the open panel in its default state and save it to `screenshots/` (create the directory if it doesn't exist).
+1. Open the dropdown (using the trigger mechanism identified in 2b). Take a screenshot of the open panel in its default state and save it to `images/` (create the directory if it doesn't exist).
 2. `getBoundingClientRect()` on the panel root — record its width in px and whether it renders as single column, multi-column grid, or side flyout.
 3. Enumerate every direct child row of the panel. For each, classify as one of:
    - **link** — a simple anchor that navigates
@@ -645,7 +719,7 @@ Before calling the header done, open TWO browser tabs via the MCP:
 
 For each top-level nav item:
 1. Open the dropdown in both tabs.
-2. Take a viewport screenshot of each and save to `screenshots/` (create the directory if it doesn't exist). The `screenshots/` folder is gitignored, so these won't be committed.
+2. Take a viewport screenshot of each and save to `images/` (create the directory if it doesn't exist). The `images/` folder is gitignored, so these won't be committed.
 3. Compare structurally. Ask: "Is the panel the same width? Same number of columns? Same row types in the same order? Are there any rows in one that aren't in the other?"
 4. If there are any invented rows in the clone (see "No invented UI" rule), delete them.
 5. If the clone is missing a row type that exists in the real site (subgroup toggle, description line, CTA), add it.
