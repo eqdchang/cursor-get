@@ -163,13 +163,40 @@ Tab: Advisory Services & Reporting — card grid:
 
 ## Computed styles — dropdown (Products/Solutions tab panel)
 - Popup: background white, border-radius 12px, box-shadow `rgba(25,90,254,0.13) 0 4px 12px`.
-- Tab nav: width 234px, bg transparent.
-- Inactive tab: color black, font-weight 500, font-size 16px, height 32px.
+- Popup width: **1200px** (sidebar 282 + active tab panel 918).
+- Sidebar (`.app-header__tabs-sidebar`): width 282px, padding **40px 24px 0px**, **NO right border**.
+- Tab nav (`.app-header__tabs-nav`): width 234px (282 - 48 padding).
+- Inactive tab item: color **rgb(9, 37, 64)** (dark navy), font-weight 500, font-size 16px, height 32px, padding 4px 12px.
 - Active tab (`.app-header__tabs-button-content--active`): color `rgb(25, 90, 254)`, bg `rgb(241, 246, 255)`, font-weight 500, font-size 16px.
-- Panel padding: 40px 24px 24px.
-- Panel lists container: flex, gap 24px.
-- List section heading (`.title`): color `rgb(9, 37, 64)`, weight 700, 14px.
+- **Sidebar divider** (`.app-header__tabs-nav--separator`): 1px horizontal line `bg #eef0f3`, width 234px, with margin-bottom 16px.
+  - **Products**: divider after "Free Tools" (separates free tools from intelligence products).
+  - **Solutions**: divider after "By Industry" (separates entry-level from advanced offerings).
+- Active tab panel: width 918px, padding 40px 24px 24px, **NO left border**. Side banner (when present) sits inside this panel as a flex child, not outside.
+- Panel content: 870px wide on Products intelligence tabs (3 cols × 274px + 2 × 24 gap); 593px wide on Solutions panels with side banner (2 cols of cards × 291px + 12 gap, or 2 cols of links).
+- List section heading (`.title`): color `rgb(9, 37, 64)`, weight 700, 14px, padding-left 12px.
 - List item: color `rgba(9, 37, 64, 0.8)`, weight 400, 13px, padding 8px 12px, no underline.
+
+## Computed styles — bottom container (`.app-header__container-bottom`)
+This is a separate full-width bar **below** the tab panel — spans the whole 1200px popup, NOT confined to the right panel.
+- Background: `rgb(241, 246, 255)` (light blue).
+- Padding: 16px 24px.
+- Layout: flex, justify-content flex-end, gap ~24px between links.
+- Link style: `13px 400` color `rgb(9, 37, 64)` (dark navy), with arrow-right icon.
+- **Per-group links**:
+  - **Products → Free Tools tab**: "Contact sales" + "Start free trial".
+  - **Products → all other (Intelligence) tabs**: "Explore API" only.
+  - **Solutions** (all tabs): "Contact sales" + "Start free trial".
+  - **Resources**: "Contact sales" + "Start free trial".
+
+## Computed styles — Solution cards (Solutions "By Team" + AI/DaaS/Advisory tabs)
+- 2-column grid (because side banner takes the right ~253px of the panel).
+- Card width 291px, height ~116px, border-radius **8px** (NOT 12px).
+- Border: `1px solid transparent` (NO visible border).
+- Padding: **12px** (NOT 16px).
+- Background: solid `rgba(R, G, B, 0.05)` tint (NOT a top-to-bottom gradient).
+- Title: `rgb(9, 37, 64)`, 16px 700.
+- Description (`.card-subtitle`): `rgb(58, 81, 102)`, 13px 400.
+- Icon: 18px, colored variant icon (no circular badge).
 
 ## Computed styles — Solution banner (variant-colored top banner in tabs)
 - Width: 870px, height ~154px.
@@ -181,10 +208,11 @@ Tab: Advisory Services & Reporting — card grid:
 - Illustration image on right (source URLs captured per tab; kept optional — could be plain gradient if network-unfriendly).
 
 ## Computed styles — Resources popup (flat)
-- Lists container: flex-row.
+- Layout: single flex row inside `.app-header__panel` with padding 40px 24px 24px. 3 link columns + side banner column, all at the same level. **No vertical dividers between columns.**
+- Side banner: width 253px, **NO left border**, no padding offset.
 - Heading (`Learn`, `Explore`, `Company`): color `rgb(9, 37, 64)`, 700, 14px (letter-spacing 0.14px).
-- List items (anchors): color `rgb(9, 37, 64)`, 700, 16px, font-family `"DM Sans", system-ui`, no underline, padding 8px 12px.
-- Side banner: no bg, padding-left 24px; small header (14px 700), title (16px 700), body (13px 400), CTA (14px 700).
+- List items (anchors): color `rgb(9, 37, 64)`, 700, 16px, font-family `"DM Sans", system-ui`, no underline, padding 8px 12px. (Distinct from Products/Solutions list-item styling — Resources items are bolder + larger.)
+- Bottom container: same `rgb(241, 246, 255)` bar with "Contact sales" + "Start free trial".
 
 ## Known omissions
 - The desktop Products/Solutions panel illustration PNGs are hosted on `static-us-east-1.similarcdn.com`. These are referenced by remote URL rather than bundled — they render if the CDN is reachable, and degrade gracefully (gradient banner only) if not.

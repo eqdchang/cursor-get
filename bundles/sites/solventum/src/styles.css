@@ -12,6 +12,18 @@
   .bw-scope *::after {
     box-sizing: border-box;
     border: 0 solid;
+    --tw-border-style: solid;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-translate-z: 0;
+    --tw-rotate-x: ;
+    --tw-rotate-y: ;
+    --tw-rotate-z: ;
+    --tw-skew-x: ;
+    --tw-skew-y: ;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-scale-z: 1;
   }
 
   .bw-scope {

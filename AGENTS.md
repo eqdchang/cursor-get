@@ -83,6 +83,16 @@ docs/
 - `npm run build:all` — every site
 - `npm run dev:<slug>` — Vite dev server rooted in `sites/<slug>/demo/`
 
+## Standing extraction process
+
+The full rubric is in `.cursor/commands/clone-header-footer.md` ("General approach (always)"). The order is non-negotiable on every site:
+
+1. Walk every dropdown in the header and every collapsible/widget in the footer at the desktop viewport. Open each, screenshot to `images/`, then close it. Do the same for every nested level (subgroup expansion, side flyout, accordion). Every state visible on the live site has a screenshot before any JSX is written.
+2. Probe interactivity: hover AND click each top-level trigger (record which mechanism opens the dropdown), hover representative rows inside, click chevrons/sub-toggles, confirm hit-targets for trailing widgets. Capture how the trigger itself changes when its dropdown is open (color, underline, 3px bar, chevron rotation, parent `--active` class).
+3. Repeat the entire pass at mobile (~390px). Open the hamburger, screenshot the drawer, expand each group inside and screenshot each expansion. Mobile interaction model and typography are measured independently — never assume they mirror desktop.
+4. Match every visible ornament: borders, fonts, icons, spacing, colors, hover/click effects, active-state indicators, separator lines, `::before` / `::after` pseudo-elements, animated chevron rotations, focus rings, image assets. Header / footer / utility-bar styles are independent — measure each link and button type separately.
+5. All screenshots and reference images go to `images/` at the repo root by default. The folder is created in pre-flight (`mkdir -p images`) and is gitignored. Never store screenshots elsewhere; never ask where to save them.
+
 ## Functional parity contract
 
 Every extracted header + footer must pass this checklist before being considered done. Full rubric lives in `.cursor/commands/clone-header-footer.md`.

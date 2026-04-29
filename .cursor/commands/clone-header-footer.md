@@ -13,6 +13,16 @@ Scope is only two components per site. No page body, no section loop, no full-pa
 - **Forms are visual stubs only.** Any form in the header or footer — newsletter signup, email subscribe, search bar, contact form, "find a dealer by zip" input, quote request, etc. — is cloned for layout and styling only. The `<input>` and `<button>` render so the header/footer looks complete, but no submission handler is wired up. Mark the form as *stubbed* in the relevant spec file under "Known omissions". The same goes for search icons that open a search panel: render the icon hit-target, do not build the panel.
 - **No invented UI.** Every visible element in the cloned output must exist in the extracted source. Do not add "View all X", "Featured", CTA blocks, promo banners, tag lines, or any other embellishment that isn't on the real site. If it isn't in `research/header.spec.md` or `research/footer.spec.md`, it does not ship.
 
+## General approach (always)
+
+This is the standing process for every site. Walk it end-to-end on the first pass so the user does not have to ask twice for the same kind of detail. The order is non-negotiable:
+
+1. **Walk every dropdown in the header and every collapsible/widget in the footer.** Open each at the desktop viewport, screenshot it to `images/`, then close it before moving to the next. Do the same for every nested level — subgroup expansion, side flyout, accordion, language menu, account menu, etc. If a row inside a dropdown has a chevron, an arrow, or a "+", treat that as a separate state and screenshot it expanded too. The bar is: **every state the user can see on the live site has a screenshot in `images/` before any JSX is written.**
+2. **Probe interactivity on several representative triggers and links.** For each top-level nav trigger, hover it AND click it (record which mechanism opens the dropdown). For at least one row inside the open dropdown, hover it (does it highlight? does an icon change color?) and click any chevron/sub-toggle (inline expand vs side flyout vs no-op link). For trailing widgets (search, account, cart, language switcher, login) confirm hit-target behavior. **Active states matter as much as default states** — when a dropdown is open, capture how the trigger itself changes (color shift, underline, 3px bar at the bottom, chevron rotation, parent class like `--active`).
+3. **Once desktop is fully captured, repeat the entire pass at mobile (~390px).** Open the hamburger, screenshot the drawer's root state, then expand each top-level group inside the drawer and screenshot each expansion. The mobile interaction model often differs from desktop (inline accordion vs side flyout, different item ordering, additional or removed items, search input that only exists on mobile) — measure mobile independently rather than assuming it mirrors desktop.
+4. **Match every visible ornament, not just the obvious ones.** Borders, fonts, icons, spacing, colors, hover and click effects, active-state indicators, separator lines between items, thin dividers before utility links (often `::before` pseudo-elements with `position: absolute; width: 1px; height: ~20px`), `::before` / `::after` decorations on the active nav item, animated chevron rotations, focus rings, image assets. If you can see it on the live site, the clone has it. Measure each link/button type independently — header link styles do not bleed into footer link styles, neither bleeds into utility-bar link styles.
+5. **All screenshots and reference images go to `images/` at the repo root by default.** Pre-flight creates the folder (`mkdir -p images`) and it is gitignored. Never store screenshots elsewhere; never ask the user where to save them. When the live site exposes raster image assets that are part of the header/footer (logo PNGs, dropdown illustration thumbnails, side-banner artwork), download them to `images/` too — only embed them in the bundle if the user has confirmed they want raster assets bundled rather than referenced via the original CDN URL.
+
 ## Known failure modes to avoid
 
 These are real mistakes made on prior sites. Do not repeat them:
@@ -31,6 +41,14 @@ These are real mistakes made on prior sites. Do not repeat them:
 12. **Dropdown background color measured only on the outermost element.** The outermost panel element's background may be overridden by an inner container with a different color. Walk inward from the panel root checking `backgroundColor` on every container. Record every non-transparent layer. The callout/bottom row may also have its own distinct background.
 13. **Dropdown column layout not measured.** The column container's layout mode, column count, gap, and child widths must be measured. Without this, columns end up bunched on one side instead of distributed to match the live site. Measure and replicate the exact layout.
 14. **Button border-width assumed.** CTA buttons may use different border widths. Always measure `border-width` explicitly for every styled button.
+15. **Active-trigger ornament missed.** When a dropdown is open, the trigger button's parent often gains an indicator that is not on the button itself: a 3px colored bar pinned to the bottom of the menu item, a color shift on the text, a rotated chevron. This is usually rendered as a `::after` pseudo-element on the parent `<li>` / `__item--active` element. If you only inspect the `<button>`, you will miss it. Always inspect the parent of an active trigger and check `::before` / `::after`.
+16. **Pseudo-element decorations missed.** Thin vertical dividers between user-menu items (e.g. before "Login"), separator lines under the active nav item, hover underlines, decorative dots on inactive triggers — these almost always live in `::before` / `::after`. For every visible "small ornament" on the live site, check the relevant element's pseudo-elements via `getComputedStyle(el, '::before')` and `getComputedStyle(el, '::after')` before concluding it is not in the DOM.
+17. **Sidebar tab icon assumed for every entry.** When a vertical sidebar tab list mixes "free / generic" entries with "branded product" entries, the branded ones often have a colored brand icon while the free/generic ones have nothing. Inspect the tab markup; if the branded entries have `class~="solution-icon"` or similar and the generic ones do not, do not render an icon on the generic entries.
+18. **Nav menu cluster left-aligned instead of centered.** Many sites center the main nav between the logo and the user menu using `flex-grow: 1` on the nav container plus `justify-content: center` on the inner list. If you render the nav with `flex-1` but leave the `<ul>` with default left-alignment, the items hug the logo. Always check the `justify-content` of the menu's inner list.
+19. **Generic icon set missing one or two recent additions.** When extracting a site's icon set programmatically (e.g. ChatGPT/Perplexity/Claude/Grok/Gemini/Deepseek), the extractor can miss the last item or one with an unusual name. Verify by looking up every list item label in your generated icon map; any label that falls back to a generic dot is a missing icon you need to add.
+20. **Inner link/button component drops `style` prop.** A common refactor is wrapping `<a>` in a project-local `A` component that takes `href`, `external`, `className`, and `onClick`. If the component does not also accept and forward `style`, every inline-style hint (gradient backgrounds, color tints, custom backgrounds) is silently dropped at render time. When debugging "the inline style is not applied", check the wrapper component first.
+21. **Bottom-bar / utility-row pinned only inside the panel content.** When a dropdown has a horizontal bar at the bottom ("Explore API", "Contact sales / Start free trial", legal text), that bar usually spans the FULL popup width with its own background color, not just the inner content column. If you place it inside the right-content panel, it will be too narrow and miss the background fill. Render it as a sibling of the panel, not a child.
+22. **Tailwind v4 `--tw-*` defaults are missing inside the shadow DOM.** Tailwind v4 utilities like `.border`, `.-translate-y-1/2`, `.scale-95`, `.rotate-180`, etc. expand to declarations such as `border-style: var(--tw-border-style)` and `translate: var(--tw-translate-x) var(--tw-translate-y)`. Tailwind ships `@property` declarations to provide initial values for those vars (`--tw-border-style: solid`, `--tw-translate-x: 0`, etc.), AND it relies on **preflight** to set them on `*`. We disable preflight for style isolation, AND `@property` registration is document-scoped — so `@property` rules emitted *inside* a shadow root are ignored by the browser and provide no initial values to elements within the shadow. Net effect: `border-style` falls back to `none` (no border renders), `translate` falls back to `none` (so `before:top-1/2 before:-translate-y-1/2` only sets `top: 50%` without the upward shift, putting the element in the bottom half of its parent), `scale` and `rotate` utilities can compose incorrectly, and so on. The bug is invisible in the demo HTML and only shows up on a real host page. **Fix:** the scope reset in `styles.css` MUST hard-code defaults for every `--tw-*` var the bundle uses. At minimum: `--tw-border-style: solid; --tw-translate-x: 0; --tw-translate-y: 0; --tw-translate-z: 0; --tw-rotate-x: ; --tw-rotate-y: ; --tw-rotate-z: ; --tw-skew-x: ; --tw-skew-y: ; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scale-z: 1;`. Add more if a new Tailwind utility is used that depends on additional `--tw-*` registrations. Verify after every utility-class addition by checking `getComputedStyle(el, '::before').translate` / `.transform` / `.borderStyle` and confirming they are not `none`/`""`.
 
 ## Pre-flight
 
@@ -149,6 +167,24 @@ Tailwind v4 without preflight, with a scope class. Use `bw-scope` — it's the p
   .bw-scope *::after {
     box-sizing: border-box;
     border: 0 solid;
+    /* Tailwind v4 utilities reference these vars and rely on @property
+       declarations to provide initial values — but @property is
+       document-scoped, so inside a shadow root those defaults are NOT
+       applied. We must define them explicitly here, otherwise utilities
+       like `border`, `-translate-y-1/2`, `scale-95`, etc. silently
+       resolve to invalid values and revert to their CSS initial. */
+    --tw-border-style: solid;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-translate-z: 0;
+    --tw-rotate-x: ;
+    --tw-rotate-y: ;
+    --tw-rotate-z: ;
+    --tw-skew-x: ;
+    --tw-skew-y: ;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-scale-z: 1;
   }
 
   .bw-scope {
@@ -418,7 +454,7 @@ The component state machine differs for each. This determines whether `openMode`
 ### 2c. Dropdown anatomy pass (the one you keep skipping)
 For **every** top-level item that has a dropdown, do all of the following before moving on:
 
-1. Open the dropdown (using the trigger mechanism identified in 2b). Take a screenshot of the open panel in its default state and save it to `images/` (create the directory if it doesn't exist).
+1. Open the dropdown (using the trigger mechanism identified in 2b). Take a screenshot of the open panel in its default state and save it to `images/<slug>-header-<group>-default.png` (the directory is created in pre-flight). Also screenshot the **trigger itself in its active state** so the trigger's open-state ornament (color, underline, 3px bar) is captured — a viewport screenshot taken while the dropdown is open serves both purposes.
 2. `getBoundingClientRect()` on the panel root — record its width in px and whether it renders as single column, multi-column grid, or side flyout.
 3. Enumerate every direct child row of the panel. For each, classify as one of:
    - **link** — a simple anchor that navigates
@@ -428,12 +464,14 @@ For **every** top-level item that has a dropdown, do all of the following before
    - **CTA** — styled button (position varies by site)
    - **image-card** — image + label tile
    - **description-row** — label + secondary descriptive text line
+   - **bottom-bar** — full-popup-width horizontal row with its own background, usually 1–2 utility links right-aligned ("Contact sales", "Explore API")
 4. For any `subgroup-toggle` row, hover AND click it. Record:
    - Does it expand inline (pushing siblings down) or open a side flyout?
    - Does the heading text itself navigate when clicked, with the chevron as a separate expand target? If so, build it the same way.
-   - What appears when expanded? Enumerate those items too.
+   - What appears when expanded? Enumerate those items too. **Screenshot the expanded state too** and save it next to the default screenshot.
 5. For any row whose href differs from its visible text target (e.g. a heading that links to a collection while a chevron toggles the accordion), mirror that dual-behavior exactly.
-6. After probing, close the dropdown and repeat for the next top-level item. Do not assume siblings share the same anatomy — they may differ.
+6. **Inspect the active trigger's parent and pseudo-elements.** When the dropdown is open, query the parent of the trigger button (often `<li>` or `__item--active`) and read its `::before` and `::after` pseudo-elements. The bar/underline/dot that marks the active trigger almost always lives there. Record the pseudo-element's `content`, `position`, `width`, `height`, `background-color`, `top`/`bottom`/`left`/`right` so the clone can replicate it.
+7. After probing, close the dropdown and repeat for the next top-level item. Do not assume siblings share the same anatomy — they may differ.
 
 Useful probes (run via the browser MCP's evaluate):
 
@@ -467,9 +505,11 @@ Open a dropdown and extract `getComputedStyle` for EVERY distinct element type. 
 |---|---|
 | Header element | `position` (sticky/fixed/relative — determines dropdown positioning strategy) |
 | Nav bar separator | `border-top` or `border-bottom` color between utility bar and nav bar |
+| Nav cluster alignment | `justify-content` of the inner `<ul>` and `flex-grow` of the nav container — determines whether the menu is left-aligned to the logo or centered between logo and user menu |
 | Nav trigger buttons | `color`, `font-weight`, `font-size` |
-| Nav trigger active state | `color`, `border-bottom` (width, style, color) |
-| Utility links (top bar) | `color`, `font-weight`, `font-size`, `text-decoration-line` |
+| Nav trigger active state | `color`, `border-bottom` (width, style, color), AND `::before` / `::after` on both the button and its parent `<li>` (active underline / 3px bar / dot decoration almost always lives in a pseudo-element on the parent) |
+| Nav trigger hover state | `color`, `background-color`, `text-decoration-line`, and any pseudo-element that animates in on hover |
+| Utility links (top bar) | `color`, `font-weight`, `font-size`, `text-decoration-line`, AND `::before` (small vertical divider before "Login" / language switcher items is almost always a `::before` pseudo-element) |
 | Contact/CTA button | `color`, `font-weight`, `font-size`, `border` (including **width**), `border-radius`, `padding` |
 | Dropdown panel bg | `background-color` — check **inner containers** too, not just the root (see failure mode #12) |
 | Dropdown callout row bg | `background-color` (measure separately from the main panel) |
@@ -481,6 +521,8 @@ Open a dropdown and extract `getComputedStyle` for EVERY distinct element type. 
 | Dropdown description text | `color`, `font-weight`, `font-size` |
 | Dropdown callout buttons | `color`, `font-weight`, `font-size` |
 | Callout/bottom-bar icons | `color` (may differ from text) |
+| Bottom-bar row (if present) | `width` (full popup vs inner content only), `background-color`, `padding`, alignment of inner links |
+| Sidebar tab list (tabbed dropdowns) | per-tab: does the entry render a brand icon? (some entries omit the icon — check `.tab__icon` or equivalent presence per item, do not assume uniform) |
 
 Use this snippet to batch-extract everything from an open dropdown in one call:
 
@@ -492,10 +534,15 @@ const pick = (el, ...props) => Object.fromEntries(props.map(p => [p, getComputed
 If any value in the table is missing, the spec is incomplete. Do not write JSX until this table is filled in.
 
 ### 2f. Mobile pass (resize to 390px)
-1. Locate the hamburger button and its icon. Record the breakpoint where the desktop nav disappears.
-2. Open the drawer. Is the data identical to the desktop nav, or flattened / different ordering?
-3. For any row in the drawer that has a chevron, tap it and record whether it expands inline. The mobile interaction model may differ from the desktop one — measure both independently.
-4. Close behaviors: tap hamburger again, tap X, tap outside, Escape. Record which are supported; the clone must implement tap-hamburger-again + Escape + link-tap-closes at minimum.
+Mobile gets the same depth as desktop. Apply the General Approach (especially items 1, 2, and 4) to the mobile drawer end-to-end.
+
+1. Locate the hamburger button and its icon. Record the breakpoint where the desktop nav disappears (the viewport width at which the hamburger appears).
+2. Open the drawer. Screenshot the drawer's root state to `images/<slug>-header-mobile-drawer.png`. Is the data identical to the desktop nav, or flattened / different ordering / additional or removed items?
+3. For every row in the drawer that has a chevron / "+" / arrow, tap it. Record whether it expands inline (pushing siblings down) or replaces the drawer view (slide-in second screen). **Screenshot every expanded state** and save with a descriptive name (`<slug>-header-mobile-<group>-expanded.png`). The mobile interaction model often differs from the desktop one — measure both independently.
+4. Capture mobile-only widgets: search input that appears in the drawer, login/account button placement, language switcher, social icons, "Get a quote" CTA at the bottom of the drawer. Each gets its own row in the spec.
+5. Run the same computed-style measurements (font-size, font-weight, color, background-color, padding, border) on the drawer's link rows and CTA buttons. Mobile typography frequently differs from desktop — never reuse desktop values for mobile rows without measuring.
+6. Close behaviors: tap hamburger again, tap X, tap outside, Escape. Record which are supported; the clone must implement tap-hamburger-again + Escape + link-tap-closes at minimum.
+7. If the footer is collapsible on mobile (accordion columns), open every collapsed section, screenshot each expanded state, and record the toggle behavior.
 
 Write all of this into `bundles/sites/<slug>/research/header.spec.md` using the template at the bottom of this file.
 
@@ -717,15 +764,25 @@ Before calling the header done, open TWO browser tabs via the MCP:
 - Tab A: the live site (e.g. `https://byrna.com/`).
 - Tab B: the built demo (`http://localhost:8765/sites/<slug>/demo/header.html`).
 
-For each top-level nav item:
-1. Open the dropdown in both tabs.
-2. Take a viewport screenshot of each and save to `images/` (create the directory if it doesn't exist). The `images/` folder is gitignored, so these won't be committed.
-3. Compare structurally. Ask: "Is the panel the same width? Same number of columns? Same row types in the same order? Are there any rows in one that aren't in the other?"
-4. If there are any invented rows in the clone (see "No invented UI" rule), delete them.
-5. If the clone is missing a row type that exists in the real site (subgroup toggle, description line, CTA), add it.
-6. Repeat for any nested/expanded state (e.g. expand an accordion subgroup and compare again).
+For each top-level nav item, AND repeat the entire process at mobile (390px):
 
-Only when the structural match is tight do you move on. Not "close enough" — if the user can tell at a glance that the shapes are different, the clone is not done.
+1. Open the dropdown in both tabs.
+2. Take a viewport screenshot of each and save to `images/` with descriptive names (e.g. `<slug>-products-live.png` and `<slug>-products-clone.png`). The `images/` folder is gitignored.
+3. **Structural comparison.** Is the panel the same width? Same number of columns? Same row types in the same order? Are there any rows in one that aren't in the other?
+4. **Ornament comparison.** Walk through these every time, on every dropdown:
+   - Trigger active state — does the live site show a colored underline / 3px bar / color shift on the open trigger? Does the clone?
+   - Sidebar tab icons — does each tab in the live site have an icon, or do some entries omit it? Does the clone match per-entry?
+   - Card backgrounds — are tinted backgrounds (gradient or solid `rgba`) actually rendered in the clone, or is the inline `style` prop being dropped by a wrapper component?
+   - Bottom bar — does the live site show a full-popup-width utility bar at the bottom? Is the clone's bar the same width and the same background color?
+   - Borders — are sidebar / column dividers present or absent? Border radius on cards (4 vs 8 vs 12)?
+   - Icons — every dropdown item that should have a brand icon shows the correct brand icon, not a fallback dot.
+   - Login / utility divider — vertical thin line before the Login link or between language switcher items.
+5. If there are any invented rows in the clone (see "No invented UI" rule), delete them.
+6. If the clone is missing a row type that exists in the real site (subgroup toggle, description line, CTA, bottom-bar utility row), add it.
+7. Repeat for any nested/expanded state (expand an accordion subgroup, hover a card, open a sidebar tab) and compare again.
+8. Repeat the entire pass at 390px on the mobile drawer — every drawer state that exists in the spec gets a side-by-side comparison.
+
+Only when the structural AND ornament match is tight do you move on. Not "close enough" — if the user can tell at a glance that the shapes are different, that a card has the wrong background tint, or that the active trigger is missing its underline, the clone is not done.
 
 ## Step 7 — Preview in Next.js (optional but recommended)
 

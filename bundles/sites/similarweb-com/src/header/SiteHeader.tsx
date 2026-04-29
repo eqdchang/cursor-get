@@ -4,12 +4,12 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 import { getIconSvg, getSidebarBrandSvg } from "./icons.generated";
 
 const SITE_BASE = "https://www.similarweb.com";
-const EXPLORE_API_HREF = "/corp/daas/api/";
 
 type GroupKey = "products" | "solutions" | "resources";
 
@@ -57,6 +57,29 @@ type CardTabPanel = TabPanelBase & {
 
 type TabPanel = LinkTabPanel | CardTabPanel;
 
+type BottomLink = { label: string; href: string; external?: boolean };
+
+const PRODUCTS_BOTTOM_INTELLIGENCE: BottomLink[] = [
+  { label: "Explore API", href: "/corp/daas/api/" },
+];
+const PRODUCTS_BOTTOM_FREE_TOOLS: BottomLink[] = [
+  { label: "Contact sales", href: "/corp/contact-us/" },
+  {
+    label: "Start free trial",
+    href: "https://account.similarweb.com/journey/registration/",
+    external: true,
+  },
+];
+const SOLUTIONS_BOTTOM: BottomLink[] = [
+  { label: "Contact sales", href: "/corp/contact-us/" },
+  {
+    label: "Start free trial",
+    href: "https://account.similarweb.com/journey/registration/",
+    external: true,
+  },
+];
+const RESOURCES_BOTTOM: BottomLink[] = SOLUTIONS_BOTTOM;
+
 const SIDE_BANNER = {
   kicker: "Plan earlier and better for the 2026 holiday season",
   title: "Top Holiday 2026 Shopper Trends",
@@ -74,6 +97,7 @@ const PRODUCT_TABS: TabPanel[] = [
     lists: [
       {
         heading: "Tools",
+        columns: 2,
         items: [
           { label: "Website Traffic Checker", href: "/website/" },
           { label: "Free App Analytics", href: "/app/" },
@@ -89,6 +113,7 @@ const PRODUCT_TABS: TabPanel[] = [
       },
       {
         heading: "Rankings",
+        columns: 2,
         items: [
           { label: "Top Websites", href: "/top-websites/" },
           { label: "Trending Websites", href: "/top-websites/trending/" },
@@ -1052,18 +1077,28 @@ type LinkProps = {
   href: string;
   external?: boolean;
   className?: string;
+  style?: CSSProperties;
   onClick?: () => void;
   role?: string;
   children: ReactNode;
 };
 
-function A({ href, external, className, onClick, role, children }: LinkProps) {
+function A({
+  href,
+  external,
+  className,
+  style,
+  onClick,
+  role,
+  children,
+}: LinkProps) {
   const finalHref = abs(href);
   const ext = isExternal(finalHref, external);
   return (
     <a
       href={finalHref}
       className={className}
+      style={style}
       onClick={onClick}
       role={role}
       target={ext ? "_blank" : undefined}
@@ -1078,9 +1113,9 @@ function bannerGradient(variant: string): string {
   return `radial-gradient(130% 100% at 120% 0%, ${variant} 0%, rgb(23, 78, 212) 58.5%, rgb(16, 37, 62) 100%)`;
 }
 
-function cardGradientBg(rgb?: string): string | undefined {
+function cardTintBg(rgb?: string): string | undefined {
   if (!rgb) return undefined;
-  return `linear-gradient(180deg, rgba(${rgb}, 0.12) 0%, rgba(${rgb}, 0) 100%)`;
+  return `rgba(${rgb}, 0.05)`;
 }
 
 export function SiteHeader() {
@@ -1178,14 +1213,14 @@ export function SiteHeader() {
               </A>
 
               <nav
-                className="hidden lg:flex items-center ml-8 flex-1"
+                className="hidden lg:flex items-center ml-5 flex-1 self-stretch"
                 aria-label="Primary"
               >
-                <ul className="flex items-center gap-1">
-                  <li>
+                <ul className="flex items-center justify-center gap-1 w-full h-full">
+                  <li className="relative h-full flex items-center">
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[16px] font-medium transition-colors ${openGroup === "products" ? "text-white" : "text-[#aab2ba] hover:text-white"}`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[16px] font-medium transition-colors ${openGroup === "products" ? "text-[#195AFE]" : "text-white hover:text-[#aab2ba]"}`}
                       aria-haspopup="menu"
                       aria-expanded={openGroup === "products"}
                       onClick={() => toggleGroup("products")}
@@ -1195,11 +1230,17 @@ export function SiteHeader() {
                         className={`transition-transform ${openGroup === "products" ? "rotate-180" : ""}`}
                       />
                     </button>
+                    {openGroup === "products" && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute left-0 right-0 bottom-0 h-[3px] bg-[#195AFE]"
+                      />
+                    )}
                   </li>
-                  <li>
+                  <li className="relative h-full flex items-center">
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[16px] font-medium transition-colors ${openGroup === "solutions" ? "text-white" : "text-[#aab2ba] hover:text-white"}`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[16px] font-medium transition-colors ${openGroup === "solutions" ? "text-[#195AFE]" : "text-white hover:text-[#aab2ba]"}`}
                       aria-haspopup="menu"
                       aria-expanded={openGroup === "solutions"}
                       onClick={() => toggleGroup("solutions")}
@@ -1209,11 +1250,17 @@ export function SiteHeader() {
                         className={`transition-transform ${openGroup === "solutions" ? "rotate-180" : ""}`}
                       />
                     </button>
+                    {openGroup === "solutions" && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute left-0 right-0 bottom-0 h-[3px] bg-[#195AFE]"
+                      />
+                    )}
                   </li>
-                  <li>
+                  <li className="relative h-full flex items-center">
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[16px] font-medium transition-colors ${openGroup === "resources" ? "text-white" : "text-[#aab2ba] hover:text-white"}`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[16px] font-medium transition-colors ${openGroup === "resources" ? "text-[#195AFE]" : "text-white hover:text-[#aab2ba]"}`}
                       aria-haspopup="menu"
                       aria-expanded={openGroup === "resources"}
                       onClick={() => toggleGroup("resources")}
@@ -1223,11 +1270,17 @@ export function SiteHeader() {
                         className={`transition-transform ${openGroup === "resources" ? "rotate-180" : ""}`}
                       />
                     </button>
+                    {openGroup === "resources" && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute left-0 right-0 bottom-0 h-[3px] bg-[#195AFE]"
+                      />
+                    )}
                   </li>
                   <li>
                     <A
                       href="https://www.similarweb.com/packages/marketing/"
-                      className="inline-flex items-center px-3 py-1.5 rounded-md text-[15px] font-normal text-white hover:text-white/90"
+                      className="inline-flex items-center px-3 py-1.5 rounded-md text-[16px] font-medium text-white hover:text-[#aab2ba]"
                       onClick={closeAll}
                     >
                       Pricing
@@ -1236,7 +1289,7 @@ export function SiteHeader() {
                 </ul>
               </nav>
 
-              <div className="hidden lg:flex items-center gap-3 ml-auto">
+              <div className="hidden lg:flex items-center gap-3">
                 <A
                   href="/corp/book-a-demo/"
                   className="inline-flex items-center justify-center h-[42px] px-[15px] rounded-[42px] border border-white text-[14px] font-bold text-white hover:bg-white hover:text-[#000921] transition-colors"
@@ -1262,7 +1315,7 @@ export function SiteHeader() {
                 </A>
                 <A
                   href="https://secure.similarweb.com/account/login/default"
-                  className="inline-flex items-center px-3 text-[16px] font-medium text-white hover:text-white/90"
+                  className="relative inline-flex items-center pl-3 pr-0 h-[42px] text-[16px] font-medium text-white hover:text-white/90 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-px before:h-5 before:bg-[#b6bec6]"
                   onClick={closeAll}
                   external
                 >
@@ -1292,27 +1345,45 @@ export function SiteHeader() {
                 role="menu"
               >
                 {openGroup === "products" && (
-                  <TabbedPanel
-                    tabs={PRODUCT_TABS}
-                    activeId={activeProductTab}
-                    onSelect={setActiveProductTab}
-                    active={activeProduct}
-                    onNavigate={closeAll}
-                    showBrandIcons
-                  />
+                  <>
+                    <TabbedPanel
+                      tabs={PRODUCT_TABS}
+                      activeId={activeProductTab}
+                      onSelect={setActiveProductTab}
+                      active={activeProduct}
+                      onNavigate={closeAll}
+                      showBrandIcons
+                      sidebarDividerAfterId="free-tools"
+                    />
+                    <BottomBar
+                      links={
+                        activeProduct.id === "free-tools"
+                          ? PRODUCTS_BOTTOM_FREE_TOOLS
+                          : PRODUCTS_BOTTOM_INTELLIGENCE
+                      }
+                      onNavigate={closeAll}
+                    />
+                  </>
                 )}
                 {openGroup === "solutions" && (
-                  <TabbedPanel
-                    tabs={SOLUTION_TABS}
-                    activeId={activeSolutionTab}
-                    onSelect={setActiveSolutionTab}
-                    active={activeSolution}
-                    onNavigate={closeAll}
-                    withSideBanner
-                  />
+                  <>
+                    <TabbedPanel
+                      tabs={SOLUTION_TABS}
+                      activeId={activeSolutionTab}
+                      onSelect={setActiveSolutionTab}
+                      active={activeSolution}
+                      onNavigate={closeAll}
+                      withSideBanner
+                      sidebarDividerAfterId="by-industry"
+                    />
+                    <BottomBar links={SOLUTIONS_BOTTOM} onNavigate={closeAll} />
+                  </>
                 )}
                 {openGroup === "resources" && (
-                  <ResourcesPanel onNavigate={closeAll} />
+                  <>
+                    <ResourcesPanel onNavigate={closeAll} />
+                    <BottomBar links={RESOURCES_BOTTOM} onNavigate={closeAll} />
+                  </>
                 )}
               </div>
             </div>
@@ -1335,6 +1406,7 @@ function TabbedPanel({
   onNavigate,
   showBrandIcons,
   withSideBanner,
+  sidebarDividerAfterId,
 }: {
   tabs: TabPanel[];
   activeId: string;
@@ -1343,50 +1415,84 @@ function TabbedPanel({
   onNavigate: () => void;
   showBrandIcons?: boolean;
   withSideBanner?: boolean;
+  sidebarDividerAfterId?: string;
 }) {
   return (
     <div className="flex">
-      <div className="w-[282px] shrink-0 py-6 pl-6 pr-3 border-r border-[#eef0f3]">
-        <ul role="menu">
+      <div className="w-[282px] shrink-0 pt-10 px-6 pb-0">
+        <ul role="menu" className="flex flex-col gap-y-4">
           {tabs.map((tab) => {
             const isActive = tab.id === activeId;
             return (
-              <li key={tab.id}>
+              <li key={tab.id} className="w-[234px]">
                 <button
                   type="button"
                   role="menuitem"
-                  className={`w-full text-left flex items-center gap-3 pl-3 pr-2 h-10 rounded-md text-[15px] font-medium transition-colors ${isActive ? "bg-[#F1F6FF] text-[#195AFE]" : "text-[#0B0A0A] hover:bg-[#f6f8fb]"}`}
+                  className={`w-full text-left flex items-center gap-3 px-3 min-h-8 py-1 rounded-md text-[16px] font-medium leading-tight transition-colors ${isActive ? "bg-[#F1F6FF] text-[#195AFE]" : "text-[#092540] hover:bg-[#f6f8fb]"}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onSelect(tab.id);
                   }}
                 >
-                  {showBrandIcons && (
+                  {showBrandIcons && tab.id !== "free-tools" && (
                     <BrandCircleIcon id={tab.id} size={20} className="shrink-0" />
                   )}
-                  <span className="flex-1 truncate">{tab.label}</span>
+                  <span className="flex-1">{tab.label}</span>
                   <ChevronRightThin
-                    className={isActive ? "text-[#195AFE]" : "text-[#aab2ba]"}
+                    className={`shrink-0 ${isActive ? "text-[#195AFE]" : "text-[#aab2ba]"}`}
                   />
                 </button>
+                {sidebarDividerAfterId === tab.id && (
+                  <div
+                    role="presentation"
+                    className="mt-4 mb-0 h-px w-full bg-[#eef0f3]"
+                  />
+                )}
               </li>
             );
           })}
         </ul>
       </div>
-      <div className="flex-1 min-w-0 p-6">
-        {active.kind === "links" && (
-          <LinkPanel panel={active} onNavigate={onNavigate} />
-        )}
-        {active.kind === "cards" && (
-          <CardPanel panel={active} onNavigate={onNavigate} />
+      <div className="flex-1 min-w-0 pt-10 pr-6 pb-6 pl-0 flex gap-6">
+        <div className="flex-1 min-w-0">
+          {active.kind === "links" && (
+            <LinkPanel panel={active} onNavigate={onNavigate} />
+          )}
+          {active.kind === "cards" && (
+            <CardPanel panel={active} onNavigate={onNavigate} />
+          )}
+        </div>
+        {withSideBanner && (
+          <div className="w-[253px] shrink-0">
+            <SideBanner onNavigate={onNavigate} />
+          </div>
         )}
       </div>
-      {withSideBanner && (
-        <div className="w-[260px] shrink-0 p-6 border-l border-[#eef0f3]">
-          <SideBanner onNavigate={onNavigate} />
-        </div>
-      )}
+    </div>
+  );
+}
+
+function BottomBar({
+  links,
+  onNavigate,
+}: {
+  links: BottomLink[];
+  onNavigate: () => void;
+}) {
+  return (
+    <div className="flex justify-end items-center gap-6 bg-[#F1F6FF] px-6 py-4">
+      {links.map((l) => (
+        <A
+          key={l.label}
+          href={l.href}
+          external={l.external}
+          onClick={onNavigate}
+          className="inline-flex items-center gap-1.5 text-[13px] font-normal text-[#092540] no-underline hover:text-[#195AFE]"
+        >
+          {l.label}
+          <ArrowRight />
+        </A>
+      ))}
     </div>
   );
 }
@@ -1473,12 +1579,12 @@ function LinkPanel({
                 <A
                   href={list.headingHref}
                   onClick={onNavigate}
-                  className="inline-block px-3 mb-2 text-[14px] font-bold tracking-wide text-[#092540]"
+                  className="inline-block pl-3 mb-1 text-[14px] font-bold tracking-wide text-[#092540] no-underline"
                 >
                   {list.heading}
                 </A>
               ) : (
-                <div className="px-3 mb-2 text-[14px] font-bold tracking-wide text-[#092540]">
+                <div className="pl-3 mb-1 text-[14px] font-bold tracking-wide text-[#092540]">
                   {list.heading}
                 </div>
               ))}
@@ -1504,7 +1610,7 @@ function LinkPanel({
                     href={it.href}
                     external={it.external}
                     onClick={onNavigate}
-                    className="flex items-center gap-2 px-3 py-1.5 text-[13px] font-normal text-[#092540]/80 rounded-md hover:bg-[#f6f8fb] hover:text-[#092540] no-underline"
+                    className="flex items-start gap-2 px-3 py-2 text-[13px] font-normal text-[#092540]/80 rounded-md hover:bg-[#f6f8fb] hover:text-[#092540] no-underline leading-tight"
                     role="menuitem"
                   >
                     <LabelIcon
@@ -1512,7 +1618,7 @@ function LinkPanel({
                       size={16}
                       fallback={<RowIcon className="shrink-0 text-[#aab2ba]" />}
                     />
-                    <span className="truncate">{it.label}</span>
+                    <span>{it.label}</span>
                   </A>
                 </li>
               ))}
@@ -1520,18 +1626,6 @@ function LinkPanel({
           </div>
         ))}
       </div>
-      {panel.showExploreApi && (
-        <div className="flex justify-end pt-2 border-t border-[#eef0f3] -mx-6 -mb-6 px-6 py-3">
-          <A
-            href={EXPLORE_API_HREF}
-            onClick={onNavigate}
-            className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[#195AFE]"
-          >
-            Explore API
-            <ArrowRight />
-          </A>
-        </div>
-      )}
     </div>
   );
 }
@@ -1559,42 +1653,34 @@ function CardPanel({
               href={c.href}
               external={c.external}
               onClick={onNavigate}
-              className="relative block rounded-xl border border-[#eef0f3] p-4 hover:border-[#c5d2ff] hover:shadow-[0_4px_12px_rgba(25,90,254,0.08)] transition-all overflow-hidden no-underline"
+              className="block rounded-lg border border-transparent p-3 hover:border-[#c5d2ff] transition-colors no-underline"
+              style={{ background: cardTintBg(c.variantRgb) }}
               role="menuitem"
             >
-              {c.variantRgb && (
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-xl pointer-events-none"
-                  style={{ background: cardGradientBg(c.variantRgb) }}
+              <div className="flex items-center gap-2 mb-2">
+                <LabelIcon
+                  label={c.title}
+                  size={18}
+                  fallback={
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center justify-center w-[18px] h-[18px] rounded-full"
+                      style={{
+                        background: c.variantRgb
+                          ? `rgb(${c.variantRgb})`
+                          : "#195AFE",
+                      }}
+                    >
+                      <CardIcon className="text-white" />
+                    </span>
+                  }
                 />
-              )}
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <LabelIcon
-                    label={c.title}
-                    size={20}
-                    fallback={
-                      <span
-                        aria-hidden="true"
-                        className="inline-flex items-center justify-center w-5 h-5 rounded-full"
-                        style={{
-                          background: c.variantRgb
-                            ? `rgb(${c.variantRgb})`
-                            : "#195AFE",
-                        }}
-                      >
-                        <CardIcon className="text-white" />
-                      </span>
-                    }
-                  />
-                  <div className="text-[16px] font-bold text-[#092540]">
-                    {c.title}
-                  </div>
+                <div className="text-[16px] font-bold text-[#092540]">
+                  {c.title}
                 </div>
-                <div className="text-[13px] font-normal text-[#092540]/75 leading-snug">
-                  {c.description}
-                </div>
+              </div>
+              <div className="text-[13px] font-normal text-[#3A5166] leading-snug">
+                {c.description}
               </div>
             </A>
           ) : (
@@ -1603,20 +1689,20 @@ function CardPanel({
               href={c.href}
               external={c.external}
               onClick={onNavigate}
-              className="block rounded-xl border border-[#eef0f3] p-4 hover:border-[#c5d2ff] hover:shadow-[0_4px_12px_rgba(25,90,254,0.08)] transition-all no-underline"
+              className="block rounded-lg border border-transparent p-3 hover:bg-[#f6f8fb] transition-colors no-underline"
               role="menuitem"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <LabelIcon
                   label={c.title}
-                  size={20}
+                  size={18}
                   fallback={<CardIcon className="text-[#3A5166] shrink-0" />}
                 />
                 <div className="text-[16px] font-bold text-[#092540]">
                   {c.title}
                 </div>
               </div>
-              <div className="text-[13px] font-normal text-[#092540]/75 leading-snug">
+              <div className="text-[13px] font-normal text-[#3A5166] leading-snug">
                 {c.description}
               </div>
             </A>
@@ -1629,11 +1715,11 @@ function CardPanel({
 
 function ResourcesPanel({ onNavigate }: { onNavigate: () => void }) {
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 pt-10 px-6 pb-6">
       <div className="flex flex-1 gap-6">
         {RESOURCES_COLUMNS.map((col, i) => (
           <div key={i} className="flex-1 min-w-0">
-            <div className="px-3 mb-2 text-[14px] font-bold tracking-[0.14px] text-[#092540]">
+            <div className="px-3 mb-1 text-[14px] font-bold tracking-[0.14px] text-[#092540]">
               {col.heading}
             </div>
             <ul className="flex flex-col">
@@ -1643,7 +1729,8 @@ function ResourcesPanel({ onNavigate }: { onNavigate: () => void }) {
                     href={it.href}
                     external={it.external}
                     onClick={onNavigate}
-                    className="flex items-center gap-2 px-3 py-2 text-[14px] font-normal text-[#092540]/85 rounded-md hover:bg-[#f6f8fb] hover:text-[#092540] no-underline"
+                    className="flex items-center gap-2 px-3 py-2 text-[16px] font-bold text-[#092540] rounded-md hover:bg-[#f6f8fb] no-underline"
+                    style={{ fontFamily: '"DM Sans", system-ui, sans-serif' }}
                     role="menuitem"
                   >
                     <LabelIcon
@@ -1659,7 +1746,7 @@ function ResourcesPanel({ onNavigate }: { onNavigate: () => void }) {
           </div>
         ))}
       </div>
-      <div className="w-[260px] shrink-0 pl-6 border-l border-[#eef0f3]">
+      <div className="w-[253px] shrink-0">
         <SideBanner onNavigate={onNavigate} />
       </div>
     </div>
