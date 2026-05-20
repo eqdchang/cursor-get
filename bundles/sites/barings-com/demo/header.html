@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Barings header demo</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+      .hero {
+        min-height: 420px;
+        background: #002856;
+        color: rgba(255, 255, 255, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .hero p {
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin: 0;
+      }
+      .body {
+        padding: 64px 32px;
+        max-width: 920px;
+        margin: 0 auto;
+        line-height: 1.6;
+        color: #374151;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="barings-header-root"></div>
+    <section class="hero">
+      <p>Host page hero — the bundle only ships the header above this line</p>
+    </section>
+    <main class="body">
+      <h2>Demo host page</h2>
+      <p>
+        This page only loads the Barings drop-in header bundle. The header is
+        transparent over the dark hero, then turns white when you hover the
+        header or scroll past the hero. Hover the seven top-level menu items
+        to open their dropdowns.
+      </p>
+      <p>
+        The dark hero block above is purely a demo placeholder so you can see
+        the transparent state. Hosts that drop in the header bundle render
+        their own hero/page content beneath it.
+      </p>
+      <div style="height: 1200px"></div>
+      <p>End of demo content.</p>
+    </main>
+    <script src="../../../dist/barings-com/header.bundle.js"></script>
+  </body>
+</html>

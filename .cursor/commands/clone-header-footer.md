@@ -17,11 +17,12 @@ Scope is only two components per site. No page body, no section loop, no full-pa
 
 This is the standing process for every site. Walk it end-to-end on the first pass so the user does not have to ask twice for the same kind of detail. The order is non-negotiable:
 
-1. **Walk every dropdown in the header and every collapsible/widget in the footer.** Open each at the desktop viewport, screenshot it to `images/`, then close it before moving to the next. Do the same for every nested level — subgroup expansion, side flyout, accordion, language menu, account menu, etc. If a row inside a dropdown has a chevron, an arrow, or a "+", treat that as a separate state and screenshot it expanded too. The bar is: **every state the user can see on the live site has a screenshot in `images/` before any JSX is written.**
+1. **Walk every dropdown in the header and every collapsible/widget in the footer.** Open each at the desktop viewport, screenshot it to `images/`, then close it before moving to the next. Do the same for every nested level — subgroup expansion, side flyout, accordion, language menu, account menu, etc. If a row inside a dropdown has a chevron, an arrow, or a "+", treat that as a separate state and screenshot it expanded too. **For tabbed dropdowns, walk every tab and re-capture every ancillary widget** (side banner, bottom-bar, callout) — these often vary per-tab even though they look like fixed chrome. The bar is: **every state the user can see on the live site has a screenshot in `images/` before any JSX is written.**
 2. **Probe interactivity on several representative triggers and links.** For each top-level nav trigger, hover it AND click it (record which mechanism opens the dropdown). For at least one row inside the open dropdown, hover it (does it highlight? does an icon change color?) and click any chevron/sub-toggle (inline expand vs side flyout vs no-op link). For trailing widgets (search, account, cart, language switcher, login) confirm hit-target behavior. **Active states matter as much as default states** — when a dropdown is open, capture how the trigger itself changes (color shift, underline, 3px bar at the bottom, chevron rotation, parent class like `--active`).
-3. **Once desktop is fully captured, repeat the entire pass at mobile (~390px).** Open the hamburger, screenshot the drawer's root state, then expand each top-level group inside the drawer and screenshot each expansion. The mobile interaction model often differs from desktop (inline accordion vs side flyout, different item ordering, additional or removed items, search input that only exists on mobile) — measure mobile independently rather than assuming it mirrors desktop.
-4. **Match every visible ornament, not just the obvious ones.** Borders, fonts, icons, spacing, colors, hover and click effects, active-state indicators, separator lines between items, thin dividers before utility links (often `::before` pseudo-elements with `position: absolute; width: 1px; height: ~20px`), `::before` / `::after` decorations on the active nav item, animated chevron rotations, focus rings, image assets. If you can see it on the live site, the clone has it. Measure each link/button type independently — header link styles do not bleed into footer link styles, neither bleeds into utility-bar link styles.
-5. **All screenshots and reference images go to `images/` at the repo root by default.** Pre-flight creates the folder (`mkdir -p images`) and it is gitignored. Never store screenshots elsewhere; never ask the user where to save them. When the live site exposes raster image assets that are part of the header/footer (logo PNGs, dropdown illustration thumbnails, side-banner artwork), download them to `images/` too — only embed them in the bundle if the user has confirmed they want raster assets bundled rather than referenced via the original CDN URL.
+3. **Once desktop is fully captured, repeat the entire pass at mobile (~390px).** Open the hamburger, screenshot the drawer's root state, then expand each top-level group inside the drawer and screenshot each expansion. The mobile interaction model often differs from desktop (inline accordion vs side flyout, different item ordering, additional or removed items, search input that only exists on mobile, top-nav items that exist at one breakpoint but not the other) — measure mobile independently rather than assuming it mirrors desktop. **Look for paired desktop/mobile asset elements** (e.g. `--desktop` / `--mobile` class-suffixed sibling DOM nodes with different image URLs) — the mobile variant is a re-cropped image, not a resize. Extract BOTH URLs.
+4. **The footer mobile layout is structurally independent from desktop.** Sites commonly render the desktop footer as a column grid and the mobile footer as an accordion stack with a different vertical order (identity column moves below the accordions, address moves to a single line, dropdowns become accordions). Run Step 3d (footer mobile pass) end-to-end — don't reuse desktop footer JSX for mobile.
+5. **Match every visible ornament, not just the obvious ones.** Borders, fonts, icons, spacing, colors, hover and click effects, active-state indicators, separator lines between items, thin dividers before utility links (often `::before` pseudo-elements with `position: absolute; width: 1px; height: ~20px`), `::before` / `::after` decorations on the active nav item, animated chevron rotations, focus rings, image assets. If you can see it on the live site, the clone has it. Measure each link/button type independently — header link styles do not bleed into footer link styles, neither bleeds into utility-bar link styles. Variant/brand gradient colors should be re-measured every re-clone (they drift).
+6. **All screenshots and reference images go to `images/` at the repo root.** Pre-flight creates the folder (`mkdir -p images`) and it is gitignored. **Every screenshot filename you pass to a browser-MCP tool must start with `images/`.** Never store screenshots at the repo root; never ask the user where to save them. When the live site exposes raster image assets that are part of the header/footer (logo PNGs, dropdown illustration thumbnails, side-banner artwork), download them to `images/` too — only embed them in the bundle if the user has confirmed they want raster assets bundled rather than referenced via the original CDN URL.
 
 ## Known failure modes to avoid
 
@@ -48,12 +49,25 @@ These are real mistakes made on prior sites. Do not repeat them:
 19. **Generic icon set missing one or two recent additions.** When extracting a site's icon set programmatically (e.g. ChatGPT/Perplexity/Claude/Grok/Gemini/Deepseek), the extractor can miss the last item or one with an unusual name. Verify by looking up every list item label in your generated icon map; any label that falls back to a generic dot is a missing icon you need to add.
 20. **Inner link/button component drops `style` prop.** A common refactor is wrapping `<a>` in a project-local `A` component that takes `href`, `external`, `className`, and `onClick`. If the component does not also accept and forward `style`, every inline-style hint (gradient backgrounds, color tints, custom backgrounds) is silently dropped at render time. When debugging "the inline style is not applied", check the wrapper component first.
 21. **Bottom-bar / utility-row pinned only inside the panel content.** When a dropdown has a horizontal bar at the bottom ("Explore API", "Contact sales / Start free trial", legal text), that bar usually spans the FULL popup width with its own background color, not just the inner content column. If you place it inside the right-content panel, it will be too narrow and miss the background fill. Render it as a sibling of the panel, not a child.
-22. **Tailwind v4 `--tw-*` defaults are missing inside the shadow DOM.** Tailwind v4 utilities like `.border`, `.-translate-y-1/2`, `.scale-95`, `.rotate-180`, etc. expand to declarations such as `border-style: var(--tw-border-style)` and `translate: var(--tw-translate-x) var(--tw-translate-y)`. Tailwind ships `@property` declarations to provide initial values for those vars (`--tw-border-style: solid`, `--tw-translate-x: 0`, etc.), AND it relies on **preflight** to set them on `*`. We disable preflight for style isolation, AND `@property` registration is document-scoped — so `@property` rules emitted *inside* a shadow root are ignored by the browser and provide no initial values to elements within the shadow. Net effect: `border-style` falls back to `none` (no border renders), `translate` falls back to `none` (so `before:top-1/2 before:-translate-y-1/2` only sets `top: 50%` without the upward shift, putting the element in the bottom half of its parent), `scale` and `rotate` utilities can compose incorrectly, and so on. The bug is invisible in the demo HTML and only shows up on a real host page. **Fix:** the scope reset in `styles.css` MUST hard-code defaults for every `--tw-*` var the bundle uses. At minimum: `--tw-border-style: solid; --tw-translate-x: 0; --tw-translate-y: 0; --tw-translate-z: 0; --tw-rotate-x: ; --tw-rotate-y: ; --tw-rotate-z: ; --tw-skew-x: ; --tw-skew-y: ; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scale-z: 1;`. Add more if a new Tailwind utility is used that depends on additional `--tw-*` registrations. Verify after every utility-class addition by checking `getComputedStyle(el, '::before').translate` / `.transform` / `.borderStyle` and confirming they are not `none`/`""`.
+22. **Per-tab ancillary widgets assumed static.** In a tabbed dropdown (a sidebar of tabs on the left, content on the right, plus a side banner / bottom-bar / callout column), the side banner and bottom-bar often **change per active tab** — the default tab might show a generic "Top Holiday Report" banner while one specific tab (e.g. "Data as a Service") swaps it for a contextual banner ("Data Licensing"). If you only inspect the default tab, you miss every variant. **For every tab, re-check every ancillary widget** (side banner, bottom bar, callout column) and record which tabs deviate from the default. Build a `WIDGET_BY_TAB_ID` map keyed by tab id; fall back to a default for unmapped tabs.
+23. **Responsive image variants missed.** When a mega-menu banner has an illustration, the live DOM frequently contains TWO `<img>` tags wrapped in display-toggled containers (e.g. `--illustration-container--desktop` and `--illustration-container--mobile`) with **different image URLs** — the mobile asset is a re-cropped/re-composed variant, not a resized copy. The default class-name suffix you see at desktop width hides the mobile one via `display: none`. If you only grab one URL, the mobile drawer detail view ships the wrong illustration. Inspect the banner DOM for paired `--desktop` / `--mobile` (or `-d` / `-m`) sibling nodes, and extract BOTH URLs into the data (`img` + `imgMobile`). The renderer picks based on viewport. Also check titles and CTA copy — they sometimes vary by breakpoint too.
+24. **Mobile footer assumed to mirror desktop.** Many sites render the desktop footer as a 4–5-column grid of always-expanded sections, then collapse to a stack of **accordion** sections on mobile — with a different vertical order than desktop. Common reorder: identity column (logo, social, address, extension button) sits ON TOP on desktop but drops BELOW the accordion list on mobile, with the address moved to a single-line layout below social icons. A desktop-only "See all our offices" dropdown often becomes its own mobile accordion. Always run the full mobile pass (Step 3d) on the footer; never reuse desktop JSX for the mobile view.
+25. **Colored card styling gated to desktop only.** When the live site applies a tinted background to mega-menu cards (e.g. `background: rgba(255, 50, 111, 0.05)` on a "Marketing" card with a pink accent), the tint is applied at BOTH breakpoints. Cloning the tint via a desktop-only conditional yields a flat-white mobile drawer that the user will call out. Measure card backgrounds at both desktop and mobile; if non-transparent on mobile, the mobile renderer must apply the same `cardTintBg(variantRgb)` style.
+26. **CDN URLs with rotating build hashes hardcoded as-if stable.** Asset URLs of the form `https://cdn.example.com/build/<date>.<branch>.<hash>/dist/.../<asset>.png` rotate the `<date>.<branch>.<hash>` segment on every site deploy. The trailing asset filename hash is the stable part. On re-clone, the data-only diff "the URL changed but the asset filename is the same" is invisible churn; the truly structural change is "the asset filename hash changed" (= the artwork was replaced). When comparing CDN URLs in diff mode, strip the build-id segment before deciding whether the diff is data-only or structural.
+27. **Items moved between slots recorded as deleted.** When an item disappears from a card grid or column, do NOT immediately classify it as "removed". Search the rest of the dropdown for the same label — it may have moved to a side banner, bottom bar, or per-tab contextual widget. On Similarweb, "Data Licensing" was removed from the DaaS cards grid AND simultaneously promoted to the per-tab side banner on the DaaS tab. Recording it as "deleted" without finding its new home produces a clone that's missing UI the live site still has.
+28. **Top-nav parity assumed across breakpoints.** A top-level nav item is often **removed from desktop but kept in mobile**, or vice versa. ("Explore API" disappeared from Similarweb's desktop top nav but is still in the mobile drawer AND still in the Products dropdown's bottom-bar.) Audit the top-nav at BOTH 1440 and 390; record any per-breakpoint difference as a real spec entry, not a bug.
+29. **Diff-mode treats user-reported issues as authoritative.** When the user opens a re-clone with "these are wrong: A, B, C", they almost always mean "I found A, B, C and stopped looking — but I expect you to find what I missed too." Run the full Step 2 + Step 3 extraction in diff mode regardless of how specific the user's report is. The user's list is a strong hint that the spec is stale broadly; treating it as the complete delta is what leads to the second round-trip where they ask for the same kind of thorough check.
+30. **Variant gradient colors drifted on re-clone.** Brand/variant colors (the hot-pink, orange, green, etc. used in radial-gradient banner backgrounds) drift between marketing refreshes. Re-measure the banner gradient on every Intelligence/category tab during a re-clone via `getComputedStyle(banner).backgroundImage` and compare the first color stop against the value in the data file. A 1-byte change like `#FFA800` → `#FF7A1A` is invisible to a visual diff but loud once the user notices the banner is the wrong orange.
+31. **Banner radial-gradient origin differs by breakpoint.** A single banner can use `at 120% 0%` (origin = top-right, bright = top-right) on desktop and `at 100% 100%` (origin = bottom-right, bright = bottom-right) on mobile, with the same color stops in both. Visually this looks "inverted" — the brightest blue moves from the top-right corner to the bottom-right corner. If the clone reuses the desktop string at mobile, the user will report "the gradient is inverted". Re-query `getComputedStyle(banner).backgroundImage` at BOTH 1440 and 390 viewports for every banner variant, and pass the breakpoint into the gradient helper (`bannerGradient(variant, "desktop" | "mobile")`). Border-radius and padding may differ between breakpoints for the same banner — measure both.
+32. **Banner image padded instead of flush with the bottom edge.** When a tabbed-dropdown banner shows an illustration BELOW the text on mobile, the live site usually has `padding: 0` on the banner `<a>`, `padding: 16px 16px 0` on the text container, and the `<img>` sits flush against the banner's rounded bottom edge with `bottom-gap: 0`. The naive clone uses one box with `p-5` everywhere, which leaves a dark band of background visible beneath the image. To match, structure the banner as a vertical flex with two children: a padded text block + a flush image — wrap them in an `overflow: hidden` rounded container so the image's corners get clipped by the radius.
+33. **Mobile bottom-link strip stacked instead of wrap-row.** Site footer bottom links (Categories / Countries / Privacy / Security / Terms / Equal Pay / Manage Cookies / Accessibility Menu) almost always render on mobile as a horizontal `flex-wrap` row, NOT a vertical stack. They look stacked at first glance because at 390px they wrap to 3+ rows, but the layout direction is row, not column. If you implement them as `flex-col` they will be one-per-row regardless of viewport width and will look wrong against the live site (which packs as many as fit per row). Measure `flex-direction` and `flex-wrap` on the container before deciding the layout.
+34. **Accordion expanded link list looks centered when it shouldn't.** Even when the `<ul>` and `<li>` have no `text-align: center` set, certain shadow-DOM-injected styles or parent `text-align` settings can cause expanded accordion content to render visually centered. Add `text-left` defensively to the expanded `<ul>` and its `<li>`/`<a>` children, and verify rendered alignment against the heading button's left edge (they should share an `x` coordinate).
+35. **Tailwind v4 `--tw-*` defaults are missing inside the shadow DOM.** Tailwind v4 utilities like `.border`, `.-translate-y-1/2`, `.scale-95`, `.rotate-180`, etc. expand to declarations such as `border-style: var(--tw-border-style)` and `translate: var(--tw-translate-x) var(--tw-translate-y)`. Tailwind ships `@property` declarations to provide initial values for those vars (`--tw-border-style: solid`, `--tw-translate-x: 0`, etc.), AND it relies on **preflight** to set them on `*`. We disable preflight for style isolation, AND `@property` registration is document-scoped — so `@property` rules emitted *inside* a shadow root are ignored by the browser and provide no initial values to elements within the shadow. Net effect: `border-style` falls back to `none` (no border renders), `translate` falls back to `none` (so `before:top-1/2 before:-translate-y-1/2` only sets `top: 50%` without the upward shift, putting the element in the bottom half of its parent), `scale` and `rotate` utilities can compose incorrectly, and so on. The bug is invisible in the demo HTML and only shows up on a real host page. **Fix:** the scope reset in `styles.css` MUST hard-code defaults for every `--tw-*` var the bundle uses. At minimum: `--tw-border-style: solid; --tw-translate-x: 0; --tw-translate-y: 0; --tw-translate-z: 0; --tw-rotate-x: ; --tw-rotate-y: ; --tw-rotate-z: ; --tw-skew-x: ; --tw-skew-y: ; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scale-z: 1;`. Add more if a new Tailwind utility is used that depends on additional `--tw-*` registrations. Verify after every utility-class addition by checking `getComputedStyle(el, '::before').translate` / `.transform` / `.borderStyle` and confirming they are not `none`/`""`.
 
 ## Pre-flight
 
 1. Browser MCP is required (Playwright MCP, Chrome MCP, etc.). If none is available, ask the user which they have.
-1a. **Images directory.** Ensure the `images/` folder exists at the repo root (`mkdir -p images`). All screenshots and images taken during extraction and comparison go here. This folder is gitignored.
+1a. **Images directory — hard rule.** Ensure the `images/` folder exists at the repo root (`mkdir -p images`). **Every screenshot tool call's filename MUST start with `images/`.** No exceptions. The repo root is for source, not artifacts; saving `01-thing.png` at the repo root is a workspace rule violation that the user will catch. If you find yourself typing a screenshot filename without `images/` in the path, stop and fix it. Reference images downloaded from the live site (logo PNGs, illustration thumbnails) also go to `images/`. The folder is gitignored.
 2. Parse the user's message as a single URL. Validate it resolves via the browser MCP.
 3. Derive the site slug from the hostname: drop `www.`, replace `.` with `-`, lowercase. E.g. `https://boardwalktech.com/` → `boardwalktech-com` (or just `boardwalktech` if the user prefers a shorter name — confirm if ambiguous).
 4. **Mode detection.** Check whether `bundles/sites/<slug>/` already exists.
@@ -471,7 +485,9 @@ For **every** top-level item that has a dropdown, do all of the following before
    - What appears when expanded? Enumerate those items too. **Screenshot the expanded state too** and save it next to the default screenshot.
 5. For any row whose href differs from its visible text target (e.g. a heading that links to a collection while a chevron toggles the accordion), mirror that dual-behavior exactly.
 6. **Inspect the active trigger's parent and pseudo-elements.** When the dropdown is open, query the parent of the trigger button (often `<li>` or `__item--active`) and read its `::before` and `::after` pseudo-elements. The bar/underline/dot that marks the active trigger almost always lives there. Record the pseudo-element's `content`, `position`, `width`, `height`, `background-color`, `top`/`bottom`/`left`/`right` so the clone can replicate it.
-7. After probing, close the dropdown and repeat for the next top-level item. Do not assume siblings share the same anatomy — they may differ.
+7. **For tabbed dropdowns: walk every tab and re-extract every ancillary widget.** A tabbed dropdown has stable parts (the sidebar tab list, the panel chrome) and per-tab parts (the panel content). The per-tab parts also include any **side banner, bottom-bar, or callout column** — these often differ per active tab even though they look like fixed chrome. For each tab, screenshot the open state AND capture: the side banner (image src, kicker, title, body, CTA, href), the bottom-bar links, and any callout block. Compare each per-tab capture against the default-tab capture; record every tab that deviates. The clone needs a `WIDGET_BY_TAB_ID` map for any widget that varies, with a default for unmapped tabs. (See failure mode #22.)
+8. **Capture responsive image variants.** While the dropdown is open at desktop width, query the banner DOM for paired `--desktop` / `--mobile` (or `-d` / `-m`) sibling nodes. If both exist with different image URLs, extract BOTH and store them as `img` (desktop) + `imgMobile` (mobile) in the data model. The mobile-drawer renderer prefers `imgMobile`. (See failure mode #23.)
+9. After probing, close the dropdown and repeat for the next top-level item. Do not assume siblings share the same anatomy — they may differ.
 
 Useful probes (run via the browser MCP's evaluate):
 
@@ -523,6 +539,8 @@ Open a dropdown and extract `getComputedStyle` for EVERY distinct element type. 
 | Callout/bottom-bar icons | `color` (may differ from text) |
 | Bottom-bar row (if present) | `width` (full popup vs inner content only), `background-color`, `padding`, alignment of inner links |
 | Sidebar tab list (tabbed dropdowns) | per-tab: does the entry render a brand icon? (some entries omit the icon — check `.tab__icon` or equivalent presence per item, do not assume uniform) |
+| Per-tab banner / hero (tabbed dropdowns) | `backgroundImage` (extract the full radial/linear-gradient string and parse the first color stop into the variant hex — this is the per-tab brand color); `imgDesk` URL; `imgMob` URL (if a separate `--mobile` illustration container exists); per-tab title text (desktop variant vs mobile variant — often different strings via `--title--desktop` / `--title--mobile` classes) |
+| Side banner per tab (tabbed dropdowns) | walk every tab; for each, record: image src, kicker, title, body, CTA text, href. Note any tab whose banner deviates from the default — those go into `WIDGET_BY_TAB_ID`. |
 
 Use this snippet to batch-extract everything from an open dropdown in one call:
 
@@ -537,12 +555,13 @@ If any value in the table is missing, the spec is incomplete. Do not write JSX u
 Mobile gets the same depth as desktop. Apply the General Approach (especially items 1, 2, and 4) to the mobile drawer end-to-end.
 
 1. Locate the hamburger button and its icon. Record the breakpoint where the desktop nav disappears (the viewport width at which the hamburger appears).
-2. Open the drawer. Screenshot the drawer's root state to `images/<slug>-header-mobile-drawer.png`. Is the data identical to the desktop nav, or flattened / different ordering / additional or removed items?
+2. Open the drawer. Screenshot the drawer's root state to `images/<slug>-header-mobile-drawer.png`. **Audit top-nav parity vs desktop**: list every row in the drawer and compare against the desktop top-nav list. An item that appears on one breakpoint but not the other (e.g. "Explore API" mobile-only, "Get a demo" desktop-only) is a real spec entry, not a bug — record the per-breakpoint delta explicitly. (See failure mode #28.)
 3. For every row in the drawer that has a chevron / "+" / arrow, tap it. Record whether it expands inline (pushing siblings down) or replaces the drawer view (slide-in second screen). **Screenshot every expanded state** and save with a descriptive name (`<slug>-header-mobile-<group>-expanded.png`). The mobile interaction model often differs from the desktop one — measure both independently.
-4. Capture mobile-only widgets: search input that appears in the drawer, login/account button placement, language switcher, social icons, "Get a quote" CTA at the bottom of the drawer. Each gets its own row in the spec.
-5. Run the same computed-style measurements (font-size, font-weight, color, background-color, padding, border) on the drawer's link rows and CTA buttons. Mobile typography frequently differs from desktop — never reuse desktop values for mobile rows without measuring.
-6. Close behaviors: tap hamburger again, tap X, tap outside, Escape. Record which are supported; the clone must implement tap-hamburger-again + Escape + link-tap-closes at minimum.
-7. If the footer is collapsible on mobile (accordion columns), open every collapsed section, screenshot each expanded state, and record the toggle behavior.
+4. For any inner panel that renders cards or tinted rows, **re-measure card background colors at mobile**. If a card had a tinted `rgba(R,G,B,0.05)` background on desktop, it almost always still has it on mobile. The mobile renderer needs to apply the same tint — do not gate the tint behind a desktop-only branch. (See failure mode #25.)
+5. **Verify banner illustration variants render correctly.** If Step 2c.8 found paired desktop/mobile illustration URLs, navigate to the drawer's per-product detail view and confirm the mobile variant is the one actually rendering (use a screenshot side-by-side with the desktop banner — if the illustration silhouettes match, the mobile renderer is wrong). The mobile illustration is usually wider/shorter, with re-composed UI screens, not a resized desktop crop.
+6. Capture mobile-only widgets: search input that appears in the drawer, login/account button placement, language switcher, social icons, "Get a quote" CTA at the bottom of the drawer. Each gets its own row in the spec.
+7. Run the same computed-style measurements (font-size, font-weight, color, background-color, padding, border) on the drawer's link rows and CTA buttons. Mobile typography frequently differs from desktop — never reuse desktop values for mobile rows without measuring.
+8. Close behaviors: tap hamburger again, tap X, tap outside, Escape. Record which are supported; the clone must implement tap-hamburger-again + Escape + link-tap-closes at minimum.
 
 Write all of this into `bundles/sites/<slug>/research/header.spec.md` using the template at the bottom of this file.
 
@@ -583,6 +602,20 @@ Extract `getComputedStyle` for EVERY distinct footer element type. Record in a "
 | CTA buttons | `color`, `border-color`, `background-color`, `font-size` |
 
 **Critical:** Footer link `font-weight` and `text-decoration` are independent of header values. Many sites have bold header triggers with normal-weight footer links, or underlined footer links with non-underlined header links. Measure them separately — do not copy values from the header.
+
+### 3d. Footer mobile pass (resize to 390px)
+The mobile footer is almost never just a stacked version of the desktop grid. Treat it as a structurally independent layout and measure end-to-end. (See failure mode #24.)
+
+1. Resize to ~390px and scroll to the footer. Screenshot the top of the footer.
+2. **Detect the mobile layout pattern.** Three common shapes:
+   - **Accordion stack**: every column heading becomes a collapsible button with a chevron; lists are hidden by default. Measure: which sections collapse (often ALL of them, including secondary ones like "Our Offices" that were a separate desktop widget), how many open at a time (single vs multi), and whether tapping toggles or only opens.
+   - **Flat stack**: every section expanded, just laid out vertically.
+   - **Mixed**: some sections accordion, others flat (e.g. legal links flat under a collapsed nav section).
+3. **Record the mobile vertical order.** Walk the rendered DOM top to bottom and write the order. The identity column (logo, social, address, extension button) frequently moves from the LEFT on desktop to BELOW the accordion list on mobile. Don't assume the desktop grid linearizes top-to-bottom in column order — it usually doesn't. Common mobile order: logo → accordions → social row → address (single line) → CTA button → divider → language switcher → bottom links (stacked, one per line) → copyright.
+4. **Re-measure typography and spacing.** Heading font-size, accordion chevron icon, link spacing, border colors between accordions — mobile values usually differ from desktop.
+5. **Open every accordion**, screenshot each expanded state, and verify the items inside match the desktop column for that section. A section may have items in the desktop column that are filtered out on mobile (or vice versa).
+6. **Mobile-only widget transformations.** Any desktop dropdown widget (e.g. "See all our offices") often becomes its own mobile accordion with the same content stacked. Record this as a separate spec entry, not as part of the original column it replaces.
+7. Implementation note: render `MobileFooter` and `DesktopFooter` as two completely separate components inside `SiteFooter` and switch between them with `block lg:hidden` / `hidden lg:block`. Sharing JSX between breakpoints is the usual source of "mobile looks wrong" bugs because the desktop grid CSS leaks into mobile.
 
 Write `bundles/sites/<slug>/research/footer.spec.md`.
 
@@ -663,9 +696,20 @@ Fix any errors before moving to Step 5. `NavGroup` / `FooterColumn` types may ne
 
 Use this instead of Steps 1, 3, and 4 when `bundles/sites/<slug>/` already exists.
 
+### Mindset (read this before D1)
+
+**The user's report is a hint, not a list.** When a user opens a re-clone with "X, Y, Z are wrong", they did a quick scan of the live site and stopped writing as soon as they had a few. They expect you to find what they missed too. Treat their list as evidence the spec is broadly stale, not as the complete delta. Run the full Step 2 + Step 3 + Step 3d extraction end-to-end before reporting anything back. (See failure mode #29.)
+
+A re-clone is considered complete only after you have:
+- A fresh full spec from the live site (`*.spec.new.md`).
+- A line-by-line diff vs the existing spec, classified per D2.
+- Every data-only diff applied.
+- Every structural diff reported with a concrete recommendation.
+- The bundle rebuilt and visually diffed against the live site at BOTH 1440 and 390.
+
 ### D1. Re-extract the spec into a temp location
 
-Run Step 2 in full (all four passes: structure, dropdown anatomy, link audit, mobile). Write the new spec to a temp path, not over the existing one:
+Run Step 2 in full (all six passes: structure, trigger behavior, dropdown anatomy + per-tab ancillary widgets, link audit, computed styles, mobile) AND Step 3 in full (all four passes including the mobile footer pass 3d). Write the new spec to a temp path, not over the existing one:
 
 ```
 bundles/sites/<slug>/research/header.spec.new.md
@@ -676,17 +720,26 @@ Do the same for the footer.
 
 ### D2. Diff against the existing spec
 
-Compare `header.spec.new.md` vs `header.spec.md` and `footer.spec.new.md` vs `footer.spec.md`. Classify every difference as one of:
+Compare `header.spec.new.md` vs `header.spec.md` and `footer.spec.new.md` vs `footer.spec.md`. **Before classifying anything as "removed", search the rest of the new spec for the same label/href** — items often move between slots (card → side banner, column → bottom-bar, etc.) rather than truly disappearing. (See failure mode #27.)
+
+Classify every difference as one of:
 
 **Data-only (safe to auto-apply):**
 - Logo URL, alt text, dimensions changed.
 - A nav item's label or href changed.
 - A nav item was added to an existing dropdown.
-- A nav item was removed from an existing dropdown.
+- A nav item was removed from an existing dropdown (after confirming via the search-for-label step above that it didn't migrate to another slot).
 - A footer column gained or lost a link.
 - Copyright text changed (e.g. year rolled over).
 - `external` flag changed for an existing link.
 - A social link URL changed.
+- Top-nav item appears at one breakpoint but not the other (record the delta, do not "fix" the asymmetry — it's intentional). (Failure mode #28.)
+- A variant/brand color hex changed (e.g. banner gradient first stop). Re-measure via `getComputedStyle(banner).backgroundImage`. (Failure mode #30.)
+- A CDN URL changed but only in the build-id segment (e.g. `/build/20260422.master.3e4a8b1/` → `/build/20260514.master.b107e23/`) AND the trailing asset filename is byte-identical. Just update the URL.
+- Per-tab side banner content changed (kicker, title, body, CTA, href, image) on a tab that already had a per-tab override.
+- An item moved from one card grid / column to ANOTHER existing card grid / column (no new slot needs to be created).
+- A new responsive image variant URL appeared (`imgMobile` added next to existing `img` field, or vice versa).
+- A dead link was removed (the live DOM no longer contains it AND the URL it points to 404s).
 
 **Structural (stop and report — do not auto-apply):**
 - A top-level nav item gained a dropdown it didn't have before (or vice versa).
@@ -698,6 +751,12 @@ Compare `header.spec.new.md` vs `header.spec.md` and `footer.spec.new.md` vs `fo
 - A new form / icon / widget appeared, or an existing one was removed.
 - A new row type appeared that the component doesn't currently render.
 - The scope class, base font, or base text color changed.
+- A new per-tab ancillary widget variant appeared for a tab that previously used the default (e.g. a tab that used to share the holiday-report banner now has a contextual variant). The component needs a `WIDGET_BY_TAB_ID` map if it doesn't already, OR a new entry in the existing map. (Failure mode #22.)
+- A new responsive image variant infrastructure is required (the data model has only `img` but the live site now serves `img` + `imgMobile`). (Failure mode #23.)
+- The asset behind a CDN URL changed (filename hash differs, not just the build-id segment). Treat as a possible new artwork — flag for user review even if the surrounding URL pattern matches. (Failure mode #26.)
+- The mobile footer layout pattern changed (flat stack → accordion, accordion → flat, mobile vertical order reshuffled). (Failure mode #24.)
+- The desktop footer changed grid column count, or two previously-separate columns merged into one.
+- An item appears removed from one slot AND appears in a new slot that doesn't exist yet in the component. (Failure mode #27.)
 
 ### D3. Apply data-only changes
 
@@ -769,18 +828,23 @@ For each top-level nav item, AND repeat the entire process at mobile (390px):
 1. Open the dropdown in both tabs.
 2. Take a viewport screenshot of each and save to `images/` with descriptive names (e.g. `<slug>-products-live.png` and `<slug>-products-clone.png`). The `images/` folder is gitignored.
 3. **Structural comparison.** Is the panel the same width? Same number of columns? Same row types in the same order? Are there any rows in one that aren't in the other?
-4. **Ornament comparison.** Walk through these every time, on every dropdown:
+4. **For tabbed dropdowns: walk every tab.** Don't visually compare only the default tab. Click through every tab in BOTH the live site and the clone, side by side, and verify: the sidebar entry's active-state ornament matches, the panel content matches, AND the side banner / bottom-bar / callout column matches per-tab (these often vary). (See failure mode #22.)
+5. **Ornament comparison.** Walk through these every time, on every dropdown:
    - Trigger active state — does the live site show a colored underline / 3px bar / color shift on the open trigger? Does the clone?
    - Sidebar tab icons — does each tab in the live site have an icon, or do some entries omit it? Does the clone match per-entry?
-   - Card backgrounds — are tinted backgrounds (gradient or solid `rgba`) actually rendered in the clone, or is the inline `style` prop being dropped by a wrapper component?
+   - Card backgrounds — are tinted backgrounds (gradient or solid `rgba`) actually rendered in the clone, AT BOTH BREAKPOINTS? Mobile is the most common place to find a missing tint. (Failure mode #25.)
    - Bottom bar — does the live site show a full-popup-width utility bar at the bottom? Is the clone's bar the same width and the same background color?
+   - Banner gradient color — for each tab with a variant-colored banner, eyeball the gradient starting color (hot pink? orange? cyan?). 1-byte hex drifts (`#FFA800` → `#FF7A1A`) are real failures the user will spot. (Failure mode #30.)
+   - Banner illustration — is the rendered illustration actually the mobile variant on mobile? An easy sanity check: the desktop banner is usually a 3D laptop-and-phone tilt; the mobile variant is a flat row of phone screens. If both breakpoints render the same silhouette, the mobile renderer is using `img` instead of `imgMobile`. (Failure mode #23.)
    - Borders — are sidebar / column dividers present or absent? Border radius on cards (4 vs 8 vs 12)?
    - Icons — every dropdown item that should have a brand icon shows the correct brand icon, not a fallback dot.
    - Login / utility divider — vertical thin line before the Login link or between language switcher items.
-5. If there are any invented rows in the clone (see "No invented UI" rule), delete them.
-6. If the clone is missing a row type that exists in the real site (subgroup toggle, description line, CTA, bottom-bar utility row), add it.
-7. Repeat for any nested/expanded state (expand an accordion subgroup, hover a card, open a sidebar tab) and compare again.
-8. Repeat the entire pass at 390px on the mobile drawer — every drawer state that exists in the spec gets a side-by-side comparison.
+6. If there are any invented rows in the clone (see "No invented UI" rule), delete them.
+7. If the clone is missing a row type that exists in the real site (subgroup toggle, description line, CTA, bottom-bar utility row), add it.
+8. Repeat for any nested/expanded state (expand an accordion subgroup, hover a card, open a sidebar tab) and compare again.
+9. **Mobile pass (390px).** Repeat the entire process on the mobile drawer — every drawer state that exists in the spec gets a side-by-side comparison. Pay particular attention to: card background tints (#25), banner illustration variant (#23), and accordion behavior on the footer (#24).
+10. **Top-nav parity audit.** At desktop, list every visible top-level nav item. At mobile, open the drawer and list every visible item. Compare against the spec — record any per-breakpoint delta. An item appearing on one and not the other is usually intentional, but the spec must capture it. (Failure mode #28.)
+11. **Footer mobile diff.** Scroll to the footer at 390px in both tabs. Verify the accordion behavior matches (which sections collapse, single-vs-multi-open), the vertical order matches, and the address single-line layout matches. (Failure mode #24.)
 
 Only when the structural AND ornament match is tight do you move on. Not "close enough" — if the user can tell at a glance that the shapes are different, that a card has the wrong background tint, or that the active trigger is missing its underline, the clone is not done.
 
@@ -813,7 +877,7 @@ Include: `bundles/sites/<slug>/**`, any `bundles/vite.config.ts` or `package.jso
 
 ## Overview
 - Site: <URL>
-- Extracted: <date>
+- Extracted: <date> (re-extracted: <date>, <date>, …)
 - Target files: bundles/sites/<slug>/src/header/{SiteHeader.tsx,mount.tsx}
 
 ## Logo
@@ -822,6 +886,11 @@ Include: `bundles/sites/<slug>/**`, any `bundles/vite.config.ts` or `package.jso
 - dimensions: <w>x<h>
 - link: <where the logo links to>
 
+## Top-nav parity (desktop vs mobile)
+| Item | Desktop | Mobile drawer | Notes |
+|------|---------|---------------|-------|
+| …    | yes / no | yes / no      | e.g. "Explore API mobile-only" |
+
 ## Nav groups
 (one section per top-level nav item)
 
@@ -829,7 +898,7 @@ Include: `bundles/sites/<slug>/**`, any `bundles/vite.config.ts` or `package.jso
 
 **Panel anatomy** (fill this in BEFORE writing JSX):
 - Width: <px>
-- Layout: <single-column list | multi-column grid (N cols) | side flyout | accordion>
+- Layout: <single-column list | multi-column grid (N cols) | tabbed (sidebar tabs + content panel) | side flyout | accordion>
 - Row types (in order, top to bottom):
   1. <row-type> — <label / heading / CTA text>
   2. …
@@ -841,6 +910,20 @@ Include: `bundles/sites/<slug>/**`, any `bundles/vite.config.ts` or `package.jso
 |-------|------|----------|-----------------|-------------|
 | …     | …    | …        | …               | …           |
 
+**Per-tab banner / hero** (tabbed dropdowns only — one row per tab):
+| Tab id | Title (desktop) | Title (mobile) | Subtitle | href | Variant hex | Image (desktop URL) | Image (mobile URL) |
+|--------|-----------------|----------------|----------|------|-------------|---------------------|--------------------|
+| …      | …               | …              | …        | …    | #XXXXXX     | https://…           | https://…          |
+
+**Per-tab ancillary widgets** (tabbed dropdowns only — only list tabs that DEVIATE from the default widget):
+| Tab id | Widget | Override value |
+|--------|--------|----------------|
+| daas   | side banner | kicker / title / body / CTA / href / image — see DATA_LICENSING_SIDE_BANNER |
+
+**Default ancillary widgets** (used by every tab not in the per-tab table):
+- Side banner: kicker / title / body / CTA / href / image
+- Bottom bar links: [list]
+
 ## Desktop behaviors
 - Dropdown trigger: hover + click
 - Close triggers: outside click, Escape
@@ -851,6 +934,7 @@ Include: `bundles/sites/<slug>/**`, any `bundles/vite.config.ts` or `package.jso
 - Drawer row types: <same as desktop | flattened | other>
 - Drawer close triggers: link tap, Escape, hamburger toggle
 - Any differences from desktop data: <describe>
+- Banner illustration variant used in detail view: <`imgMobile` / fallback to `img`>
 
 ## Computed styles — container
 - height: …
@@ -871,8 +955,13 @@ Include: `bundles/sites/<slug>/**`, any `bundles/vite.config.ts` or `package.jso
 
 ## Overview
 - Site: <URL>
-- Extracted: <date>
+- Extracted: <date> (re-extracted: <date>, <date>, …)
 - Target files: bundles/sites/<slug>/src/footer/{SiteFooter.tsx,mount.tsx}
+
+## Desktop layout (>= <breakpoint>px)
+- Grid: <N> columns, gap <px>
+- Sections sharing a column: [list any (heading, heading) pairs that live in the same grid column]
+- Column order, left to right: [identity, nav-col-1, nav-col-2, …]
 
 ## Columns
 ### <Heading>
@@ -880,15 +969,39 @@ Include: `bundles/sites/<slug>/**`, any `bundles/vite.config.ts` or `package.jso
 |-------|------|----------|
 | …     | …    | …        |
 
-## Bottom bar
+## Bottom bar (desktop)
 - Logo: <src>
 - Copyright: <text>
 - Legal links: [privacy, terms, …]
 - Social icons: <list>
+- Language switcher: <present / absent> — <implemented / stubbed>
+- Offices dropdown: <present / absent> — <implemented / stubbed>
 
-## Computed styles
+## Mobile layout (< <breakpoint>px)
+- Pattern: <accordion stack | flat stack | mixed>
+- Number of accordions: <N>
+- Multi-open allowed: <yes / no>
+- Vertical order, top to bottom:
+  1. Logo
+  2. Accordion: <heading 1>
+  3. Accordion: <heading 2>
+  4. …
+  N. <Social row / address / CTA / language / legal stack / copyright>
+- Address layout: <single line | multi-line>
+- Any widget that becomes its own mobile accordion (e.g. "Our Offices"): [list]
+- Items present on mobile but not desktop (or vice versa): [list]
+
+## Computed styles — desktop
 - background: …
 - padding: …
+- column heading: font-size / font-weight / color
+- column link: font-size / font-weight / text-decoration / color
+- social icon: width / height / color / border
+
+## Computed styles — mobile
+- accordion button: font-size / font-weight / color / chevron color / border-bottom color
+- expanded link: font-size / font-weight / color
+- divider color between accordion sections
 
 ## Known omissions
 - Newsletter signup, language switcher, etc.

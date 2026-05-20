@@ -26,6 +26,7 @@ type SolutionBanner = {
   href: string;
   variant: string;
   img?: string;
+  imgMobile?: string;
 };
 
 type CardItem = {
@@ -80,13 +81,35 @@ const SOLUTIONS_BOTTOM: BottomLink[] = [
 ];
 const RESOURCES_BOTTOM: BottomLink[] = SOLUTIONS_BOTTOM;
 
-const SIDE_BANNER = {
+type SideBannerSpec = {
+  kicker: string;
+  title: string;
+  body: string;
+  cta: string;
+  href: string;
+  img: string;
+};
+
+const DEFAULT_SIDE_BANNER: SideBannerSpec = {
   kicker: "Plan earlier and better for the 2026 holiday season",
   title: "Top Holiday 2026 Shopper Trends",
   body: "Understand how shoppers are researching, comparing and deciding earlier, and what's shaping demand across the full season.",
   cta: "Download Now",
   href: "/corp/reports/retail-planning/",
   img: "https://static-us-east-1.similarcdn.com/static_assets/lite/images/retail-planning.png",
+};
+
+const DATA_LICENSING_SIDE_BANNER: SideBannerSpec = {
+  kicker: "Data Licensing",
+  title: "Data Licensing",
+  body: "Drive new revenue streams and enhance your product with the world's leading digital insights",
+  cta: "Explore Data Licensing now",
+  href: "/corp/daas/data-partnerships/",
+  img: "https://static-us-east-1.similarcdn.com/static_assets/lite/images/data-licesing.png",
+};
+
+const SOLUTIONS_SIDE_BANNER_BY_TAB: Record<string, SideBannerSpec> = {
+  daas: DATA_LICENSING_SIDE_BANNER,
 };
 
 const PRODUCT_TABS: TabPanel[] = [
@@ -140,7 +163,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Turn AI search from a blind spot into a growth channel, with the competitive intelligence to see where you stand and how to win",
       href: "/corp/search/gen-ai-intelligence/",
       variant: "#4D80FF",
-      img: "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/66d5815b0ddc44b42b96.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/66d5815b0ddc44b42b96.png",
+      imgMobile:
+        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/7722bb2a3a5035b4643f.png",
     },
     lists: [
       {
@@ -217,7 +242,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Gain a powerful competitive edge with in-depth insights into your digital landscape",
       href: "/corp/web/",
       variant: "#195AFE",
-      img: "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/894e53c403a1a27a9184.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/894e53c403a1a27a9184.png",
+      imgMobile:
+        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/ad3eac0159b09c4881a1.png",
     },
     lists: [
       {
@@ -283,7 +310,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Analyze app performance, market trends, and user behavior to drive smarter business growth",
       href: "/corp/apps/",
       variant: "#FF326F",
-      img: "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/83a55227d85d9acd1703.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/83a55227d85d9acd1703.png",
+      imgMobile:
+        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/5cea08ed1ac2903593e7.png",
     },
     lists: [
       {
@@ -345,8 +374,10 @@ const PRODUCT_TABS: TabPanel[] = [
       subtitle:
         "Empower your sales strategy with data to uncover pitching opportunities and engage buyers to drive pipeline",
       href: "/corp/sales/",
-      variant: "#FFA800",
-      img: "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/4938deb032a6f10eda0d.png",
+      variant: "#FF7A1A",
+      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/4938deb032a6f10eda0d.png",
+      imgMobile:
+        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/2f7d0a1d29fa9e0e9008.png",
     },
     lists: [
       {
@@ -415,7 +446,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Discover shopping trends and drive your ecommerce growth with consumer behavior insights",
       href: "/corp/retail/",
       variant: "#C343FF",
-      img: "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/95a1d1ccb5fe11f81714.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/95a1d1ccb5fe11f81714.png",
+      imgMobile:
+        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/a8c28eee624a9127e4e9.png",
     },
     lists: [
       {
@@ -481,7 +514,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Monitor market trends, track stock performance, and use analytics to make data-backed investments",
       href: "/corp/stocks/",
       variant: "#00CA9A",
-      img: "https://static-us-east-1.similarcdn.com/build/20260422.master.3e4a8b1/dist/scripts/lite-app/assets/558a256681d090ff55ba.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/558a256681d090ff55ba.png",
+      imgMobile:
+        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/fa06e10a278bedca67a3.png",
     },
     lists: [
       {
@@ -535,35 +570,35 @@ const SOLUTION_TABS: TabPanel[] = [
       {
         title: "SEO & GEO",
         description:
-          "Create organic strategies for traditional and AI search engines.",
-        href: "/corp/search/seo/",
+          "Create organic strategies for traditional and AI search with the industry's most powerful data, so you can drive visibility, traffic and impact.",
+        href: "/corp/teams/seo/",
         variantRgb: "15, 191, 229",
       },
       {
         title: "Sales",
         description:
-          "Find & enrich companies & contacts while providing a clear view of buyer intent and sales opportunities.",
+          "Find & enrich companies & contacts while providing unique digital insights to close business faster",
         href: "/corp/teams/sales/",
         variantRgb: "254, 183, 43",
       },
       {
         title: "Research & Analysts",
         description:
-          "Streamline and improve your research with world-class insights and an AI assistant.",
+          "Streamline and improve your research strategy with the industry's most robust datasets and market insights.",
         href: "/corp/teams/research-analytics/",
         variantRgb: "0, 205, 152",
       },
       {
         title: "Ecommerce",
         description:
-          "Gain full visibility into your competitors' storefronts and product categories.",
+          "Gain full visibility into your competitors' ecommerce performance and marketing strategy.",
         href: "/corp/teams/ecommerce/",
         variantRgb: "194, 77, 252",
       },
       {
         title: "PPC",
         description:
-          "Get more ROI and faster, with access to your competitors' paid search and display strategies.",
+          "Get more ROI and faster, with access to your competitors' winning paid search and display ad tactics.",
         href: "/corp/search/ppc/",
         variantRgb: "25, 90, 254",
       },
@@ -617,19 +652,19 @@ const SOLUTION_TABS: TabPanel[] = [
       {
         title: "AI Agents",
         description:
-          "Put digital intelligence on autopilot with task-ready AI agents.",
+          "Put digital intelligence on autopilot with AI Agents",
         href: "/corp/ai/ai-agents/",
       },
       {
         title: "Data for AI",
         description:
-          "Power smarter AI models, agents, and applications with our digital data.",
+          "Power smarter AI models, agents, and applications with digital insights at scale.",
         href: "/corp/ai/data-for-ai/",
       },
       {
         title: "MCP",
         description:
-          "Connect Similarweb's trusted digital intelligence to your AI tools.",
+          "Connect Similarweb's trusted digital intelligence directly to your AI agents, tools, and workflows",
         href: "/corp/ai/mcp/",
       },
     ],
@@ -650,31 +685,31 @@ const SOLUTION_TABS: TabPanel[] = [
       {
         title: "Integrations",
         description:
-          "Connect Similarweb data directly with your business tools.",
+          "Connect Similarweb data directly with a variety of data platforms and tools for actionable insights.",
         href: "/corp/daas/integrations/",
       },
       {
         title: "MCP",
         description:
-          "Connect Similarweb's trusted digital intelligence to your AI tools.",
+          "Connect Similarweb's trusted digital intelligence directly to your AI agents, tools, and workflows",
         href: "/corp/ai/mcp/",
       },
       {
         title: "API",
         description:
-          "Access data in real-time and at scale with unmatched flexibility.",
+          "Access data in real-time and at scale with unmatched flexibility and customization.",
         href: "/corp/daas/api/",
       },
       {
         title: "Data Hub",
         description:
-          "Simplified reporting, custom data visualization, and centralized dashboards.",
+          "Simplified reporting, custom data visualizations, and automated exports\u2013all in one place.",
         href: "/corp/daas/datahub/",
       },
       {
         title: "Data Feeds",
         description:
-          "Custom or pre-configured data feeds — delivered how you need them.",
+          "Custom or pre-configured data feeds - delivered where, when, and how you need them.",
         href: "/corp/daas/data-feeds/",
       },
     ],
@@ -695,31 +730,31 @@ const SOLUTION_TABS: TabPanel[] = [
       {
         title: "Custom Reporting",
         description:
-          "Get dashboards that deliver real-time insights tailored to your KPIs.",
+          "Get dashboards that deliver real-time insights into digital behavior, brand health, and more.",
         href: "/corp/custom-performance-reporting/",
       },
       {
         title: "Brand Health Tracking",
         description:
-          "Track your digital health on every metric that matters.",
+          "Track your digital health on web, app & marketplaces to find hidden issues and strengths",
         href: "/corp/custom-performance-reporting/brand-health/",
       },
       {
         title: "Category Insights",
         description:
-          "Track subcategory trends, benchmarks, and shifts in consumer demand.",
+          "Track subcategory trends, benchmark SKU-level market share, and sharpen your assortment strategy.",
         href: "/corp/custom-performance-reporting/category-insights/",
       },
       {
         title: "Market Share Dashboards",
         description:
-          "Understand your digital market share and identify growth opportunities.",
+          "Understand your digital market share across web and app. Track competitors and benchmarks in one place",
         href: "/corp/custom-performance-reporting/market-share-dashboard/",
       },
       {
         title: "Digital Travel Analytics",
         description:
-          "Uncover booking habits and digital travel trends for your market.",
+          "Uncover booking habits and search trends for OTAs, flights, hotels, and destinations",
         href: "/corp/custom-performance-reporting/digital-travel-analytics/",
       },
     ],
@@ -758,6 +793,7 @@ const RESOURCES_COLUMNS: ListSection[] = [
       { label: "Customer Stories", href: "/corp/clients/" },
       { label: "Reports & Insights", href: "/corp/reports/" },
       { label: "Webinars", href: "/corp/webinars/" },
+      { label: "Events", href: "/corp/events/" },
     ],
   },
   {
@@ -1109,8 +1145,9 @@ function A({
   );
 }
 
-function bannerGradient(variant: string): string {
-  return `radial-gradient(130% 100% at 120% 0%, ${variant} 0%, rgb(23, 78, 212) 58.5%, rgb(16, 37, 62) 100%)`;
+function bannerGradient(variant: string, mode: "desktop" | "mobile" = "desktop"): string {
+  const origin = mode === "mobile" ? "100% 100%" : "120% 0%";
+  return `radial-gradient(130% 100% at ${origin}, ${variant} 0%, rgb(23, 78, 212) 58.5%, rgb(16, 37, 62) 100%)`;
 }
 
 function cardTintBg(rgb?: string): string | undefined {
@@ -1375,6 +1412,7 @@ export function SiteHeader() {
                       onNavigate={closeAll}
                       withSideBanner
                       sidebarDividerAfterId="by-industry"
+                      sideBannerByTabId={SOLUTIONS_SIDE_BANNER_BY_TAB}
                     />
                     <BottomBar links={SOLUTIONS_BOTTOM} onNavigate={closeAll} />
                   </>
@@ -1407,6 +1445,7 @@ function TabbedPanel({
   showBrandIcons,
   withSideBanner,
   sidebarDividerAfterId,
+  sideBannerByTabId,
 }: {
   tabs: TabPanel[];
   activeId: string;
@@ -1416,6 +1455,7 @@ function TabbedPanel({
   showBrandIcons?: boolean;
   withSideBanner?: boolean;
   sidebarDividerAfterId?: string;
+  sideBannerByTabId?: Record<string, SideBannerSpec>;
 }) {
   return (
     <div className="flex">
@@ -1464,7 +1504,12 @@ function TabbedPanel({
         </div>
         {withSideBanner && (
           <div className="w-[253px] shrink-0">
-            <SideBanner onNavigate={onNavigate} />
+            <SideBanner
+              spec={
+                sideBannerByTabId?.[active.id] ?? DEFAULT_SIDE_BANNER
+              }
+              onNavigate={onNavigate}
+            />
           </div>
         )}
       </div>
@@ -1497,31 +1542,37 @@ function BottomBar({
   );
 }
 
-function SideBanner({ onNavigate }: { onNavigate: () => void }) {
+function SideBanner({
+  spec = DEFAULT_SIDE_BANNER,
+  onNavigate,
+}: {
+  spec?: SideBannerSpec;
+  onNavigate: () => void;
+}) {
   return (
     <A
-      href={SIDE_BANNER.href}
+      href={spec.href}
       onClick={onNavigate}
       className="flex flex-col gap-2 text-[#092540] no-underline"
     >
       <div className="text-[12px] font-normal text-[#092540]/70">
-        {SIDE_BANNER.kicker}
+        {spec.kicker}
       </div>
       <div className="h-28 w-full rounded-lg overflow-hidden bg-[#F6F8FB]">
         <img
-          src={SIDE_BANNER.img}
+          src={spec.img}
           alt=""
           aria-hidden="true"
           className="w-full h-full object-cover"
           loading="lazy"
         />
       </div>
-      <div className="text-[16px] font-bold mt-1">{SIDE_BANNER.title}</div>
+      <div className="text-[16px] font-bold mt-1">{spec.title}</div>
       <div className="text-[13px] font-normal leading-snug text-[#092540]/75">
-        {SIDE_BANNER.body}
+        {spec.body}
       </div>
-      <div className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[#195AFE] mt-1">
-        {SIDE_BANNER.cta}
+      <div className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[#092540] mt-1">
+        {spec.cta}
         <ArrowRight />
       </div>
     </A>
@@ -1565,7 +1616,7 @@ function LinkPanel({
               src={panel.banner.img}
               alt=""
               aria-hidden="true"
-              className="relative z-10 h-[120px] w-auto max-w-[240px] object-contain shrink-0"
+              className="absolute right-0 bottom-0 z-10 h-[120px] w-auto max-w-[240px] object-contain"
               loading="lazy"
             />
           )}
@@ -1610,7 +1661,7 @@ function LinkPanel({
                     href={it.href}
                     external={it.external}
                     onClick={onNavigate}
-                    className="flex items-start gap-2 px-3 py-2 text-[13px] font-normal text-[#092540]/80 rounded-md hover:bg-[#f6f8fb] hover:text-[#092540] no-underline leading-tight"
+                    className="flex items-start gap-2 px-3 py-2 text-[13px] font-normal text-[#092540]/80 rounded-md hover:bg-[#f1f6ff] hover:text-[#195AFE] no-underline leading-tight"
                     role="menuitem"
                   >
                     <LabelIcon
@@ -2031,40 +2082,41 @@ function MobileTabContent({
   onNavigate: () => void;
 }) {
   if (tab.kind === "links") {
+    const bannerImg = tab.banner?.imgMobile || tab.banner?.img;
     return (
       <div className="flex flex-col gap-6">
         {tab.banner && (
           <A
             href={tab.banner.href}
             onClick={onNavigate}
-            className="relative block rounded-xl overflow-hidden text-white p-5 no-underline"
+            className="relative block rounded-lg overflow-hidden text-white no-underline flex flex-col"
           >
             <span
               aria-hidden="true"
               className="absolute inset-0"
-              style={{ background: bannerGradient(tab.banner.variant) }}
+              style={{ background: bannerGradient(tab.banner.variant, "mobile") }}
             />
-            <span className="relative flex flex-col gap-2">
-              <span className="text-[20px] font-bold leading-tight text-white">
+            <span className="relative flex flex-col gap-2 px-4 pt-4">
+              <span className="text-[24px] font-bold leading-tight text-white">
                 {tab.banner.title}
               </span>
-              <span className="text-[13px] font-normal opacity-95 text-white">
+              <span className="text-[14px] font-normal opacity-95 text-white">
                 {tab.banner.subtitle}
               </span>
               <span className="mt-1 inline-flex items-center gap-1.5 text-[14px] font-bold text-white">
                 Learn more
                 <ArrowRight />
               </span>
-              {tab.banner.img && (
-                <img
-                  src={tab.banner.img}
-                  alt=""
-                  aria-hidden="true"
-                  className="mt-3 self-end h-[100px] w-auto object-contain"
-                  loading="lazy"
-                />
-              )}
             </span>
+            {bannerImg && (
+              <img
+                src={bannerImg}
+                alt=""
+                aria-hidden="true"
+                className="relative block w-full h-auto"
+                loading="lazy"
+              />
+            )}
           </A>
         )}
         <div className="flex flex-col gap-6">
@@ -2111,46 +2163,51 @@ function MobileTabContent({
         </div>
       )}
       <ul className="flex flex-col gap-3">
-        {tab.cards.map((c) => (
-          <li key={c.href + c.title}>
-            <A
-              href={c.href}
-              external={c.external}
-              onClick={onNavigate}
-              className="block rounded-xl border border-[#eef0f3] p-4 no-underline"
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <LabelIcon
-                  label={c.title}
-                  size={20}
-                  fallback={
-                    cardStyle === "colored" ? (
-                      <span
-                        aria-hidden="true"
-                        className="inline-flex items-center justify-center w-5 h-5 rounded-full"
-                        style={{
-                          background: c.variantRgb
-                            ? `rgb(${c.variantRgb})`
-                            : "#195AFE",
-                        }}
-                      >
-                        <CardIcon className="text-white" />
-                      </span>
-                    ) : (
-                      <CardIcon className="text-[#3A5166]" />
-                    )
-                  }
-                />
-                <div className="text-[15px] font-bold text-[#092540]">
-                  {c.title}
+        {tab.cards.map((c) => {
+          const isColored = cardStyle === "colored";
+          const cardBg = isColored ? cardTintBg(c.variantRgb) : undefined;
+          return (
+            <li key={c.href + c.title}>
+              <A
+                href={c.href}
+                external={c.external}
+                onClick={onNavigate}
+                className={`block rounded-xl ${isColored ? "border border-transparent" : "border border-[#eef0f3]"} p-4 no-underline`}
+                style={cardBg ? { background: cardBg } : undefined}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <LabelIcon
+                    label={c.title}
+                    size={20}
+                    fallback={
+                      isColored ? (
+                        <span
+                          aria-hidden="true"
+                          className="inline-flex items-center justify-center w-5 h-5 rounded-full"
+                          style={{
+                            background: c.variantRgb
+                              ? `rgb(${c.variantRgb})`
+                              : "#195AFE",
+                          }}
+                        >
+                          <CardIcon className="text-white" />
+                        </span>
+                      ) : (
+                        <CardIcon className="text-[#3A5166]" />
+                      )
+                    }
+                  />
+                  <div className="text-[15px] font-bold text-[#092540]">
+                    {c.title}
+                  </div>
                 </div>
-              </div>
-              <div className="text-[13px] font-normal text-[#092540]/75 leading-snug">
-                {c.description}
-              </div>
-            </A>
-          </li>
-        ))}
+                <div className="text-[13px] font-normal text-[#092540]/75 leading-snug">
+                  {c.description}
+                </div>
+              </A>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

@@ -1,0 +1,88 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source "./**/*.{ts,tsx}";
+
+@layer base {
+  .bw-scope,
+  .bw-scope *,
+  .bw-scope *::before,
+  .bw-scope *::after {
+    box-sizing: border-box;
+    border: 0 solid;
+    --tw-border-style: solid;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-translate-z: 0;
+    --tw-rotate-x: ;
+    --tw-rotate-y: ;
+    --tw-rotate-z: ;
+    --tw-skew-x: ;
+    --tw-skew-y: ;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-scale-z: 1;
+  }
+
+  .bw-scope {
+    font-family:
+      "Open Sans",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Helvetica Neue",
+      "Segoe UI",
+      Arial,
+      sans-serif;
+    color: #484848;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bw-scope a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .bw-scope button {
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    border-radius: 0;
+    cursor: pointer;
+    appearance: button;
+  }
+
+  .bw-scope img,
+  .bw-scope svg {
+    display: block;
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .bw-scope ul,
+  .bw-scope ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .bw-scope h1,
+  .bw-scope h2,
+  .bw-scope h3,
+  .bw-scope h4,
+  .bw-scope h5,
+  .bw-scope h6,
+  .bw-scope p {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  .bw-scope .font-serif {
+    font-family: "Caudex", Georgia, "Times New Roman", serif;
+  }
+}

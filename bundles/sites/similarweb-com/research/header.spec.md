@@ -2,7 +2,7 @@
 
 ## Overview
 - Site: https://www.similarweb.com/
-- Extracted: 2026-04-24
+- Extracted: 2026-05-12, re-extracted 2026-05-14
 - Target files: bundles/sites/similarweb-com/src/header/{SiteHeader.tsx,mount.tsx}
 
 ## Logo
@@ -19,6 +19,7 @@
 - Three main regions:
   1. Logo (left)
   2. Main menu (center): Products | Solutions | Resources | Pricing
+     - **As of 2026-05-14, "Explore API" was removed from the top nav.** It still exists as a bottom-bar link inside the Products Intelligence tabs and as a stand-alone row in the mobile drawer.
   3. User menu (right): Get a demo | Get started | Login
 
 ## Nav groups
@@ -56,7 +57,7 @@ Tab 4 — App Intelligence (banner variant `#FF326F`):
 - App Performance Analytics (`/corp/apps/analytics/`): App Rating & Reviews, App Usage Analytics, App Revenue Analytics.
 - App Audience Analytics (`/corp/apps/audience-analytics/`): App Demographics & Interests, App-Web Insights.
 
-Tab 5 — Sales Intelligence (banner variant `#FF7A1A`):
+Tab 5 — Sales Intelligence (banner variant `#FF7A1A` — note: NOT `#FFA800`; re-measured 2026-05-14):
 - Banner href `/corp/sales/`, subtitle "Empower your sales strategy with data to uncover pitching opportunities and engage buyers to drive pipeline".
 - Sales Strategy & Operations (`/corp/sales/strategy-operations/`): Territory Planning, Lead Scoring, Lead Enrichment.
 - Lead Generation (`/corp/sales/lead-gen/`): AI Prospecting Agent, Company Research, Account-based Marketing, AI Outreach Agent, App Leads Finder.
@@ -86,7 +87,7 @@ Tab: By Team — 6 cards in 3×2 grid, each has gradient top accent + title + de
 | Title | href | variant (RGB) |
 |---|---|---|
 | Marketing | /corp/teams/marketing/ | 255, 50, 111 |
-| SEO & GEO | /corp/search/seo/ | 15, 191, 229 |
+| SEO & GEO | /corp/teams/seo/ | 15, 191, 229 |
 | Sales | /corp/teams/sales/ | 254, 183, 43 |
 | Research & Analysts | /corp/teams/research-analytics/ | 0, 205, 152 |
 | Ecommerce | /corp/teams/ecommerce/ | 194, 77, 252 |
@@ -102,13 +103,14 @@ Tab: Similarweb AI — card grid:
 - Data for AI `/corp/ai/data-for-ai/`
 - MCP `/corp/ai/mcp/`
 
-Tab: Data as a Service — card grid:
+Tab: Data as a Service — card grid (6 cards, **NOT 7**; as of 2026-05-14):
 - Data as a Service `/corp/daas/`
 - Integrations `/corp/daas/integrations/`
 - MCP `/corp/ai/mcp/`
 - API `/corp/daas/api/`
 - Data Hub `/corp/daas/datahub/`
 - Data Feeds `/corp/daas/data-feeds/`
+- ~~Data Licensing~~ — **REMOVED as a card**; it is now surfaced as the contextual side banner on this tab (see "Side banner — contextual per Solutions tab" below).
 
 Tab: Advisory Services & Reporting — card grid:
 - Advisory Services `/corp/advisory-services/`
@@ -123,7 +125,7 @@ Tab: Advisory Services & Reporting — card grid:
 - Layout: 3 link lists side-by-side + side banner on the right.
 - Panel columns:
   - **Learn**: Seasonal Product Launch `/corp/seasonal-launch-fall-2025/`, Similarweb Academy (ext) `https://academy.similarweb.com/`, Help Center (ext) `https://support.similarweb.com/`, Developers Center (ext) `https://developers.similarweb.com/`.
-  - **Explore**: Blog `/blog/`, Customer Stories `/corp/clients/`, Reports & Insights `/corp/reports/`, Webinars `/corp/webinars/`.
+  - **Explore**: Blog `/blog/`, Customer Stories `/corp/clients/`, Reports & Insights `/corp/reports/`, Webinars `/corp/webinars/`, Events `/corp/events/`.
   - **Company**: About Us `/corp/about/`, Our Data `/corp/ourdata/`, Investor Relations (ext) `https://ir.similarweb.com/`.
 - Side banner: "Plan earlier and better for the 2026 holiday season" → `/corp/reports/retail-planning/` with title "Top Holiday 2026 Shopper Trends". Image `https://static-us-east-1.similarcdn.com/static_assets/lite/images/retail-planning.png`.
 
@@ -199,13 +201,37 @@ This is a separate full-width bar **below** the tab panel — spans the whole 12
 - Icon: 18px, colored variant icon (no circular badge).
 
 ## Computed styles — Solution banner (variant-colored top banner in tabs)
-- Width: 870px, height ~154px.
-- Background: `radial-gradient(130% 100% at 120% 0%, var(--variant-color) 0%, rgb(23, 78, 212) 58.5%, rgb(16, 37, 62) 100%)`. For clone simplicity we use `radial-gradient(130% 100% at 120% 0%, var(--variant-color) 0%, rgb(20, 40, 70) 100%)`.
-- Border-radius 12px, margin-bottom 24px.
-- Title (desktop): 24px 700 white.
-- Subtitle: 14px 400 white.
+- Width: 870px (desktop) / full-column on mobile, height ~154px (desktop) / auto stack on mobile.
+- **Gradient ORIGIN differs by breakpoint** — re-measure if uncertain. Both stops/colors are identical, only the radial origin moves:
+  - Desktop: `radial-gradient(130% 100% at 120% 0%, var(--variant-color) 0%, rgb(23, 78, 212) 58.5%, rgb(16, 37, 62) 100%)` (bright corner = top-right).
+  - Mobile: `radial-gradient(130% 100% at 100% 100%, var(--variant-color) 0%, rgb(23, 78, 212) 58.5%, rgb(16, 37, 62) 100%)` (bright corner = bottom-right).
+- Border-radius:
+  - Desktop: 12px.
+  - Mobile: **8px**.
+- Padding:
+  - Desktop: standard banner padding around the text/illustration row.
+  - Mobile: the `<a>` banner has `padding: 0`. Internal padding `16px 16px 0` lives on the text container only — the illustration sits flush against the banner's bottom edge (zero bottom gap). Replicating with a single padded box leaves an obvious dark band beneath the image, so structure the banner as text-block (padded) + image (no margin) stacked vertically inside an `overflow: hidden` rounded container.
+- Title — desktop 24px 700; mobile 24px 700 (uses the desktop-class typography even at mobile, NOT the smaller 20px we previously assumed).
+- Subtitle: 14px 400 white (both breakpoints).
 - CTA "Learn more" + arrow: 14px 700 white.
-- Illustration image on right (source URLs captured per tab; kept optional — could be plain gradient if network-unfriendly).
+- Illustration image on right (desktop) / below text (mobile).
+- **Desktop and mobile use DIFFERENT illustration images**, served from different CDN URLs (`...--illustration-container--desktop` vs `...--illustration-container--mobile`). The mobile drawer detail view renders the mobile variant; the bundle stores both as `img` and `imgMobile` per banner. Image URLs captured 2026-05-14:
+
+| Tab | imgDesk filename | imgMob filename |
+|---|---|---|
+| AI Search Intelligence | `66d5815b0ddc44b42b96.png` | `7722bb2a3a5035b4643f.png` |
+| Web Intelligence | `894e53c403a1a27a9184.png` | `ad3eac0159b09c4881a1.png` |
+| App Intelligence | `83a55227d85d9acd1703.png` | `5cea08ed1ac2903593e7.png` |
+| Sales Intelligence | `4938deb032a6f10eda0d.png` | `2f7d0a1d29fa9e0e9008.png` |
+| Retail Intelligence | `95a1d1ccb5fe11f81714.png` | `a8c28eee624a9127e4e9.png` |
+| Stock Intelligence | `558a256681d090ff55ba.png` | `fa06e10a278bedca67a3.png` |
+
+Base URL: `https://static-us-east-1.similarcdn.com/build/<build-id>/dist/scripts/lite-app/assets/`. Build id at time of re-extraction: `20260514.master.b107e23`.
+
+## Side banner — contextual per Solutions tab
+- By default, every Solutions tab and the Resources panel show the **holiday retail planning** banner (kicker "Plan earlier and better for the 2026 holiday season"; title "Top Holiday 2026 Shopper Trends"; image `static_assets/lite/images/retail-planning.png`).
+- The **Solutions > Data as a Service** tab swaps the banner for a **Data Licensing** variant (kicker AND title both "Data Licensing"; body "Drive new revenue streams and enhance your product with the world's leading digital insights"; CTA "Explore Data Licensing now"; href `/corp/daas/data-partnerships/`; image `static_assets/lite/images/data-licesing.png` — note the typo `licesing` in the live URL).
+- Clone implementation: `SOLUTIONS_SIDE_BANNER_BY_TAB` keyed by tab id, falls back to `DEFAULT_SIDE_BANNER`.
 
 ## Computed styles — Resources popup (flat)
 - Layout: single flex row inside `.app-header__panel` with padding 40px 24px 24px. 3 link columns + side banner column, all at the same level. **No vertical dividers between columns.**

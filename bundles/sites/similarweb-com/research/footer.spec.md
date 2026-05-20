@@ -2,7 +2,7 @@
 
 ## Overview
 - Site: https://www.similarweb.com/
-- Extracted: 2026-04-24
+- Extracted: 2026-05-12, re-extracted 2026-05-14
 - Target files: bundles/sites/similarweb-com/src/footer/{SiteFooter.tsx,mount.tsx}
 
 ## Layout
@@ -42,8 +42,9 @@ From heading x-coordinate analysis, 5 columns:
 | Top iOS Apps | /top-apps/apple/ |
 | Top Amazon Products & Brands | /top-amazon-brands/ |
 | Digital 100 | /corp/digital-100/ |
-| Top Browsers | /browsers/ |
 | Mobile vs. Desktop | /platforms/ |
+
+> ~~Top Browsers `/browsers/`~~ — **REMOVED from the live footer as of 2026-05-14**.
 
 ### Free Tools (stacked below Rankings)
 | Label | href |
@@ -100,10 +101,37 @@ From heading x-coordinate analysis, 5 columns:
 | Customer Reviews | /corp/reviews/ |
 
 ## Bottom area
-- "See all Similarweb offices" button (class `app-footer__offices-title-desktop`) — opens an inline offices list. (Clone: stub renders a plain link to our primary office maps page; the multi-office dropdown UX is **omitted** as it is noisy for a bundled footer.)
+- "See all Similarweb offices" button (class `app-footer__offices-title-desktop`) — opens an inline offices grid. The clone now renders the full multi-office grid (12 offices with name, address, and "Open map" link).
 - Language switcher button labeled "English" with dropdown containing 11 languages (German, English, Spanish, French, Italian, Japanese, Portuguese, Turkish, Simplified Chinese, Traditional Chinese, Russian). **Clone renders the button as a non-interactive visual stub (click is a no-op) — language switching requires the host site to re-serve content.**
 - Additional links row: Categories `/category/`, Countries `/country/`, Privacy `/corp/legal/privacy-policy/`, Security `/corp/privacy-security/`, Terms `/corp/legal/terms/`, Equal Pay `/corp/2025-report/`, Manage Cookies (button, stub), Accessibility Menu (button, stub).
 - Copyright: "© Similarweb LTD 2026 All Rights Reserved".
+
+## Mobile layout (<1024px)
+The mobile layout is **completely different** from desktop — re-measured 2026-05-14. Order top-to-bottom:
+
+1. **Logo** (similarweb wordmark, white).
+2. **Accordion sections**, each rendered as a full-width button with a chevron-down (rotates 180° when open) and a `border-bottom: 1px solid rgba(255,255,255,0.12)`. Each starts collapsed. The 7 sections are (in order):
+   1. Rankings
+   2. Free Tools
+   3. Solutions
+   4. Data
+   5. Resources
+   6. About us
+   7. Our Offices — this is the mobile name for the desktop "See all Similarweb offices" dropdown. Expanding it reveals the same 12-office grid as desktop, but stacked vertically (one office per row).
+3. **Social row**: "Follow us on:" label followed by 6 icon links (Facebook, X, LinkedIn, YouTube, Instagram, WeChat) horizontally.
+4. **Primary address** (with location-pin icon): `6 E 32nd St, New York, NY 10016, 8 Floor` (single line on mobile, not `<br>`-broken).
+5. **"Get our free extension"** gradient blue button → Chrome Web Store URL.
+6. Horizontal rule (border-top `rgba(255,255,255,0.18)`), then:
+7. **Language switcher** (English ▾) — non-interactive stub.
+8. **Bottom links** — wrapped HORIZONTAL row (NOT stacked vertically). Container is `display: flex; flex-direction: row; flex-wrap: wrap` with `gap-x ~20px / gap-y ~8px`. Items: Categories, Countries, Privacy, Security, Terms, Equal Pay, Manage Cookies, Accessibility Menu. At 390px these naturally wrap to 3 rows (4-3-1 distribution), but the layout is wrap-driven — never stack-driven.
+9. **Copyright**: "© Similarweb LTD 2026 All Rights Reserved".
+
+Behavior:
+- Only one accordion is open at a time (clicking another closes the previous). Implemented via single `openIdx` state.
+- "Our Offices" toggles independently of the other 6 accordions.
+- **Expanded accordion link list** is LEFT-aligned with no indent — links sit at the same `x` as the heading. The `<ul>`/`<li>` items have `text-align: left` (the bw-scope reset is fine, but adding `text-left` defensively prevents centring when a parent ever applies `text-align: center`).
+
+The desktop layout (≥ 1024px) is unchanged from the original spec — 5-column grid, identity column on the left, multi-section nav columns, single-row bottom strip with offices dropdown + language + legal links + copyright.
 
 ## Computed styles
 - Footer bg: rgb(0, 9, 33).
