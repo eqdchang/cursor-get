@@ -1,5 +1,10 @@
 "use client";
 
+// Load the bundle's brand webfonts + bw-scope helper rules so the preview
+// renders with the exact same fonts (proxima-nova-extra-condensed / skolar-pe)
+// as the shipped drop-in artifact, which inlines this stylesheet into its
+// Shadow DOM. Without it the preview falls back to the Next.js sans-serif stack.
+import "../../../bundles/sites/byrna/src/styles.css";
 import { SiteFooter } from "../../../bundles/sites/byrna/src/footer/SiteFooter";
 import { SiteHeader } from "../../../bundles/sites/byrna/src/header/SiteHeader";
 

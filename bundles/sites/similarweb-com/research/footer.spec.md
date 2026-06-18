@@ -2,7 +2,7 @@
 
 ## Overview
 - Site: https://www.similarweb.com/
-- Extracted: 2026-05-12, re-extracted 2026-05-14
+- Extracted: 2026-05-12, re-extracted 2026-05-14, 2026-06-12, 2026-06-15
 - Target files: bundles/sites/similarweb-com/src/footer/{SiteFooter.tsx,mount.tsx}
 
 ## Layout
@@ -55,9 +55,12 @@ From heading x-coordinate analysis, 5 columns:
 | Keyword Generator | /generator/ |
 | SERP Seismometer | /serp/ |
 
+> **Enterprise `/corp/enterprise/`** was briefly added to Free Tools (2026-06-12) and then **moved to the Solutions column** (as the first item) as of 2026-06-15. It is no longer in Free Tools.
+
 ### Solutions
 | Label | href |
 |---|---|
+| Enterprise | /corp/enterprise/ |
 | Web Intelligence | /corp/web/ |
 | App Intelligence | /corp/apps/ |
 | Retail Intelligence | /corp/retail/ |

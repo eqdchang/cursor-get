@@ -39,6 +39,7 @@ const COL_A_BOTTOM: FooterSection = {
 const COL_B_TOP: FooterSection = {
   heading: "Solutions",
   links: [
+    { label: "Enterprise", href: "/corp/enterprise/" },
     { label: "Web Intelligence", href: "/corp/web/" },
     { label: "App Intelligence", href: "/corp/apps/" },
     { label: "Retail Intelligence", href: "/corp/retail/" },

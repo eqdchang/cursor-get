@@ -3,6 +3,16 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+/* ---------------------------------------------------------------------------
+   Brand webfonts — self-hosted (base64-inlined) so the drop-in is fully
+   self-contained: no runtime request to Adobe Typekit, and the fonts resolve
+   inside any host's Shadow DOM. proxima-nova-extra-condensed = the condensed
+   display face used across the header/nav/announcement/mobile drawer; skolar-pe
+   = the serif used for footer links. Regenerate via
+   `node scripts/embed-fonts-byrna.mjs` if the upstream fonts ever change.
+   --------------------------------------------------------------------------- */
+@import "./fonts.generated.css";
+
 @source "./**/*.{ts,tsx}";
 
 @layer base {
@@ -26,14 +36,56 @@
     --tw-scale-z: 1;
   }
 
+  /* Inheritable typography properties (font-*, line-height, letter/word-spacing,
+     text-transform/align, white-space, color) cross the Shadow DOM boundary from
+     the host page. Pin a clean baseline here so host styles can't bleed into the
+     header/footer; Tailwind utilities still override per element as needed. */
   .bw-scope {
     font-family:
-      ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      "proxima-nova-extra-condensed", "Oswald", "Arial Narrow",
+      "Helvetica Neue Condensed", system-ui, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
     line-height: 1.5;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-align: left;
+    text-indent: 0;
+    font-variant: normal;
+    white-space: normal;
     color: #020122;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Condensed display face (header/nav/announcement/mobile). */
+  .bw-scope .bw-cond {
+    font-family:
+      "proxima-nova-extra-condensed", "Oswald", "Arial Narrow",
+      "Helvetica Neue Condensed", system-ui, sans-serif;
+  }
+
+  /* Serif face used by the footer link lists. */
+  .bw-scope .bw-serif {
+    font-family: "skolar-pe", Georgia, "Times New Roman", serif;
+  }
+
+  /* Mega-menu column title: 0.5px hairline under the heading plus a short
+     orange accent bar pinned to the bottom-left (live: ::before 70x1 #ff671b). */
+  .bw-scope .bw-coltitle {
+    position: relative;
+    border-bottom: 1px solid #eaeaea;
+  }
+  .bw-scope .bw-coltitle::before {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 70px;
+    height: 2px;
+    background-color: #ff671b;
   }
 
   .bw-scope a {

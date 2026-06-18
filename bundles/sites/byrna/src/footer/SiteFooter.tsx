@@ -1,262 +1,190 @@
-import type { FooterColumn } from "../types";
-
-type IconProps = { className?: string };
-
-function FacebookIcon({ className }: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M13.5 21v-8.25h2.77l.42-3.23H13.5V7.44c0-.94.26-1.57 1.6-1.57h1.71V2.99c-.83-.09-1.67-.13-2.5-.13-2.47 0-4.16 1.51-4.16 4.29v2.37H7.5v3.23h2.65V21h3.35z" />
-    </svg>
-  );
-}
-
-function TwitterIcon({ className }: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817-5.966 6.817H1.676l7.73-8.835L1.25 2.25h6.833l4.713 6.231zm-1.161 17.52h1.834L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
-function InstagramIcon({ className }: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.13 1.39C1.35 2.68.94 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.39 2.13.67.67 1.34 1.08 2.13 1.39.76.3 1.64.5 2.91.56 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.39.67-.67 1.08-1.34 1.39-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.39-2.13C21.32 1.35 20.65.94 19.86.63 19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0m0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84m0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4m7.85-10.4a1.44 1.44 0 1 1-1.44-1.44 1.44 1.44 0 0 1 1.44 1.44" />
-    </svg>
-  );
-}
-
-function YoutubeIcon({ className }: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.58A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.5 12 20.5 12 20.5s7.5 0 9.38-.58a3 3 0 0 0 2.12-2.12A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8M9.75 15.57V8.43L15.82 12z" />
-    </svg>
-  );
-}
+import type { FooterLink } from "../types";
 
 const SITE_BASE = "https://byrna.com";
-const LOGO_SRC =
-  "https://byrna.com/cdn/shop/files/logo3_1600x.png?v=1676410937";
 
-const COLUMNS: FooterColumn[] = [
-  {
-    heading: "Shop & Support",
-    links: [
-      {
-        label: "Byrna Retail Stores",
-        href: `${SITE_BASE}/pages/byrna-retail-stores`,
-      },
-      {
-        label: "Find a Dealer",
-        href: `${SITE_BASE}/pages/dealer-locator`,
-      },
-      {
-        label: "Shop All Products",
-        href: `${SITE_BASE}/collections/all`,
-      },
-      {
-        label: "First Aid",
-        href: `${SITE_BASE}/pages/first-aid`,
-      },
-      {
-        label: "Product Documents",
-        href: `${SITE_BASE}/pages/product-documents`,
-      },
-      {
-        label: "Warranty Registration",
-        href: "https://care.byrna.com/register",
-        external: true,
-      },
-      {
-        label: "Service & Returns",
-        href: "https://care.byrna.com/rma",
-        external: true,
-      },
-    ],
-  },
-  {
-    heading: "Company",
-    links: [
-      { label: "Return Policy", href: `${SITE_BASE}/pages/return-policy` },
-      { label: "FAQ", href: `${SITE_BASE}/pages/faq` },
-      { label: "About", href: `${SITE_BASE}/pages/about` },
-      { label: "Contact", href: `${SITE_BASE}/pages/contact-us` },
-      { label: "Careers", href: `${SITE_BASE}/pages/careers` },
-      {
-        label: "International Inquiries",
-        href: "mailto:international@byrna.com",
-        external: true,
-      },
-      { label: "Media", href: `${SITE_BASE}/blogs/media` },
-    ],
-  },
-  {
-    heading: "Legal & Investors",
-    links: [
-      {
-        label: "Shipping Restrictions",
-        href: `${SITE_BASE}/pages/restrictions`,
-      },
-      { label: "Order Status", href: `${SITE_BASE}/pages/order-status` },
-      { label: "Terms of Use", href: `${SITE_BASE}/pages/terms-of-use` },
-      {
-        label: "Privacy Policy",
-        href: `${SITE_BASE}/pages/privacy-policy`,
-      },
-      {
-        label: "Investors",
-        href: "https://ir.byrna.com/",
-        external: true,
-      },
-      {
-        label: "NASDAQ: BYRN",
-        href: "https://ir.byrna.com/quote",
-        external: true,
-      },
-      {
-        label: "Law Enforcement",
-        href: "https://le.byrna.com/",
-        external: true,
-      },
-      {
-        label: "Become an Affiliate",
-        href: `${SITE_BASE}/pages/byrna-affiliate-application`,
-      },
-    ],
-  },
+/** White wordmark logo (logo3) used in the footer. */
+const LOGO_SRC = "https://byrna.com/cdn/shop/files/logo3_2000x.png?v=1676410937";
+
+/**
+ * The live footer has NO visible column headings — the Shopify CMS block titles
+ * (`082725 C2 Footer 1`, `C2 Footer 2`, …) are `display:none`. It's four columns
+ * of plain links: three link lists + a social list.
+ */
+const LINK_COLUMNS: FooterLink[][] = [
+  [
+    { label: "Byrna Retail Stores", href: `${SITE_BASE}/pages/byrna-retail-stores` },
+    { label: "Find A Dealer", href: `${SITE_BASE}/pages/dealer-locator` },
+    { label: "Shop All Products", href: `${SITE_BASE}/collections/all` },
+    { label: "First Aid", href: `${SITE_BASE}/pages/first-aid` },
+    { label: "Product Documents", href: `${SITE_BASE}/pages/product-documents` },
+    { label: "Warranty Registration", href: "https://care.byrna.com/register", external: true },
+    { label: "Service & Returns", href: "https://care.byrna.com/rma", external: true },
+  ],
+  [
+    { label: "Return Policy", href: `${SITE_BASE}/pages/return-policy` },
+    { label: "FAQ", href: `${SITE_BASE}/pages/faq` },
+    { label: "About", href: `${SITE_BASE}/pages/about` },
+    { label: "Contact", href: `${SITE_BASE}/pages/contact-us` },
+    { label: "Careers", href: `${SITE_BASE}/pages/careers` },
+    { label: "International Inquiries", href: "mailto:international@byrna.com", external: true },
+    { label: "Media", href: `${SITE_BASE}/blogs/media` },
+    { label: "Accessibility", href: "#", stub: true },
+  ],
+  [
+    { label: "Shipping Restrictions", href: `${SITE_BASE}/pages/restrictions` },
+    { label: "Order Status", href: `${SITE_BASE}/pages/order-status` },
+    { label: "Terms Of Use", href: `${SITE_BASE}/pages/terms-of-use` },
+    { label: "Privacy Policy", href: `${SITE_BASE}/pages/privacy-policy` },
+    { label: "Investors", href: "https://ir.byrna.com/", external: true },
+    { label: "NASDAQ: BYRN", href: "https://ir.byrna.com/quote", external: true },
+    { label: "Law Enforcement", href: "https://le.byrna.com/", external: true },
+    { label: "Become an Affiliate", href: `${SITE_BASE}/pages/byrna-affiliate-application` },
+    { label: "Cookie Settings", href: "#", stub: true },
+  ],
 ];
 
 const SOCIALS = [
+  { label: "Facebook", href: "https://www.facebook.com/byrnanation" },
+  { label: "Twitter", href: "https://twitter.com/byrnanation" },
+  { label: "Instagram", href: "https://www.instagram.com/byrnanation" },
+  { label: "Youtube", href: "https://www.youtube.com/channel/UCsd__wC1miuRs0Q8uAttc6Q" },
+];
+
+/**
+ * The live footer renders Shopify's stock payment-method SVGs (38x24 each).
+ * They're embedded verbatim so the footer is self-contained — no external assets.
+ */
+const PAYMENT_ICONS: { name: string; svg: string }[] = [
   {
-    label: "Facebook",
-    href: "https://www.facebook.com/byrnanation",
-    Icon: FacebookIcon,
+    name: "Visa",
+    svg: '<svg class="payment-icon" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 38 24" width="38" height="24" fill="none" aria-labelledby="pi-visa"><title id="pi-visa">Visa</title><rect x=".5" y=".5" width="37" height="23" rx="2.5" stroke="#000" stroke-opacity=".07" fill="none"></rect><path d="M35 0H3C1.3 0 0 1.3 0 3V21C0 22.7 1.4 24 3 24H35C36.7 24 38 22.7 38 21V3C38 1.3 36.6 0 35 0Z" fill="#142FBD"></path><path d="M35 1C36.1 1 37 1.9 37 3V21C37 22.1 36.1 23 35 23H3C1.9 23 1 22.1 1 21V3C1 1.9 1.9 1 3 1H35Z" fill="#1532CB"></path><path d="M29.5944 10.2167H29.2778C28.8556 11.2722 28.5389 11.8 28.2222 13.3833H30.2278C29.9111 11.8 29.9111 11.0611 29.5944 10.2167V10.2167ZM32.6556 16.4444H30.8611C30.7556 16.4444 30.7556 16.4444 30.65 16.3389L30.4389 15.3889L30.3333 15.1778H27.8C27.6944 15.1778 27.5889 15.1778 27.5889 15.3889L27.2722 16.3389C27.2722 16.4444 27.1667 16.4444 27.1667 16.4444H24.95L25.1611 15.9167L28.2222 8.73889C28.2222 8.21111 28.5389 8 29.0667 8H30.65C30.7556 8 30.8611 8 30.8611 8.21111L32.3389 15.0722C32.4444 15.4944 32.55 15.8111 32.55 16.2333C32.6556 16.3389 32.6556 16.3389 32.6556 16.4444V16.4444ZM18.5111 16.1278L18.9333 14.2278C19.0389 14.2278 19.1444 14.3333 19.1444 14.3333C19.8833 14.65 20.6222 14.8611 21.3611 14.7556C21.5722 14.7556 21.8889 14.65 22.1 14.5444C22.6278 14.3333 22.6278 13.8056 22.2056 13.3833C21.9944 13.1722 21.6778 13.0667 21.3611 12.8556C20.9389 12.6444 20.5167 12.4333 20.2 12.1167C18.9333 11.0611 19.3556 9.58333 20.0944 8.84444C20.7278 8.42222 21.0444 8 21.8889 8C23.1556 8 24.5278 8 25.1611 8.21111H25.2667C25.1611 8.84444 25.0556 9.37222 24.8444 10.0056C24.3167 9.79444 23.7889 9.58333 23.2611 9.58333C22.9444 9.58333 22.6278 9.58333 22.3111 9.68889C22.1 9.68889 21.9944 9.79444 21.8889 9.9C21.6778 10.1111 21.6778 10.4278 21.8889 10.6389L22.4167 11.0611C22.8389 11.2722 23.2611 11.4833 23.5778 11.6944C24.1056 12.0111 24.6333 12.5389 24.7389 13.1722C24.95 14.1222 24.6333 14.9667 23.7889 15.6C23.2611 16.0222 23.05 16.2333 22.3111 16.2333C20.8333 16.2333 19.6722 16.3389 18.7222 16.0222C18.6167 16.2333 18.6167 16.2333 18.5111 16.1278V16.1278ZM14.8167 16.4444C14.9222 15.7056 14.9222 15.7056 15.0278 15.3889C15.5556 13.0667 16.0833 10.6389 16.5056 8.31667C16.6111 8.10556 16.6111 8 16.8222 8H18.7222C18.5111 9.26667 18.3 10.2167 17.9833 11.3778C17.6667 12.9611 17.35 14.5444 16.9278 16.1278C16.9278 16.3389 16.8222 16.3389 16.6111 16.3389L14.8167 16.4444ZM5 8.21111C5 8.10556 5.21111 8 5.31667 8H8.90556C9.43333 8 9.85556 8.31667 9.96111 8.84444L10.9111 13.4889C10.9111 13.5944 10.9111 13.5944 11.0167 13.7C11.0167 13.5944 11.1222 13.5944 11.1222 13.5944L13.3389 8.21111C13.2333 8.10556 13.3389 8 13.4444 8H15.6611C15.6611 8.10556 15.6611 8.10556 15.5556 8.21111L12.2833 15.9167C12.1778 16.1278 12.1778 16.2333 12.0722 16.3389C11.9667 16.4444 11.7556 16.3389 11.5444 16.3389H9.96111C9.85556 16.3389 9.75 16.3389 9.75 16.1278L8.06111 9.58333C7.85 9.37222 7.53333 9.05556 7.11111 8.95C6.47778 8.63333 5.31667 8.42222 5.10556 8.42222L5 8.21111Z" fill="white"></path></svg>',
   },
   {
-    label: "Twitter",
-    href: "https://twitter.com/byrnanation",
-    Icon: TwitterIcon,
+    name: "Mastercard",
+    svg: '<svg class="payment-icon" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 38 24" width="38" height="24" fill="none" aria-labelledby="pi-master"><title id="pi-master">Mastercard</title><rect x=".5" y=".5" width="37" height="23" rx="2.5" stroke="#000" stroke-opacity=".07" fill="none"></rect><path d="M35 0H3C1.3 0 0 1.3 0 3V21C0 22.7 1.4 24 3 24H35C36.7 24 38 22.7 38 21V3C38 1.3 36.6 0 35 0Z" fill="#1C1C1C"></path><path d="M35 1C36.1 1 37 1.9 37 3V21C37 22.1 36.1 23 35 23H3C1.9 23 1 22.1 1 21V3C1 1.9 1.9 1 3 1H35Z" fill="#232323"></path><path d="M14.6364 19.2727C18.8538 19.2727 22.2727 15.8538 22.2727 11.6364C22.2727 7.41892 18.8538 4 14.6364 4C10.4189 4 7 7.41892 7 11.6364C7 15.8538 10.4189 19.2727 14.6364 19.2727Z" fill="#EB001B"></path><path d="M23.3637 19.2727C27.5811 19.2727 31 15.8538 31 11.6364C31 7.41892 27.5811 4 23.3637 4C19.1462 4 15.7273 7.41892 15.7273 11.6364C15.7273 15.8538 19.1462 19.2727 23.3637 19.2727Z" fill="#F79E1B"></path><path d="M22.2727 11.6362C22.2727 9.01797 20.9637 6.72706 19 5.41797C17.0364 6.83615 15.7273 9.12706 15.7273 11.6362C15.7273 14.1452 17.0364 16.5452 19 17.8543C20.9637 16.5452 22.2727 14.2543 22.2727 11.6362Z" fill="#FF5F00"></path></svg>',
   },
   {
-    label: "Instagram",
-    href: "https://www.instagram.com/byrnanation",
-    Icon: InstagramIcon,
+    name: "American Express",
+    svg: '<svg class="payment-icon" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 38 24" width="38" height="24" fill="none" aria-labelledby="pi-american_express"><title id="pi-american_express">American Express</title><rect x=".5" y=".5" width="37" height="23" rx="2.5" stroke="#000" stroke-opacity=".07" fill="none"></rect><path d="M35 0H3C1.3 0 0 1.3 0 3V21C0 22.7 1.4 24 3 24H35C36.7 24 38 22.7 38 21V3C38 1.3 36.6 0 35 0Z" fill="#0071CE"></path><path d="M3 0.5H35C36.3348 0.5 37.5 1.58692 37.5 3V21C37.5 22.4239 36.4239 23.5 35 23.5H3C1.66524 23.5 0.5 22.4131 0.5 21V3C0.5 1.57614 1.57614 0.5 3 0.5Z" stroke="black" stroke-opacity="0.07"></path><path d="M25.8662 6.33203V3H31L31.8662 5.5332L32.7334 3H37V14.2002H36.7998L34.8672 16.2656L36.7998 18.3594H37V21.2666H33.5996L31.9336 19.3994L30.2002 21.2666H19.4668V12.666H16L20.2666 3H24.4004L25.8662 6.33203ZM20.5996 20.2656H27V18.5322H22.666V17.3994H26.8662V15.666H22.666V14.5322H27V12.7988H20.5996V20.2656ZM30.5332 16.5322L27 20.2656H29.5996L31.8662 17.8662L34.0664 20.2656H36.7324L33.1992 16.4658L36.7324 12.7988H34.1328L31.8662 15.1992L29.7324 12.7988H27L30.5332 16.5322ZM17.666 11.7324H19.9326L20.5332 10.1992H23.999L24.666 11.7324H26.999L23.666 4.19922H20.999L17.666 11.7324ZM33.5996 4.19922L31.9326 8.86621L30.1992 4.19922H27V11.666H29.0664V6.39941L31 11.666H32.7998L34.7324 6.39941V11.666H36.7324V4.13281L33.5996 4.19922ZM23.2656 8.46582H21.2656L22.2656 5.99902L23.2656 8.46582Z" fill="white"></path></svg>',
   },
   {
-    label: "Youtube",
-    href: "https://www.youtube.com/channel/UCsd__wC1miuRs0Q8uAttc6Q",
-    Icon: YoutubeIcon,
+    name: "Discover",
+    svg: '<svg class="payment-icon" viewBox="0 0 38 24" width="38" height="24" role="img" aria-labelledby="pi-discover" fill="none" xmlns="http://www.w3.org/2000/svg"><title id="pi-discover">Discover</title><path fill="#000" opacity=".07" d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z"></path><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32z" fill="#fff"></path><path d="M3.57 7.16H2v5.5h1.57c.83 0 1.43-.2 1.96-.63.63-.52 1-1.3 1-2.11-.01-1.63-1.22-2.76-2.96-2.76zm1.26 4.14c-.34.3-.77.44-1.47.44h-.29V8.1h.29c.69 0 1.11.12 1.47.44.37.33.59.84.59 1.37 0 .53-.22 1.06-.59 1.39zm2.19-4.14h1.07v5.5H7.02v-5.5zm3.69 2.11c-.64-.24-.83-.4-.83-.69 0-.35.34-.61.8-.61.32 0 .59.13.86.45l.56-.73c-.46-.4-1.01-.61-1.62-.61-.97 0-1.72.68-1.72 1.58 0 .76.35 1.15 1.35 1.51.42.15.63.25.74.31.21.14.32.34.32.57 0 .45-.35.78-.83.78-.51 0-.92-.26-1.17-.73l-.69.67c.49.73 1.09 1.05 1.9 1.05 1.11 0 1.9-.74 1.9-1.81.02-.89-.35-1.29-1.57-1.74zm1.92.65c0 1.62 1.27 2.87 2.9 2.87.46 0 .86-.09 1.34-.32v-1.26c-.43.43-.81.6-1.29.6-1.08 0-1.85-.78-1.85-1.9 0-1.06.79-1.89 1.8-1.89.51 0 .9.18 1.34.62V7.38c-.47-.24-.86-.34-1.32-.34-1.61 0-2.92 1.28-2.92 2.88zm12.76.94l-1.47-3.7h-1.17l2.33 5.64h.58l2.37-5.64h-1.16l-1.48 3.7zm3.13 1.8h3.04v-.93h-1.97v-1.48h1.9v-.93h-1.9V8.1h1.97v-.94h-3.04v5.5zm7.29-3.87c0-1.03-.71-1.62-1.95-1.62h-1.59v5.5h1.07v-2.21h.14l1.48 2.21h1.32l-1.73-2.32c.81-.17 1.26-.72 1.26-1.56zm-2.16.91h-.31V8.03h.33c.67 0 1.03.28 1.03.82 0 .55-.36.85-1.05.85z" fill="#231F20"></path><path d="M20.16 12.86a2.931 2.931 0 100-5.862 2.931 2.931 0 000 5.862z" fill="url(#pi-paint0_linear)"></path><path opacity=".65" d="M20.16 12.86a2.931 2.931 0 100-5.862 2.931 2.931 0 000 5.862z" fill="url(#pi-paint1_linear)"></path><path d="M36.57 7.506c0-.1-.07-.15-.18-.15h-.16v.48h.12v-.19l.14.19h.14l-.16-.2c.06-.01.1-.06.1-.13zm-.2.07h-.02v-.13h.02c.06 0 .09.02.09.06 0 .05-.03.07-.09.07z" fill="#231F20"></path><path d="M36.41 7.176c-.23 0-.42.19-.42.42 0 .23.19.42.42.42.23 0 .42-.19.42-.42 0-.23-.19-.42-.42-.42zm0 .77c-.18 0-.34-.15-.34-.35 0-.19.15-.35.34-.35.18 0 .33.16.33.35 0 .19-.15.35-.33.35z" fill="#231F20"></path><path d="M37 12.984S27.09 19.873 8.976 23h26.023a2 2 0 002-1.984l.024-3.02L37 12.985z" fill="#F48120"></path><defs><linearGradient id="pi-paint0_linear" x1="21.657" y1="12.275" x2="19.632" y2="9.104" gradientUnits="userSpaceOnUse"><stop stop-color="#F89F20"></stop><stop offset=".25" stop-color="#F79A20"></stop><stop offset=".533" stop-color="#F68D20"></stop><stop offset=".62" stop-color="#F58720"></stop><stop offset=".723" stop-color="#F48120"></stop><stop offset="1" stop-color="#F37521"></stop></linearGradient><linearGradient id="pi-paint1_linear" x1="21.338" y1="12.232" x2="18.378" y2="6.446" gradientUnits="userSpaceOnUse"><stop stop-color="#F58720"></stop><stop offset=".359" stop-color="#E16F27"></stop><stop offset=".703" stop-color="#D4602C"></stop><stop offset=".982" stop-color="#D05B2E"></stop></linearGradient></defs></svg>',
+  },
+  {
+    name: "Google Pay",
+    svg: '<svg class="payment-icon" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 38 24" width="38" height="24" aria-labelledby="pi-google_pay"><title id="pi-google_pay">Google Pay</title><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#000" opacity=".07"></path><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#FFF"></path><path d="M18.093 11.976v3.2h-1.018v-7.9h2.691a2.447 2.447 0 0 1 1.747.692 2.28 2.28 0 0 1 .11 3.224l-.11.116c-.47.447-1.098.69-1.747.674l-1.673-.006zm0-3.732v2.788h1.698c.377.012.741-.135 1.005-.404a1.391 1.391 0 0 0-1.005-2.354l-1.698-.03zm6.484 1.348c.65-.03 1.286.188 1.778.613.445.43.682 1.03.65 1.649v3.334h-.969v-.766h-.049a1.93 1.93 0 0 1-1.673.931 2.17 2.17 0 0 1-1.496-.533 1.667 1.667 0 0 1-.613-1.324 1.606 1.606 0 0 1 .613-1.336 2.746 2.746 0 0 1 1.698-.515c.517-.02 1.03.093 1.49.331v-.208a1.134 1.134 0 0 0-.417-.901 1.416 1.416 0 0 0-.98-.368 1.545 1.545 0 0 0-1.319.717l-.895-.564a2.488 2.488 0 0 1 2.182-1.06zM23.29 13.52a.79.79 0 0 0 .337.662c.223.176.5.269.785.263.429-.001.84-.17 1.146-.472.305-.286.478-.685.478-1.103a2.047 2.047 0 0 0-1.324-.374 1.716 1.716 0 0 0-1.03.294.883.883 0 0 0-.392.73zm9.286-3.75l-3.39 7.79h-1.048l1.281-2.728-2.224-5.062h1.103l1.612 3.885 1.569-3.885h1.097z" fill="#5F6368"></path><path d="M13.986 11.284c0-.308-.024-.616-.073-.92h-4.29v1.747h2.451a2.096 2.096 0 0 1-.9 1.373v1.134h1.464a4.433 4.433 0 0 0 1.348-3.334z" fill="#4285F4"></path><path d="M9.629 15.721a4.352 4.352 0 0 0 3.01-1.097l-1.466-1.14a2.752 2.752 0 0 1-4.094-1.44H5.577v1.17a4.53 4.53 0 0 0 4.052 2.507z" fill="#34A853"></path><path d="M7.079 12.05a2.709 2.709 0 0 1 0-1.735v-1.17H5.577a4.505 4.505 0 0 0 0 4.075l1.502-1.17z" fill="#FBBC04"></path><path d="M9.629 8.44a2.452 2.452 0 0 1 1.74.68l1.3-1.293a4.37 4.37 0 0 0-3.065-1.183 4.53 4.53 0 0 0-4.027 2.5l1.502 1.171a2.715 2.715 0 0 1 2.55-1.875z" fill="#EA4335"></path></svg>',
+  },
+  {
+    name: "JCB",
+    svg: '<svg class="payment-icon" width="38" height="24" role="img" aria-labelledby="pi-jcb" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg"><title id="pi-jcb">JCB</title><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#000" opacity=".07"></path><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#FFF"></path></g><path d="M11.5 5H15v11.5a2.5 2.5 0 0 1-2.5 2.5H9V7.5A2.5 2.5 0 0 1 11.5 5z" fill="#006EBC"></path><path d="M18.5 5H22v11.5a2.5 2.5 0 0 1-2.5 2.5H16V7.5A2.5 2.5 0 0 1 18.5 5z" fill="#F00036"></path><path d="M25.5 5H29v11.5a2.5 2.5 0 0 1-2.5 2.5H23V7.5A2.5 2.5 0 0 1 25.5 5z" fill="#2AB419"></path><path d="M10.755 14.5c-1.06 0-2.122-.304-2.656-.987l.78-.676c.068 1.133 3.545 1.24 3.545-.19V9.5h1.802v3.147c0 .728-.574 1.322-1.573 1.632-.466.144-1.365.221-1.898.221zm8.116 0c-.674 0-1.388-.107-1.965-.366-.948-.425-1.312-1.206-1.3-2.199.012-1.014.436-1.782 1.468-2.165 1.319-.49 3.343-.261 3.926.27v.972c-.572-.521-1.958-.898-2.919-.46-.494.226-.737.917-.744 1.448-.006.56.245 1.252.744 1.497.953.467 2.39.04 2.919-.441v1.01c-.358.255-1.253.434-2.129.434zm8.679-2.587c.37-.235.582-.567.582-1.005 0-.438-.116-.687-.348-.939-.206-.207-.58-.469-1.238-.469H23v5h3.546c.696 0 1.097-.23 1.315-.415.283-.25.426-.53.426-.96 0-.431-.155-.908-.737-1.212zm-1.906-.281h-1.428v-1.444h1.495c.956 0 .944 1.444-.067 1.444zm.288 2.157h-1.716v-1.513h1.716c.986 0 1.083 1.513 0 1.513z" fill="#FFF" fill-rule="nonzero"></path></g></svg>',
+  },
+  {
+    name: "Diners Club",
+    svg: '<svg class="payment-icon" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" role="img" width="38" height="24" aria-labelledby="pi-diners_club"><title id="pi-diners_club">Diners Club</title><path opacity=".07" d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z"></path><path fill="#fff" d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32"></path><path d="M12 12v3.7c0 .3-.2.3-.5.2-1.9-.8-3-3.3-2.3-5.4.4-1.1 1.2-2 2.3-2.4.4-.2.5-.1.5.2V12zm2 0V8.3c0-.3 0-.3.3-.2 2.1.8 3.2 3.3 2.4 5.4-.4 1.1-1.2 2-2.3 2.4-.4.2-.4.1-.4-.2V12zm7.2-7H13c3.8 0 6.8 3.1 6.8 7s-3 7-6.8 7h8.2c3.8 0 6.8-3.1 6.8-7s-3-7-6.8-7z" fill="#3086C8"></path></svg>',
   },
 ];
 
-const PAYMENTS = [
-  "American Express",
-  "Diners Club",
-  "Discover",
-  "Google Pay",
-  "JCB",
-  "Mastercard",
-  "Visa",
-];
+const linkClass =
+  "text-[16px] font-normal leading-[26px] text-white transition-colors hover:text-[#ff671d]";
+
+function FooterLinkRow({ link }: { link: FooterLink }) {
+  if (link.stub) {
+    return (
+      <li>
+        <button type="button" className={`${linkClass} text-left`}>
+          {link.label}
+        </button>
+      </li>
+    );
+  }
+  return (
+    <li>
+      <a
+        href={link.href}
+        target={link.external ? "_blank" : undefined}
+        rel={link.external ? "noopener noreferrer" : undefined}
+        className={linkClass}
+      >
+        {link.label}
+      </a>
+    </li>
+  );
+}
+
+function ExternalArrow() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      aria-hidden="true"
+      className="ml-1 inline-block h-3 w-3 align-middle"
+    >
+      <path d="M7 17 17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export function SiteFooter() {
   return (
     <div className="bw-scope">
-      <footer className="bg-[#020122] text-white">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-14">
-          <div className="max-w-2xl mx-auto text-center mb-12">
-            <h3 className="text-sm font-bold uppercase tracking-widest mb-4">
-              Sign up to be the first to access new product announcements &amp;
-              special promotions
-            </h3>
-            <form
-              action={`${SITE_BASE}/contact#footer-classic`}
-              method="post"
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <label htmlFor="byrna-newsletter-email" className="sr-only">
-                Email
-              </label>
-              <input
-                id="byrna-newsletter-email"
-                type="email"
-                name="contact[email]"
-                placeholder="Email*"
-                required
-                className="flex-1 px-4 py-2.5 bg-transparent border border-white/60 text-white placeholder-white/60 focus:outline-none focus:border-[#ff671d] text-sm"
-              />
-              <button
-                type="submit"
-                className="px-6 py-2.5 bg-[#ff671d] text-white text-sm font-bold uppercase tracking-wide hover:bg-[#e5571a] transition-colors"
+      <footer className="bw-serif bg-[#020122] text-white">
+        <div className="mx-auto max-w-[1400px] px-6 py-14 lg:px-10">
+          <div className="flex flex-col gap-12 lg:flex-row lg:justify-between">
+            {/* Newsletter (left) */}
+            <div className="w-full shrink-0 lg:max-w-[420px]">
+              <h3 className="bw-cond text-[24px] font-bold uppercase leading-[1.1] text-white">
+                Sign up to be the first to access new product announcements &amp; special
+                promotions
+              </h3>
+              <form
+                action={`${SITE_BASE}/contact#footer-classic`}
+                method="post"
+                onSubmit={(e) => e.preventDefault()}
+                className="mt-6 flex max-w-[400px] items-center rounded-full border border-white/70 p-1.5 pl-5"
               >
-                Join
-              </button>
-            </form>
-          </div>
+                <label htmlFor="byrna-newsletter-email" className="sr-only">
+                  Email
+                </label>
+                <input
+                  id="byrna-newsletter-email"
+                  type="email"
+                  name="contact[email]"
+                  placeholder="Your Email*"
+                  required
+                  className="min-w-0 flex-1 bg-transparent text-[15px] text-white placeholder-white/70 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="bw-cond shrink-0 rounded-full bg-[#ff671d] px-10 py-2.5 text-[20px] font-black uppercase leading-none text-white transition-colors hover:bg-[#e5571a]"
+                >
+                  Join
+                </button>
+              </form>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {COLUMNS.map((col) => (
-              <div key={col.heading}>
-                <h4 className="text-xs font-bold uppercase tracking-widest mb-4">
-                  {col.heading}
-                </h4>
-                <ul className="space-y-2.5">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      <a
-                        href={link.href}
-                        target={link.external ? "_blank" : undefined}
-                        rel={
-                          link.external ? "noopener noreferrer" : undefined
-                        }
-                        className="text-sm text-white/80 hover:text-[#ff671d] transition-colors"
-                      >
-                        {link.label}
-                      </a>
-                    </li>
+            {/* Link columns (right) */}
+            <div className="grid grid-cols-2 gap-x-10 gap-y-8 sm:grid-cols-4 lg:flex lg:gap-x-14">
+              {LINK_COLUMNS.map((col, i) => (
+                <ul key={i} className="space-y-[6px]">
+                  {col.map((link) => (
+                    <FooterLinkRow key={link.label} link={link} />
                   ))}
                 </ul>
-              </div>
-            ))}
-
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest mb-4">
-                Follow Byrna
-              </h4>
-              <ul className="flex flex-wrap gap-3">
-                {SOCIALS.map(({ label, href, Icon }) => (
-                  <li key={label}>
+              ))}
+              <ul className="space-y-[6px]">
+                {SOCIALS.map((s) => (
+                  <li key={s.label}>
                     <a
-                      href={href}
+                      href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={label}
-                      className="inline-flex h-10 w-10 items-center justify-center border border-white/30 text-white hover:bg-[#ff671d] hover:border-[#ff671d] transition-colors"
+                      className={`${linkClass} inline-flex items-center`}
                     >
-                      <Icon className="w-4 h-4" />
+                      {s.label}
+                      <ExternalArrow />
                     </a>
                   </li>
                 ))}
@@ -264,31 +192,26 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <div className="mt-14 pt-8 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-6">
-            <a
-              href={`${SITE_BASE}/`}
-              aria-label="Byrna home"
-              className="shrink-0"
-            >
-              <img
-                src={LOGO_SRC}
-                alt="Byrna"
-                className="h-8 w-auto opacity-90"
-              />
+          {/* Logo */}
+          <div className="mt-14 flex justify-center">
+            <a href={`${SITE_BASE}/`} aria-label="Byrna home">
+              <img src={LOGO_SRC} alt="Byrna" className="h-12 w-auto" />
             </a>
-            <p className="text-xs text-white/70 text-center">
-              &copy; 2026 Byrna. All Rights Reserved.
-            </p>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="mt-10 flex flex-col items-center gap-5">
             <ul className="flex flex-wrap items-center justify-center gap-2">
-              {PAYMENTS.map((p) => (
+              {PAYMENT_ICONS.map((p) => (
                 <li
-                  key={p}
-                  className="px-2 py-1 border border-white/25 text-[10px] font-semibold uppercase tracking-wider text-white/80"
-                >
-                  {p}
-                </li>
+                  key={p.name}
+                  aria-label={p.name}
+                  className="h-6 w-[38px]"
+                  dangerouslySetInnerHTML={{ __html: p.svg }}
+                />
               ))}
             </ul>
+            <p className="text-[12px] text-white/90">&copy; 2026 Byrna. All Rights Reserved.</p>
           </div>
         </div>
       </footer>

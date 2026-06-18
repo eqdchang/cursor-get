@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { SiteFooter } from "./SiteFooter";
+import { hoistFontFaces } from "../lib/hoist-fonts";
 import styles from "../styles.css?inline";
 
 const DEFAULT_MOUNT_ID = "byrna-footer-root";
@@ -21,6 +22,7 @@ function resolveTarget(target?: MountTarget): Element | null {
 }
 
 function getOrCreateShadowContainer(target: Element): Element {
+  hoistFontFaces(styles);
   if (!("attachShadow" in target)) return target;
 
   let shadow: ShadowRoot | null =

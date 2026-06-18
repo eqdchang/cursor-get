@@ -161,72 +161,66 @@ const PRODUCT_TABS: TabPanel[] = [
       title: "Similarweb AI Search Intelligence",
       subtitle:
         "Turn AI search from a blind spot into a growth channel, with the competitive intelligence to see where you stand and how to win",
-      href: "/corp/search/gen-ai-intelligence/",
+      href: "https://aisearch.similarweb.com/",
       variant: "#4D80FF",
-      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/66d5815b0ddc44b42b96.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/66d5815b0ddc44b42b96.png",
       imgMobile:
-        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/7722bb2a3a5035b4643f.png",
+        "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/7722bb2a3a5035b4643f.png",
     },
     lists: [
       {
         heading: "AI Brand Visibility",
-        headingHref:
-          "/corp/search/gen-ai-intelligence/ai-brand-visibility/",
+        headingHref: "https://aisearch.similarweb.com/ai-brand-visibility/",
         items: [
           {
-            label: "AI Share of Voice Monitor",
-            href: "/corp/search/gen-ai-intelligence/ai-brand-visibility/ai-sov/",
-          },
-          {
             label: "AI Citation Analysis",
-            href: "/corp/search/gen-ai-intelligence/ai-brand-visibility/citation-analysis/",
+            href: "https://aisearch.similarweb.com/ai-brand-visibility/citation-analysis/",
           },
           {
             label: "AI Prompt Analysis",
-            href: "/corp/search/gen-ai-intelligence/ai-brand-visibility/prompt-analysis/",
+            href: "https://aisearch.similarweb.com/ai-brand-visibility/prompt-analysis/",
           },
           {
             label: "AI Sentiment Analysis",
-            href: "/corp/search/gen-ai-intelligence/ai-brand-visibility/sentiment-analysis/",
+            href: "https://aisearch.similarweb.com/ai-brand-visibility/sentiment-analysis/",
           },
         ],
       },
       {
         heading: "AI Traffic Tracker",
-        headingHref:
-          "/corp/search/gen-ai-intelligence/ai-chatbot-traffic/",
+        headingHref: "https://aisearch.similarweb.com/ai-chatbot-traffic/",
         items: [
           {
             label: "ChatGPT Traffic Tracker",
-            href: "/corp/search/gen-ai-intelligence/ai-chatbot-traffic/chatgpt-traffic-tracker/",
+            href: "https://aisearch.similarweb.com/ai-chatbot-traffic/chatgpt-traffic-tracker/",
           },
           {
             label: "Perplexity Traffic Tracker",
-            href: "/corp/search/gen-ai-intelligence/ai-chatbot-traffic/perplexity-traffic-tracker/",
+            href: "https://aisearch.similarweb.com/ai-chatbot-traffic/perplexity-traffic-tracker/",
           },
           {
             label: "Claude Traffic Tracker",
-            href: "/corp/search/gen-ai-intelligence/ai-chatbot-traffic/claude-traffic-tracker/",
+            href: "https://aisearch.similarweb.com/ai-chatbot-traffic/claude-traffic-tracker/",
           },
           {
             label: "Grok Traffic Tracker",
-            href: "/corp/search/gen-ai-intelligence/ai-chatbot-traffic/grok-traffic-tracker/",
+            href: "https://aisearch.similarweb.com/ai-chatbot-traffic/grok-traffic-tracker/",
           },
           {
             label: "Gemini Traffic Tracker",
-            href: "/corp/search/gen-ai-intelligence/ai-chatbot-traffic/gemini-traffic-tracker/",
+            href: "https://aisearch.similarweb.com/ai-chatbot-traffic/gemini-traffic-tracker/",
           },
           {
             label: "Deepseek Traffic Tracker",
-            href: "/corp/search/gen-ai-intelligence/ai-chatbot-traffic/deepseek-traffic-tracker/",
+            href: "https://aisearch.similarweb.com/ai-chatbot-traffic/deepseek-traffic-tracker/",
           },
         ],
       },
       {
         heading: "AI Search Optimization Toolsets",
         items: [
-          { label: "GEO Tools", href: "/corp/search/geo/" },
-          { label: "AEO Tools", href: "/corp/search/aeo/" },
+          { label: "GEO Tools", href: "https://aisearch.similarweb.com/geo/" },
+          { label: "AEO Tools", href: "https://aisearch.similarweb.com/aeo/" },
         ],
       },
     ],
@@ -242,9 +236,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Gain a powerful competitive edge with in-depth insights into your digital landscape",
       href: "/corp/web/",
       variant: "#195AFE",
-      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/894e53c403a1a27a9184.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/894e53c403a1a27a9184.png",
       imgMobile:
-        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/ad3eac0159b09c4881a1.png",
+        "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/ad3eac0159b09c4881a1.png",
     },
     lists: [
       {
@@ -310,9 +304,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Analyze app performance, market trends, and user behavior to drive smarter business growth",
       href: "/corp/apps/",
       variant: "#FF326F",
-      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/83a55227d85d9acd1703.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/83a55227d85d9acd1703.png",
       imgMobile:
-        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/5cea08ed1ac2903593e7.png",
+        "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/5cea08ed1ac2903593e7.png",
     },
     lists: [
       {
@@ -346,6 +340,10 @@ const PRODUCT_TABS: TabPanel[] = [
             label: "App Revenue Analytics",
             href: "/corp/apps/in-app-purchases/",
           },
+          {
+            label: "App Keyword Ranking Tracker",
+            href: "/corp/apps/app-keyword-ranking/",
+          },
         ],
       },
       {
@@ -375,21 +373,20 @@ const PRODUCT_TABS: TabPanel[] = [
         "Empower your sales strategy with data to uncover pitching opportunities and engage buyers to drive pipeline",
       href: "/corp/sales/",
       variant: "#FF7A1A",
-      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/4938deb032a6f10eda0d.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/4938deb032a6f10eda0d.png",
       imgMobile:
-        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/2f7d0a1d29fa9e0e9008.png",
+        "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/2f7d0a1d29fa9e0e9008.png",
     },
     lists: [
       {
         heading: "Sales Strategy & Operations",
         headingHref: "/corp/sales/strategy-operations/",
         items: [
-          {
-            label: "Territory Planning",
-            href: "/corp/sales/territory-planning/",
-          },
-          { label: "Lead Scoring", href: "/corp/sales/lead-scoring/" },
           { label: "Lead Enrichment", href: "/corp/sales/lead-enrichment/" },
+          {
+            label: "CRM Integrations",
+            href: "/corp/sales/crm-integrations/",
+          },
         ],
       },
       {
@@ -405,12 +402,8 @@ const PRODUCT_TABS: TabPanel[] = [
             href: "/corp/sales/company-research/",
           },
           {
-            label: "Account-based Marketing",
-            href: "/corp/sales/account-based-outreach/",
-          },
-          {
-            label: "AI Outreach Agent",
-            href: "/corp/ai/agents/sales-outreach/",
+            label: "Buyer Intent & Signals Data",
+            href: "/corp/sales/intent-signals/",
           },
           { label: "App Leads Finder", href: "/corp/sales/app-leads/" },
         ],
@@ -419,17 +412,14 @@ const PRODUCT_TABS: TabPanel[] = [
         heading: "Sales Engagement",
         headingHref: "/corp/sales/sales-engagement/",
         items: [
+          { label: "AI Lead Scoring", href: "/corp/sales/lead-scoring/" },
+          {
+            label: "AI Outreach Agent",
+            href: "/corp/ai/agents/sales-outreach/",
+          },
           {
             label: "AI Meeting Prep Agent",
             href: "/corp/ai/agents/meeting-prep/",
-          },
-          {
-            label: "Buyer Intent & Signals Data",
-            href: "/corp/sales/intent-signals/",
-          },
-          {
-            label: "Value Selling",
-            href: "/corp/sales/value-selling/",
           },
         ],
       },
@@ -446,58 +436,66 @@ const PRODUCT_TABS: TabPanel[] = [
         "Discover shopping trends and drive your ecommerce growth with consumer behavior insights",
       href: "/corp/retail/",
       variant: "#C343FF",
-      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/95a1d1ccb5fe11f81714.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/95a1d1ccb5fe11f81714.png",
       imgMobile:
-        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/a8c28eee624a9127e4e9.png",
+        "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/a8c28eee624a9127e4e9.png",
     },
     lists: [
       {
-        heading: "Ecommerce Analytics",
-        headingHref: "/corp/retail/ecommerce-analytics/",
+        heading: "Shopper Insights for Brands",
+        headingHref: "/corp/retail/shopper-insights/",
         items: [
           {
-            label: "Amazon Sales Performance",
-            href: "/corp/retail/amazon-sales-analytics/",
+            label: "Digital Shelf Analytics",
+            href: "/corp/retail/digital-shelf-analytics/",
+          },
+          {
+            label: "Consumer Demand Insights",
+            href: "/corp/retail/consumer-demand/",
+          },
+          {
+            label: "On-site Search Optimization",
+            href: "/corp/retail/on-site-search-optimization/",
+          },
+          {
+            label: "Cross-Retail Shopper Behavior",
+            href: "/corp/retail/shopper-behavior/",
+          },
+          {
+            label: "Marketplace Optimization",
+            href: "/corp/retail/marketplace-optimization/",
+          },
+        ],
+      },
+      {
+        heading: "Retail Analytics Tools",
+        headingHref: "/corp/retail/retail-analytics/",
+        items: [
+          {
+            label: "Retail Price Intelligence",
+            href: "/corp/retail/price-intelligence/",
           },
           {
             label: "Category Management",
             href: "/corp/retail/category-management/",
           },
           {
-            label: "Cross-Retail Analytics",
-            href: "/corp/retail/retail-analytics/",
+            label: "Consumer Analytics",
+            href: "/corp/retail/consumer-analytics/",
           },
         ],
       },
       {
-        heading: "Marketplace Optimization",
-        headingHref: "/corp/retail/marketplace-optimization/",
+        heading: "Amazon Seller Tools",
+        headingHref: "/corp/retail/amazon-seller-tool/",
         items: [
           {
-            label: "On-site Search Optimization",
-            href: "/corp/retail/on-site-search-optimization/",
+            label: "Amazon Sales Analytics",
+            href: "/corp/retail/amazon-sales-analytics/",
           },
           {
-            label: "Amazon Store Optimization",
-            href: "/corp/retail/amazon-seller-tool/",
-          },
-          {
-            label: "Amazon Keyword Research Agent",
+            label: "Amazon Keyword Research",
             href: "/corp/retail/amazon-keyword-tool/",
-          },
-        ],
-      },
-      {
-        heading: "Consumer Analytics",
-        headingHref: "/corp/retail/consumer-analytics/",
-        items: [
-          {
-            label: "Consumer Demand Analytics",
-            href: "/corp/retail/consumer-demand/",
-          },
-          {
-            label: "Shopper Behavior",
-            href: "/corp/retail/shopper-behavior/",
           },
         ],
       },
@@ -514,9 +512,9 @@ const PRODUCT_TABS: TabPanel[] = [
         "Monitor market trends, track stock performance, and use analytics to make data-backed investments",
       href: "/corp/stocks/",
       variant: "#00CA9A",
-      img: "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/558a256681d090ff55ba.png",
+      img: "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/558a256681d090ff55ba.png",
       imgMobile:
-        "https://static-us-east-1.similarcdn.com/build/20260514.master.b107e23/dist/scripts/lite-app/assets/fa06e10a278bedca67a3.png",
+        "https://static-us-east-1.similarcdn.com/build/20260610.master.4f0be23/dist/scripts/lite-app/assets/fa06e10a278bedca67a3.png",
     },
     lists: [
       {
@@ -1316,6 +1314,15 @@ export function SiteHeader() {
                   </li>
                   <li>
                     <A
+                      href="/corp/enterprise/"
+                      className="inline-flex items-center px-3 py-1.5 rounded-md text-[16px] font-medium text-white hover:text-[#aab2ba]"
+                      onClick={closeAll}
+                    >
+                      Enterprise
+                    </A>
+                  </li>
+                  <li>
+                    <A
                       href="https://www.similarweb.com/packages/marketing/"
                       className="inline-flex items-center px-3 py-1.5 rounded-md text-[16px] font-medium text-white hover:text-[#aab2ba]"
                       onClick={closeAll}
@@ -1558,12 +1565,12 @@ function SideBanner({
       <div className="text-[12px] font-normal text-[#092540]/70">
         {spec.kicker}
       </div>
-      <div className="h-28 w-full rounded-lg overflow-hidden bg-[#F6F8FB]">
+      <div className="w-full rounded-lg overflow-hidden bg-[#F6F8FB]">
         <img
           src={spec.img}
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover"
+          className="block w-full h-auto"
           loading="lazy"
         />
       </div>
@@ -1987,6 +1994,7 @@ function MobileRoot({
     { label: "Products", onClick: () => onOpen("products") },
     { label: "Solutions", onClick: () => onOpen("solutions") },
     { label: "Resources", onClick: () => onOpen("resources") },
+    { label: "Enterprise", href: "/corp/enterprise/" },
     {
       label: "Pricing",
       href: "https://www.similarweb.com/packages/marketing/",

@@ -2,7 +2,7 @@
 
 ## Overview
 - Site: https://www.similarweb.com/
-- Extracted: 2026-05-12, re-extracted 2026-05-14
+- Extracted: 2026-05-12, re-extracted 2026-05-14, 2026-06-12
 - Target files: bundles/sites/similarweb-com/src/header/{SiteHeader.tsx,mount.tsx}
 
 ## Logo
@@ -18,8 +18,9 @@
 - Navbar row: flex, items centered vertically. 64px tall.
 - Three main regions:
   1. Logo (left)
-  2. Main menu (center): Products | Solutions | Resources | Pricing
-     - **As of 2026-05-14, "Explore API" was removed from the top nav.** It still exists as a bottom-bar link inside the Products Intelligence tabs and as a stand-alone row in the mobile drawer.
+  2. Main menu (center): Products | Solutions | Resources | Enterprise | Pricing
+     - **As of 2026-06-12, "Enterprise" (`/corp/enterprise/`) was added** to the desktop top nav (between Resources and Pricing).
+     - **"Explore API" (`/corp/daas/api/`) is NOT in the desktop top nav** — it is present in the DOM but `display:none` at desktop. It only renders in the **mobile drawer** (and as the Products Intelligence-tab bottom-bar link). This is a per-breakpoint difference (failure mode #28): desktop nav = Products/Solutions/Resources/Enterprise/Pricing; mobile drawer = Products/Solutions/Resources/Enterprise/Pricing/Explore API/Login.
   3. User menu (right): Get a demo | Get started | Login
 
 ## Nav groups
@@ -40,10 +41,11 @@ Tab 1 — Free Tools (no banner, 4 lists displayed as flex-row):
 - (unnamed continuation): Mobile vs. Desktop `/platforms/`, Digital 100 `/corp/digital-100/`.
 
 Tab 2 — AI Search Intelligence (banner + 3 lists):
-- Banner: title "Similarweb AI Search Intelligence", subtitle "Turn AI search from a blind spot into a growth channel, with the competitive intelligence to see where you stand and how to win", href `/corp/search/gen-ai-intelligence/`, variant color `#4D80FF`. CTA "Learn more".
-- AI Brand Visibility (heading link `/corp/search/gen-ai-intelligence/ai-brand-visibility/`): AI Share of Voice Monitor `/corp/search/gen-ai-intelligence/ai-brand-visibility/ai-sov/`, AI Citation Analysis `.../citation-analysis/`, AI Prompt Analysis `.../prompt-analysis/`, AI Sentiment Analysis `.../sentiment-analysis/`.
-- AI Traffic Tracker (heading link `/corp/search/gen-ai-intelligence/ai-chatbot-traffic/`): ChatGPT, Perplexity, Claude, Grok, Gemini, Deepseek Traffic Trackers.
-- AI Search Optimization Toolsets (heading, no href): GEO Tools `/corp/search/geo/`, AEO Tools `/corp/search/aeo/`.
+- **As of 2026-06-12 the entire AI Search Intelligence tab moved to the `aisearch.similarweb.com` subdomain** — every link here is now EXTERNAL (different hostname → opens in a new tab). "AI Share of Voice Monitor" was removed.
+- Banner: title "Similarweb AI Search Intelligence", subtitle "Turn AI search from a blind spot into a growth channel, with the competitive intelligence to see where you stand and how to win", href `https://aisearch.similarweb.com/`, variant color `#4D80FF`. CTA "Learn more".
+- AI Brand Visibility (heading link `https://aisearch.similarweb.com/ai-brand-visibility/`): AI Citation Analysis `.../ai-brand-visibility/citation-analysis/`, AI Prompt Analysis `.../prompt-analysis/`, AI Sentiment Analysis `.../sentiment-analysis/`.
+- AI Traffic Tracker (heading link `https://aisearch.similarweb.com/ai-chatbot-traffic/`): ChatGPT, Perplexity, Claude, Grok, Gemini, Deepseek Traffic Trackers (each `https://aisearch.similarweb.com/ai-chatbot-traffic/<x>-traffic-tracker/`).
+- AI Search Optimization Toolsets (heading, no href): GEO Tools `https://aisearch.similarweb.com/geo/`, AEO Tools `https://aisearch.similarweb.com/aeo/`.
 
 Tab 3 — Web Intelligence (banner variant `#195AFE`):
 - Banner href `/corp/web/`, subtitle "Gain a powerful competitive edge with in-depth insights into your digital landscape".
@@ -54,20 +56,22 @@ Tab 3 — Web Intelligence (banner variant `#195AFE`):
 Tab 4 — App Intelligence (banner variant `#FF326F`):
 - Banner href `/corp/apps/`, subtitle "Analyze app performance, market trends, and user behavior to drive smarter business growth".
 - App Market Intelligence (`/corp/apps/market-intelligence/`): App Competitor Analysis, Mobile Market Trends, App Technographics (SDK).
-- App Performance Analytics (`/corp/apps/analytics/`): App Rating & Reviews, App Usage Analytics, App Revenue Analytics.
+- App Performance Analytics (`/corp/apps/analytics/`): App Rating & Reviews, App Usage Analytics, App Revenue Analytics, App Keyword Ranking Tracker `/corp/apps/app-keyword-ranking/` (**added 2026-06-12**).
 - App Audience Analytics (`/corp/apps/audience-analytics/`): App Demographics & Interests, App-Web Insights.
 
 Tab 5 — Sales Intelligence (banner variant `#FF7A1A` — note: NOT `#FFA800`; re-measured 2026-05-14):
 - Banner href `/corp/sales/`, subtitle "Empower your sales strategy with data to uncover pitching opportunities and engage buyers to drive pipeline".
-- Sales Strategy & Operations (`/corp/sales/strategy-operations/`): Territory Planning, Lead Scoring, Lead Enrichment.
-- Lead Generation (`/corp/sales/lead-gen/`): AI Prospecting Agent, Company Research, Account-based Marketing, AI Outreach Agent, App Leads Finder.
-- Sales Engagement (`/corp/sales/sales-engagement/`): AI Meeting Prep Agent, Buyer Intent & Signals Data, Value Selling.
+- **Items reorganized 2026-06-12** (same 3 subgroup headings, items reshuffled; Territory Planning / Account-based Marketing / Value Selling removed; CRM Integrations added; Lead Scoring → "AI Lead Scoring"):
+- Sales Strategy & Operations (`/corp/sales/strategy-operations/`): Lead Enrichment, CRM Integrations `/corp/sales/crm-integrations/`.
+- Lead Generation (`/corp/sales/lead-gen/`): AI Prospecting Agent, Company Research, Buyer Intent & Signals Data, App Leads Finder.
+- Sales Engagement (`/corp/sales/sales-engagement/`): AI Lead Scoring `/corp/sales/lead-scoring/`, AI Outreach Agent, AI Meeting Prep Agent.
 
 Tab 6 — Retail Intelligence (banner variant `#C343FF`):
 - Banner href `/corp/retail/`, subtitle "Discover shopping trends and drive your ecommerce growth with consumer behavior insights".
-- Ecommerce Analytics (`/corp/retail/ecommerce-analytics/`): Amazon Sales Performance, Category Management, Cross-Retail Analytics.
-- Marketplace Optimization (`/corp/retail/marketplace-optimization/`): On-site Search Optimization, Amazon Store Optimization, Amazon Keyword Research Agent.
-- Consumer Analytics (`/corp/retail/consumer-analytics/`): Consumer Demand Analytics, Shopper Behavior.
+- **Subgroups renamed + items reshuffled 2026-06-12** (still 3 link columns; only heading text/hrefs + items changed — no layout change):
+- Shopper Insights for Brands (`/corp/retail/shopper-insights/`): Digital Shelf Analytics `/corp/retail/digital-shelf-analytics/`, Consumer Demand Insights `/corp/retail/consumer-demand/`, On-site Search Optimization, Cross-Retail Shopper Behavior `/corp/retail/shopper-behavior/`, Marketplace Optimization `/corp/retail/marketplace-optimization/`.
+- Retail Analytics Tools (`/corp/retail/retail-analytics/`): Retail Price Intelligence `/corp/retail/price-intelligence/`, Category Management, Consumer Analytics `/corp/retail/consumer-analytics/`.
+- Amazon Seller Tools (`/corp/retail/amazon-seller-tool/`): Amazon Sales Analytics `/corp/retail/amazon-sales-analytics/`, Amazon Keyword Research `/corp/retail/amazon-keyword-tool/`.
 
 Tab 7 — Stock Intelligence (banner variant `#00CA9A`):
 - Banner href `/corp/stocks/`, subtitle "Monitor market trends, track stock performance, and use analytics to make data-backed investments".
@@ -226,12 +230,13 @@ This is a separate full-width bar **below** the tab panel — spans the whole 12
 | Retail Intelligence | `95a1d1ccb5fe11f81714.png` | `a8c28eee624a9127e4e9.png` |
 | Stock Intelligence | `558a256681d090ff55ba.png` | `fa06e10a278bedca67a3.png` |
 
-Base URL: `https://static-us-east-1.similarcdn.com/build/<build-id>/dist/scripts/lite-app/assets/`. Build id at time of re-extraction: `20260514.master.b107e23`.
+Base URL: `https://static-us-east-1.similarcdn.com/build/<build-id>/dist/scripts/lite-app/assets/`. Build id at time of re-extraction: `20260610.master.4f0be23` (rotated from `20260514.master.b107e23`; asset filenames byte-identical, so the artwork is unchanged — only the build-id segment was refreshed).
 
 ## Side banner — contextual per Solutions tab
 - By default, every Solutions tab and the Resources panel show the **holiday retail planning** banner (kicker "Plan earlier and better for the 2026 holiday season"; title "Top Holiday 2026 Shopper Trends"; image `static_assets/lite/images/retail-planning.png`).
 - The **Solutions > Data as a Service** tab swaps the banner for a **Data Licensing** variant (kicker AND title both "Data Licensing"; body "Drive new revenue streams and enhance your product with the world's leading digital insights"; CTA "Explore Data Licensing now"; href `/corp/daas/data-partnerships/`; image `static_assets/lite/images/data-licesing.png` — note the typo `licesing` in the live URL).
 - Clone implementation: `SOLUTIONS_SIDE_BANNER_BY_TAB` keyed by tab id, falls back to `DEFAULT_SIDE_BANNER`.
+- **Side-banner image sizing (fixed 2026-06-15):** the image renders at its **natural aspect ratio** — do NOT box it into a fixed height. The live `retail-planning.png` is 672×384 (1.75:1) and the live site shows it uncropped (image box width = column width, height = width ÷ 1.75). An earlier clone used a fixed `h-28` (112px) box with `object-cover`, which at the 253px column width (2.26:1) cropped ~32px off the top/bottom ("crushed and cut off"). The `SideBanner` `<img>` is now `block w-full h-auto` (no `object-cover`, no fixed height) so each banner image (retail-planning AND the differently-proportioned data-licensing variant) shows in full. The mobile product banner already used `block w-full h-auto`; the desktop Products gradient-banner cutout uses `object-contain` with `h-[120px] w-auto` (aspect preserved) and was already correct.
 
 ## Computed styles — Resources popup (flat)
 - Layout: single flex row inside `.app-header__panel` with padding 40px 24px 24px. 3 link columns + side banner column, all at the same level. **No vertical dividers between columns.**
@@ -245,6 +250,7 @@ Base URL: `https://static-us-east-1.similarcdn.com/build/<build-id>/dist/scripts
 - The "app-header--open" body-scroll-lock class toggle is not replicated; clone uses `body.style.overflow = "hidden"` only when the mobile drawer is open.
 - The main product-row desktop illustrations are optional and currently omitted for size.
 - "Explore API" link in the Products dropdown footer is rendered only on Intelligence tabs (not on Free Tools). The clone renders it on the same set.
-- **Inline brand icons for each product-tab sidebar entry** and **per-item link icons inside dropdown panels** are rendered via inline SVGs extracted directly from the live site and bundled into `src/header/icons.generated.ts` via `research/extracted/generate-icons.mjs`. Labels that do not have a matching SVG (e.g. generic "Resources" sub-items) fall back to a neutral circle marker.
+- **Inline brand icons for each product-tab sidebar entry** and **per-item link icons inside dropdown panels** are rendered via inline SVGs extracted directly from the live site and bundled into `src/header/icons.generated.ts` via `research/extracted/generate-icons.mjs`. Per-item icons are looked up by **exact label string** (`getIconSvg(label)`); a label with no matching key falls back to a neutral circle marker. So renaming an item in `SiteHeader.tsx` (or adding a new one) requires a matching icon key, or the icon silently disappears.
+  - **Icon pipeline / regeneration (read before re-running the generator):** `generate-icons.mjs` merges icons from `products-clean.json`, `solutions-clean.json`, `resources-icons.json`, `sidebar-brand-icons.json`, and the supplemental `extra-icons.json`. It also normalizes hardcoded fills/strokes (`#3A5166` slate, `#195AFE` brand blue) to `currentColor` for label icons so they inherit the menu's text color (sidebar brand icons in `SIDEBAR_BRAND_SVG_BY_ID` keep their brand colors). **The committed `icons.generated.ts` is a superset of what the primary JSON sources alone can reproduce** — a few items that exist on the live site are not present in `products-clean.json`/`resources-icons.json` (currently `AI Trend Analyzer`, `Deepseek Traffic Tracker`, `Events`) and live **only** in `extra-icons.json`. The 2026-06-12 reorg additions (`App Keyword Ranking Tracker`, `CRM Integrations`, `AI Lead Scoring`, `Digital Shelf Analytics`, `Consumer Demand Insights`, `Cross-Retail Shopper Behavior`, `Marketplace Optimization`, `Retail Price Intelligence`, `Consumer Analytics`, `Amazon Sales Analytics`, `Amazon Keyword Research`) are also supplied via `extra-icons.json`. When you re-run the generator, **verify the new output is a superset of the previous `icons.generated.ts`** (diff the `["label"]:` keys; nothing should be dropped) before rebuilding — regenerating from the JSON sources without these supplements is lossy.
 - **Top yellow promo bar** above the header (e.g. "What will define the 2026 holiday season? … Download the report →") is a dismissable marketing banner, out of scope for a drop-in header bundle.
 - **Simi AI chat widget** bottom-right of the live page is a separate third-party widget, out of scope.

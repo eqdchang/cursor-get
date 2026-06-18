@@ -1,0 +1,44 @@
+---
+description: Hard rules for cloning a site's header/footer — always verify against the LIVE site
+alwaysApply: true
+---
+
+# Live-site fidelity is non-negotiable
+
+When cloning or fixing a header/footer, the live site is the ONLY source of truth.
+Never trust the spec, memory, or a prior screenshot. Re-measure every time.
+
+## Before claiming anything matches
+
+1. Open the LIVE site in the browser AND our demo (`dist/<slug>/raw-demo.html`)
+   at the SAME viewport width. Take a screenshot of each in the SAME state
+   (closed, each dropdown open, mobile drawer). Put them side by side.
+2. Measure computed styles on the LIVE element with `getComputedStyle` — never
+   eyeball. For every distinct text element (nav trigger, column heading, item
+   link, sub-item, badge, footer link) record: `font-family`, `font-size`,
+   `font-weight`, `line-height`, `letter-spacing`, `text-transform`, `color`.
+3. Beware the desktop-vs-mobile DOM trap: many themes render BOTH a desktop and
+   a hidden mobile copy. `document.querySelector('.x')` may return the mobile
+   one. Only measure elements that are actually VISIBLE on screen
+   (`getBoundingClientRect()` width/height > 0 and on-screen) in the state you're
+   testing. byrna's desktop nav only appears at wide widths; emulate ≥1280px and
+   reload before measuring desktop.
+
+## Match exactly — then prove it
+
+4. Set our component's `font-size`/`font-weight`/`font-family`/`color` to the
+   measured live values. Do not approximate (15px ≠ 16px, font-black ≠ 400).
+5. After editing, rebuild (`npm run build:<slug> && npm run build:raw:<slug>`),
+   reload the demo, RE-MEASURE, and confirm the numbers equal the live numbers.
+   Then take a fresh side-by-side screenshot and confirm visually.
+6. If text looks lighter/thinner than live, the brand webfont almost certainly
+   is not rendering. Verify the exact `@font-face` files the live site loads
+   (their Typekit/CDN URLs and weights) and confirm OUR embedded files are the
+   SAME weights. A face that "loaded" can still be the wrong weight.
+   Fonts must be registered at document level (see AGENTS.md), not in shadow.
+
+## Do not
+
+- Do not say "this matches" without a fresh measurement + screenshot in the same turn.
+- Do not change a value based on a guess about what the live site "probably" uses.
+- Do not reuse measurements from a previous turn; the state may have been mobile.

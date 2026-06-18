@@ -1,8 +1,29 @@
 # Clone Header + Footer
 
-You are about to extract the **header** and **footer** from the URL the user provides and package them as self-contained drop-in JS bundles that can be shipped into any host site via a single `<script>` tag.
+You are about to extract the **header** and **footer** from the URL the user provides and package them as self-contained drop-in artifacts that can be shipped into any host site.
 
 Scope is only two components per site. No page body, no section loop, no full-page clone. If the user asks you to clone anything else, stop and redirect them to that narrower scope first.
+
+## Output modes (`-bundle` default, `-raw`) and the `-fresh` modifier
+
+The command accepts an optional output-mode flag after the URL, plus an optional `-fresh` modifier (documented below):
+
+- **`-bundle`** (default — used when no flag is given): the classic single-`<script>` IIFE artifact described throughout this document. React renders into a Shadow DOM at runtime; the client drops in one `<script>` tag + a mount `<div>`.
+- **`-raw`**: in addition to the bundle, emit an **editable HTML** artifact set so the client can update copy/links by hand without a rebuild. See "Raw mode" below. The raw build never touches the bundle — both artifacts ship side by side, and the bundle remains the backup.
+
+Parse the flag from the user's message (e.g. `/clone-header-footer https://example.com -raw`). If absent, behave exactly as `-bundle`. Everything in Steps 1–8 (extraction, spec files, parity rubric) is identical for both modes — raw mode only changes the final packaging.
+
+### Scan-freshness modifier (`-fresh`)
+
+`-fresh` is a **modifier, not an output mode** — it combines with `-bundle` or `-raw` (e.g. `/clone-header-footer https://example.com -raw -fresh`). It forces a **clean-slate re-scan**: the agent must completely ignore previous findings and treat the live site as if it had never been cloned.
+
+When `-fresh` is present:
+- **Disregard the existing spec, prior screenshots, memory, and any value already in the component files.** Do not trust `research/*.spec.md`. Re-measure every element from the live DOM.
+- **Suspend the diff-mode shortcut.** Even if `bundles/sites/<slug>/` already exists, do NOT take the data-only/structural classification path that leaves component logic untouched. Instead, re-derive the full spec from scratch and reconcile the components against it — rewrite styles/structure wherever they disagree with the freshly measured live site.
+- **Output packaging is unchanged** — `-bundle`/`-raw` still decide what ships. `-fresh` only changes how thoroughly the live site is re-examined.
+- **Use it** when a clone has drifted, the stored spec looks stale/wrong, or the user reports the clone "still doesn't match." It is the explicit "stop trusting the cache, look again in full detail" switch.
+
+Parse `-fresh` independently of the output-mode flag; both can appear in any order.
 
 ## Scope defaults
 
@@ -15,7 +36,18 @@ Scope is only two components per site. No page body, no section loop, no full-pa
 
 ## General approach (always)
 
-This is the standing process for every site. Walk it end-to-end on the first pass so the user does not have to ask twice for the same kind of detail. The order is non-negotiable:
+This is the standing process for every site. Walk it end-to-end on the first pass so the user does not have to ask twice for the same kind of detail. The order is non-negotiable.
+
+**Match every detail — for every site.** This applies universally, not to any one site. The live site is the only source of truth and the goal is to match it as closely as humanly possible — pixel for pixel, weight for weight, gap for gap. Before writing or changing any JSX:
+
+- **Inspect every single thing that is visible.** Every nav item, every dropdown, every row inside every dropdown, every footer column, every icon, every button, every divider, every badge, every separator. If you can see it on the live site, you measure it and reproduce it. "Close enough" is not the bar.
+- **Measure, never eyeball.** For every distinct element pull `getComputedStyle` and record `font-family`, `font-size`, `font-weight`, `line-height`, `letter-spacing`, `text-transform`, `color`, plus box metrics (`width`, `height`, `padding`, `margin`, `gap`, `border`, `border-radius`) and `background-color`. Approximations (15px vs 16px, weight 400 vs 900, a 35px gray circle vs a bare icon) are precisely the differences the user catches.
+- **Every icon carries its chrome.** Capture each icon's rendered size, color, and stroke AND any container styling around it: circular/rounded background, fill color, border, count badge, hover state. Never assume an icon is bare — many sit inside styled buttons.
+- **Fonts must render at the real weight.** If the clone looks lighter/thinner than live, the brand webfont almost certainly isn't loading or is loading at the wrong weight. Verify the exact `@font-face` files + weights the live site loads and confirm the embedded files match (register at document level — see Style isolation).
+- **Responsive stays responsive.** If the live site sizes text/spacing with `vw`/`clamp`, the clone must too, and all comparisons happen at the SAME viewport width.
+- **Prove the match in the same turn.** After editing, rebuild, RE-MEASURE the same elements, and take a fresh side-by-side screenshot at the same viewport and state. Do not claim a match without a same-turn measurement + screenshot. (Full rubric: `.cursor/rules/live-site-fidelity.mdc`.)
+
+The numbered passes below are how you achieve that depth. The order is non-negotiable:
 
 1. **Walk every dropdown in the header and every collapsible/widget in the footer.** Open each at the desktop viewport, screenshot it to `images/`, then close it before moving to the next. Do the same for every nested level — subgroup expansion, side flyout, accordion, language menu, account menu, etc. If a row inside a dropdown has a chevron, an arrow, or a "+", treat that as a separate state and screenshot it expanded too. **For tabbed dropdowns, walk every tab and re-capture every ancillary widget** (side banner, bottom-bar, callout) — these often vary per-tab even though they look like fixed chrome. The bar is: **every state the user can see on the live site has a screenshot in `images/` before any JSX is written.**
 2. **Probe interactivity on several representative triggers and links.** For each top-level nav trigger, hover it AND click it (record which mechanism opens the dropdown). For at least one row inside the open dropdown, hover it (does it highlight? does an icon change color?) and click any chevron/sub-toggle (inline expand vs side flyout vs no-op link). For trailing widgets (search, account, cart, language switcher, login) confirm hit-target behavior. **Active states matter as much as default states** — when a dropdown is open, capture how the trigger itself changes (color shift, underline, 3px bar at the bottom, chevron rotation, parent class like `--active`).
@@ -68,11 +100,12 @@ These are real mistakes made on prior sites. Do not repeat them:
 
 1. Browser MCP is required (Playwright MCP, Chrome MCP, etc.). If none is available, ask the user which they have.
 1a. **Images directory — hard rule.** Ensure the `images/` folder exists at the repo root (`mkdir -p images`). **Every screenshot tool call's filename MUST start with `images/`.** No exceptions. The repo root is for source, not artifacts; saving `01-thing.png` at the repo root is a workspace rule violation that the user will catch. If you find yourself typing a screenshot filename without `images/` in the path, stop and fix it. Reference images downloaded from the live site (logo PNGs, illustration thumbnails) also go to `images/`. The folder is gitignored.
-2. Parse the user's message as a single URL. Validate it resolves via the browser MCP.
+2. Parse the user's message as a single URL plus any flags. Validate the URL resolves via the browser MCP. Record whether `-raw` and/or `-fresh` were passed (they can appear in any order).
 3. Derive the site slug from the hostname: drop `www.`, replace `.` with `-`, lowercase. E.g. `https://boardwalktech.com/` → `boardwalktech-com` (or just `boardwalktech` if the user prefers a shorter name — confirm if ambiguous).
-4. **Mode detection.** Check whether `bundles/sites/<slug>/` already exists.
-   - If it does NOT exist → **cold-start mode**. Proceed through Steps 1–8 in order.
-   - If it DOES exist → **diff mode**. Skip Step 1 (scaffolding) and follow the "Diff mode procedure" section below instead of Steps 3–4. Step 2 (extraction) still runs fresh.
+4. **Mode detection.** First check for the `-fresh` modifier, then whether `bundles/sites/<slug>/` already exists.
+   - If `-fresh` was passed → **fresh mode**. Ignore the existing spec/components as authoritative. If the folder does not exist, scaffold it (Step 1) first; if it does, keep the scaffolding but re-run Step 2 + Step 3 from scratch and reconcile the components against the fresh measurements (see "Fresh mode" under Execution modes). Do NOT take the data-only/structural diff shortcut.
+   - Else if the folder does NOT exist → **cold-start mode**. Proceed through Steps 1–8 in order.
+   - Else (folder exists, no `-fresh`) → **diff mode**. Skip Step 1 (scaffolding) and follow the "Diff mode procedure" section below instead of Steps 3–4. Step 2 (extraction) still runs fresh.
 5. Verify the bundles package installs and the Vite pipeline works: `cd bundles && npm install && npm run build:all` (or build any existing site, e.g. `npm run build:boardwalktech`). This is a pipeline sanity check only; do NOT treat any existing site as a template for a new one.
 
 ## Execution modes
@@ -82,6 +115,9 @@ The slug folder does not exist. Every file is created from scratch for this spec
 
 ### Diff mode
 The slug folder already exists. Assume the component files and manual tuning there are correct. Re-extract the live site into a fresh spec, diff it against the existing spec, classify each diff, apply only safe data-level changes, and report the rest to the user for review. See "Diff mode procedure" below.
+
+### Fresh mode (`-fresh`)
+Triggered by the `-fresh` modifier regardless of whether the slug folder exists. Do NOT assume the existing spec or component files are correct — treat them as untrusted. Re-run the full Step 2 + Step 3 extraction from scratch (ignore the old spec, prior screenshots, and memory) and write a brand-new spec. Then reconcile the components against that freshly measured truth: unlike plain diff mode, you DO rewrite styles and structure in `SiteHeader.tsx` / `SiteFooter.tsx` (and the raw `header.static.tsx` / `behavior-*.ts`) wherever they disagree with the live site — not just data arrays. Finish with the Step 6.5 side-by-side visual diff and same-turn re-measurement. Output packaging (`-bundle` / `-raw`) is unchanged.
 
 ## Functional parity contract (done-criteria)
 
@@ -796,6 +832,74 @@ npm run build:site -- --env SITE=<slug>     # or: SITE=<slug> npm run build:site
 ```
 
 Verify `bundles/dist/<slug>/{header,footer}.bundle.js` exist. Each should be ~65 KB gzipped.
+
+## Step 5b — Raw build (`-raw` mode only)
+
+Run this IN ADDITION to Step 5 when the user passed `-raw`. It produces an editable HTML artifact set and **never modifies the bundle** — `header.bundle.js` / `footer.bundle.js` stay byte-identical, so the bundle is always the fallback.
+
+### Why raw mode exists
+
+The bundle renders the header/footer from JS at runtime, so there is no HTML for the client to edit — changing a link means editing the `.tsx` data and rebuilding. Raw mode emits the header/footer as **plain, hand-editable HTML** the client pastes into their own site header file. They update copy and `href`s directly in that markup; no rebuild required. The JS (interactivity) and CSS stay bundled into a small script.
+
+### Isolation is preserved via runtime Shadow DOM adoption
+
+The editable markup lives in the host's **light DOM** (so it's editable), but `header.js` relocates it into a **Shadow DOM** on load: it reads the host container's `innerHTML`, calls `attachShadow`, injects the compiled+inlined CSS as a `<style>`, and renders the markup inside the shadow root. Net effect: the client edits text in their source file, but what renders is sandboxed exactly like the bundle — host CSS can't bleed in, bundle CSS can't leak out. Outside-click detection uses `event.composedPath()` (shadow-aware), and the inlined CSS keeps the `--tw-*` reset (failure mode #35) because `@property` defaults don't apply inside a shadow root.
+
+### File layout (cold-start adds a `src/raw/` folder)
+
+```
+bundles/sites/<slug>/src/raw/
+  header.static.tsx      # static render of the header: EVERY state present in the
+                         #   DOM up front (all submenus, panels, full mobile drawer),
+                         #   each non-default state marked `hidden`, wired with
+                         #   data-bw-* hooks. Imports the SAME data.ts / icons.ts as
+                         #   the bundle so copy is never duplicated.
+  footer.static.tsx      # OR reuse the bundle's SiteFooter if it's already a pure
+                         #   presentational component with no hooks/handlers.
+  behavior-header.ts     # vanilla controller: shadow-adopt + CSS inject + all
+                         #   interactivity (chrome/scroll, dropdowns, search,
+                         #   locations, mobile drawer). Reads `declare const
+                         #   __BW_STYLES__` (replaced at build with compiled CSS).
+  behavior-footer.ts     # minimal: shadow-adopt + CSS inject (footer is static).
+  render.tsx             # build entry: renderToStaticMarkup(header) + (footer),
+                         #   prints JSON to stdout.
+```
+
+Build output (alongside the frozen bundle):
+
+```
+bundles/dist/<slug>/
+  header.html    # editable fragment, wrapped in <div data-bw-raw-header>
+  footer.html    # editable fragment, wrapped in <div data-bw-raw-footer>
+  styles.css     # compiled, .bw-scope-prefixed CSS (reference copy)
+  header.js      # vanilla; adopts the fragment into Shadow DOM, inlines CSS
+  footer.js      # vanilla; adopts the footer fragment into Shadow DOM
+  raw-demo.html  # local smoke-test page (hero + header + content + footer)
+```
+
+### The `data-bw-*` contract (HTML ↔ JS bridge)
+
+The static HTML and the vanilla JS are coupled only by `data-bw-*` attributes. The client may freely edit text and `href`s; they must NOT delete these attributes. Use a stable, self-describing set, e.g.: `data-bw-raw-header` / `data-bw-raw-footer` (shadow host), `data-bw-header-root`, `data-bw-header` + `data-bw-chrome`, `data-bw-trigger`, `data-bw-submenu`, `data-bw-subtab` / `data-bw-subpanel`, `data-bw-action="..."`, `data-bw-drawer`, `data-bw-mpanel` / `data-bw-mgroup` / `data-bw-mopt` / `data-bw-mcontent`. Mirror the exact state machine the bundle's `SiteHeader.tsx` implements (from Step 4 / Step 2b), just driven by class/attribute/`hidden` toggles instead of React state.
+
+### Build & verify
+
+```bash
+cd bundles
+SITE=<slug> npm run build:raw        # or add a build:raw:<slug> script
+python3 -m http.server 8770 --directory dist
+# browser MCP → http://localhost:8770/<slug>/raw-demo.html
+```
+
+Run the SAME functional-parity + visual-diff checks (Step 6 / 6.5) against `raw-demo.html` that you run against the bundle demo, PLUS a raw-specific check: the host page's own styles (use a serif font + colored links in the demo) must not bleed into the header/footer and vice versa — confirming the Shadow DOM adoption worked.
+
+### Client integration (what you hand off)
+
+```html
+<link rel="stylesheet" href="styles.css" /> <!-- optional; CSS is also inlined in header.js -->
+
+<!-- paste header.html here; edit text + hrefs freely, keep data-bw-* attributes -->
+<script src="header.js" defer></script>
+```
 
 ## Step 6 — Run the functional-parity smoke test
 

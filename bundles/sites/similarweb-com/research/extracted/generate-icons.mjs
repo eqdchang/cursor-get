@@ -28,6 +28,11 @@ const sidebar = JSON.parse(
 const resources = JSON.parse(
   readFileSync(join(__dirname, "resources-icons.json"), "utf-8"),
 );
+// Supplemental icons for items added/renamed in re-clones whose icons aren't
+// captured in products-clean.json. Flat label -> svg string map.
+const extra = JSON.parse(
+  readFileSync(join(__dirname, "extra-icons.json"), "utf-8"),
+);
 
 const iconMap = new Map(); // label -> svg string
 
@@ -50,10 +55,18 @@ function namespace(svg) {
   return out;
 }
 
+// The header/footer recolor every icon via the menu's text color, so all icons
+// must paint with `currentColor`. Source SVGs sometimes hardcode the Similarweb
+// slate gray (#3A5166) or brand blue (#195AFE); normalize those to currentColor
+// so the generated map is theme-adaptive and visually consistent.
+function recolor(svg) {
+  return svg.replace(/(fill|stroke)="(#3A5166|#3a5166|#195AFE|#195afe)"/g, '$1="currentColor"');
+}
+
 function add(label, svg) {
   if (!label || !svg) return;
   if (iconMap.has(label)) return; // first writer wins
-  iconMap.set(label, namespace(svg));
+  iconMap.set(label, namespace(recolor(svg)));
 }
 
 // Products tabs: columns of items
@@ -165,6 +178,12 @@ for (const [tab, data] of Object.entries(solutions)) {
 
 // Resources dropdown per-item icons.
 for (const [label, svg] of Object.entries(resources)) {
+  add(label, svg);
+}
+
+// Supplemental icons (skip the leading _comment metadata key).
+for (const [label, svg] of Object.entries(extra)) {
+  if (label.startsWith("_")) continue;
   add(label, svg);
 }
 
